@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+=======
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+>>>>>>> 9cc9ffe (Initial commit for memoir social interaction applciation)
+#include "Generated.xcconfig"
