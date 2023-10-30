@@ -8,9 +8,11 @@ import '../models/weather_model.dart';
 class WeatherService{
   static const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
   final String apiKey;
+
   WeatherService({required this.apiKey});
   Future<Weather> getWeather({required String cityName}) async {
     final response = await http.get(Uri.parse('$BASE_URL?q=$cityName&appid=$apiKey'));
+    print(response.body);
     if(response.statusCode == 200){
       return Weather.fromJson(jsonDecode(response.body));
     }
@@ -18,7 +20,6 @@ class WeatherService{
       throw Exception("Fail to load weather data");
     }
   }
-
   getCurrentLocation() async {
     LocationPermission locationPermission = await Geolocator.checkPermission();
     if(locationPermission == LocationPermission.denied){

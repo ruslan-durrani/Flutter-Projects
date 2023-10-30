@@ -65,7 +65,7 @@ class _WeatherPageState extends State<WeatherPage> {
 
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        body: (_weather?.mainCondition==null || _weather?.cityName==null)?
+        body: (_weather?.mainCondition == null || _weather?.cityName==null || _weather?.windSpeed == null)?
         Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -78,27 +78,46 @@ class _WeatherPageState extends State<WeatherPage> {
           )
         ):Center(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 30),
+              Expanded(
+                flex: 5,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(_weather?.cityName??"Loading city",style:  TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.inversePrimary,fontSize: 30),),
-                    Text(_weather?.mainCondition??"",style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary,fontWeight: FontWeight.normal,fontSize: 15,letterSpacing: 10)),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(_weather!.cityName,style:  TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.inversePrimary,fontSize: 30),),
+                          SizedBox(height: 10,),
+                          Text(_weather!.mainCondition,style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary,fontWeight: FontWeight.normal,fontSize: 15,letterSpacing: 10)),
+                          SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.speed),
+                              SizedBox(width: 10,),
+                              Text("${_weather!.windSpeed}",style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary,fontWeight: FontWeight.normal,fontSize: 15)),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    Lottie.asset(getMainCondition(_weather!.mainCondition.toLowerCase())),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      child: Text("${_weather?.temperature.round()} °C",style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary,fontWeight: FontWeight.bold,fontSize: 30)),
+                    ),
                   ],
                 ),
               ),
-              Lottie.asset(getMainCondition(_weather!.mainCondition.toLowerCase())),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 30),
-                child: Text("${_weather?.temperature.round()} °C",style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary,fontWeight: FontWeight.bold,fontSize: 30)),
-              ),
-
-
+                padding: const EdgeInsets.only(bottom: 30.0),
+                child: Text("made by ruslan © Flutter",style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary,fontSize: 10),),
+              )
             ],
           ),
         ),
