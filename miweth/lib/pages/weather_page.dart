@@ -37,20 +37,23 @@ class _WeatherPageState extends State<WeatherPage> {
     if(mainCondition == null) return "assets/sunny.json";
     switch(mainCondition){
       case 'clouds':
+        return "assets/cloud.json";
       case 'mist':
+      return "assets/mist.json";
       case 'smoke':
       case 'haze':
       case 'dust':
       case 'fog':
-        return "assets/cloud.json";
+        return "assets/mist.json";
       case "rain":
       case "drizzle":
+      return "assets/rainy.json";
       case "shower rain":
-        return "assets/rain.json"   ;
+        return "assets/rain.json";
       case "thunderstorm":
         return "assets/thunder.json";
       case "clear":
-        return "assets/sunny.json";
+        return "assets/clear.json";
       default:
         return "assets/sunny.json";
 
