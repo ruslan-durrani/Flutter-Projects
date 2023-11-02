@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+
 import 'coffee.dart';
 
-class CoffeeShop{
+class CoffeeShop extends ChangeNotifier{
   List<Coffee> coffeeSaleList = [
     Coffee(name: "Expresso", price: "100\$", imagePath: "./assets/expresso.png"),
     Coffee(name: "Iced Coffee", price: "300\$", imagePath: "./assets/iced-coffee.png"),
@@ -8,7 +11,7 @@ class CoffeeShop{
     Coffee(name: "Long Black", price: "150\$", imagePath: "./assets/expresso.png"),
   ];
 
-  List<Map<dynamic,dynamic>> _userCart = [];
+  List<Map<String,dynamic>> _userCart = [];
   List<Map<dynamic,dynamic>> get userCart => _userCart;
   List<Coffee> get coffeeShop => coffeeSaleList;
 
@@ -26,5 +29,15 @@ class CoffeeShop{
     if (!found) {
       _userCart.add({"coffee": coffee, "count": 1});
     }
+    notifyListeners();
+  }
+  void removeItemFromCart(Coffee coffee){
+    for (var element in userCart) {
+      if(element["coffee"] == coffee){
+        userCart.remove(element);
+        break;
+      }
+    }
+    notifyListeners();
   }
 }
