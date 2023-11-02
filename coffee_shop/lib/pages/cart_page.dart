@@ -19,6 +19,9 @@ class _CartPageState extends State<CartPage> {
     Provider.of<CoffeeShop>(context, listen: false).removeItemFromCart(coffee);
   }
 
+  void payForCoffee(){
+    // Add Business Logic For you app TODO
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<CoffeeShop>(
@@ -44,7 +47,19 @@ class _CartPageState extends State<CartPage> {
                             }
                         ),
                       ),
-
+                      GestureDetector(
+                        onTap: (){},
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.inversePrimary,
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          width: double.maxFinite,
+                          padding: EdgeInsets.symmetric(vertical: 25),
+                          child: Text("Pay",style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold,fontSize: 17),),
+                        ),
+                      ),
                     ],
                   ),
                 )

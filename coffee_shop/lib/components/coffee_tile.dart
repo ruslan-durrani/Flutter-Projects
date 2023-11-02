@@ -23,12 +23,12 @@ class CoffeeTile extends StatelessWidget {
       child: ListTile(
         title: Row(
           children: [
-            Text(coffee.name),
+            Text(coffee.name, style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary, fontWeight: FontWeight.bold),),
             SizedBox(width: 10,),
-            Text(itemCount==null?"":itemCount.toString())
+            Text(itemCount==null?"":itemCount.toString(),)
           ],
         ),
-        subtitle:Text(coffee.price),
+        subtitle:Text(coffee.price,style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary, fontWeight: FontWeight.normal)),
         leading: Image(image: AssetImage(coffee.imagePath)),
         trailing: IconButton(onPressed: onPressed, icon:  Icon(icon, color: Theme.of(context).colorScheme.inversePrimary,)),
       ),

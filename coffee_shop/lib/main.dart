@@ -1,5 +1,7 @@
 import 'package:coffee_shop/models/CoffeeShop.dart';
+import 'package:coffee_shop/pages/WelcomePage.dart';
 import 'package:coffee_shop/pages/home_page.dart';
+import 'package:coffee_shop/pages/shop_page.dart';
 import 'package:coffee_shop/theme/dark_theme.dart';
 import 'package:coffee_shop/theme/light_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +19,11 @@ class StartApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
         darkTheme: darkTheme,
-        home: HomePage(),
+        home: WelcomePage(),
+        routes: {
+          WelcomePage.routeName:(context)=> WelcomePage(),
+          HomePage.routeName:(context)=>  HomePage(),
+        },
       ),);
 
   }

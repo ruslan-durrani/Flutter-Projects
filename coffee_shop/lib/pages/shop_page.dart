@@ -1,5 +1,6 @@
 import 'package:coffee_shop/components/coffee_tile.dart';
 import 'package:coffee_shop/models/CoffeeShop.dart';
+import 'package:coffee_shop/utility/my_snakbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../models/coffee.dart';
 
 class ShopPage extends StatefulWidget {
-  static String routName = "/shop_page";
+  static String routeName = "/shop_page";
   const ShopPage({super.key});
 
   @override
@@ -17,6 +18,7 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage> {
   addToCart(Coffee coffee){
     Provider.of<CoffeeShop>(context, listen: false).addToCart(coffee);
+    showSnackBar(context);
   }
 
   @override
