@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:memoir/components/MyUserTile.dart';
 import 'package:memoir/components/my_list_tile.dart';
 import 'package:memoir/helper/helper_functions.dart';
 
@@ -60,7 +61,7 @@ class _UserPageState extends State<UserPage> {
                             borderRadius: BorderRadius.circular(10),
                             color: Theme.of(context).colorScheme.primary.withOpacity(.2)
                           ),
-                            child: MyListTile(title: username, subTitle: email));
+                            child: MyUserTile(title: username, subTitle: email));
                         }),
                   ),
                 ],

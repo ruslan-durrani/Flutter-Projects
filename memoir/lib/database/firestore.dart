@@ -20,7 +20,8 @@ class FirestoreDatabase{
     return memoirs.add({
       "UserEmail":user!.email,
       "MemoirMessage":message,
-      "Timestamp":Timestamp.now()
+      "Timestamp":Timestamp.now(),
+      "Likes":[]
     });
   }
   Stream<QuerySnapshot> getMemoirs(){

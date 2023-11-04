@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:memoir/components/my_drawer.dart';
 import 'package:memoir/components/my_list_tile.dart';
@@ -9,7 +9,6 @@ import 'package:memoir/helper/helper_functions.dart';
 
 class HomePage extends StatefulWidget {
   static String routeName = "/home_page";
-
   HomePage({super.key});
 
   @override
@@ -17,8 +16,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController saySomething = TextEditingController();
 
+  final TextEditingController saySomething = TextEditingController();
   FirestoreDatabase database = FirestoreDatabase();
 
   Future<void> postMemoir() async {
@@ -29,6 +28,8 @@ class _HomePageState extends State<HomePage> {
     }
     saySomething.clear();
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,18 +41,10 @@ class _HomePageState extends State<HomePage> {
         foregroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("M O I R"),
       ),
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Expanded(child: MyTextField(controller: saySomething, hintText: "write your article..", obscureText: false)),
-                MyPostButton(onTap: postMemoir,)
-              ],
-            ),
-          ),
+
           StreamBuilder(
               stream: database.getMemoirs(),
               builder: (context,snapshot){
@@ -74,13 +67,16 @@ class _HomePageState extends State<HomePage> {
                         final message = memoir["MemoirMessage"];
                         final userEmail = memoir["UserEmail"];
                         final timeStamp = memoir["Timestamp"];
+                        final postId = memoir.id;
+                        final likes = List<String>.from(memoir["Likes"])??[];
                         return Container(
                             margin: const EdgeInsets.symmetric(vertical: 6,horizontal: 15),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(.2),
-                            // borderRadius: BorderRadius.circular(12)
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(5)
                           ),
-                            child: MyListTile(title: message, subTitle: userEmail));
+                            child: MyListTile(title: message, subTitle: userEmail,likes: likes,postId: postId,));
                     }),
                   );
                 }
@@ -89,6 +85,15 @@ class _HomePageState extends State<HomePage> {
                 }
               }
               ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Expanded(child: MyTextField(controller: saySomething, hintText: "write your article..", obscureText: false)),
+                MyPostButton(onTap: postMemoir,)
+              ],
+            ),
+          ),
         ]
       ),
     );

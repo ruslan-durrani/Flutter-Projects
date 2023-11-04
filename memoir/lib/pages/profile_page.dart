@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:memoir/components/my_backButton.dart';
 import 'package:memoir/helper/helper_functions.dart';
 
+import '../components/my_textbox.dart';
+
 class ProfilePage extends StatefulWidget {
   static String routeName = "/profile_page";
   ProfilePage({super.key});
@@ -26,6 +28,9 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.pop(context);
   }
 
+  void onEditButtonPressed(){
+    displayMessageToUser(context, "Pressed");
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +50,9 @@ class _ProfilePageState extends State<ProfilePage> {
             }
             else if(snapshot.hasData){
               Map<String, dynamic>? user = snapshot.data!.data();
+              final username = user!["username"];
+              final email = user!["email"];
+              final bio = user!["bio"];
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -67,17 +75,22 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       child: Icon(Icons.person,color: Theme.of(context).colorScheme.inversePrimary,size: 80,),
                     ),
+                    const SizedBox(height: 25,),
+                     Padding(
+                      padding: const EdgeInsets.only(left:15,bottom: 5),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                          child: Text("My Details",style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),)),
+                    ),
+                    MyTextBox(description: username, text: "username",onEditPress: onEditButtonPressed,),
+                    MyTextBox(description: bio, text: "bio",onEditPress: onEditButtonPressed,),
                     const SizedBox(height: 10,),
-                    Text(user!["username"],style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18
-                    ),),
-                    const SizedBox(height: 10,),
-                    Text(user!["email"],style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14
-                    ),),
+                    Padding(
+                      padding: const EdgeInsets.only(left:15,bottom: 5),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text("My Posts",style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),)),
+                    ),
                   ],
                 ),
               );

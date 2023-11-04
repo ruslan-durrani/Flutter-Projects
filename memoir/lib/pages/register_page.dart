@@ -14,7 +14,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController = TextEditingController();
@@ -26,11 +25,12 @@ class _RegisterPageState extends State<RegisterPage> {
     ));
 
 
-    if(usernameController.text.length <5){
-      Navigator.pop(context);
-      displayMessageToUser(context, "Please enter a valid username");
-    }
-    else if(emailController.text.isEmpty){
+    // if(usernameController.text.length <5){
+    //   Navigator.pop(context);
+    //   displayMessageToUser(context, "Please enter a valid username");
+    // }
+    // else
+      if(emailController.text.isEmpty){
       Navigator.pop(context);
       displayMessageToUser(context, "Email can't be empty");
     }
@@ -62,7 +62,8 @@ class _RegisterPageState extends State<RegisterPage> {
           .doc(userCredential.user!.email)
           .set({
             "email":emailController.text,
-            "username":usernameController.text,
+            "username":emailController.text.split("@")[0],
+            "bio":"Empty bio..."
           });
     }
   }
@@ -107,10 +108,10 @@ class _RegisterPageState extends State<RegisterPage> {
               Form(child: Column(
                 children: [
                   //TODO Username TextField
-                  MyTextField(controller: usernameController, hintText: "Username", obscureText:false ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  // MyTextField(controller: usernameController, hintText: "Username", obscureText:false ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
                   //TODO Email TextField
                   MyTextField(controller: emailController, hintText: "Email", obscureText:false ),
                   const SizedBox(

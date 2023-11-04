@@ -27,7 +27,7 @@ class MyDrawer extends StatelessWidget {
                   title: Text("H O M E",style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
                   onTap: (){
                     Navigator.pop(context);
-                    Navigator.pushNamed(context, HomePage.routeName);
+                    Navigator.pushReplacementNamed(context, HomePage.routeName);
                   },
                 ),
               ),
