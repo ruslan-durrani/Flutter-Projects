@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +35,7 @@ class _CartPageState extends State<CartPage> {
                           fontSize: 18,fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.inversePrimary
                       ),
                       ),
-                      Divider(),
+                      const Divider(),
                       Expanded(
                         child: ListView.builder(
                             itemCount: value.userCart.length,
@@ -48,7 +47,30 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: (){},
+                        onTap: (){
+                          showDialog(context: context, builder: (context){
+                            return AlertDialog(
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              icon: Icon(Icons.mobile_friendly,color: Theme.of(context).colorScheme.inversePrimary,),
+                              actions: [
+                                InkWell(
+                                  onTap: (){
+                                    Navigator.pop(context);
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.all(20),
+                                    decoration:BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Theme.of(context).colorScheme.inversePrimary
+                                    ),
+                                    child: Text("New Module",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
+                                  ),
+                                )
+                              ],
+                            );
+                          });
+                        },
                         child: Container(
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
@@ -56,7 +78,7 @@ class _CartPageState extends State<CartPage> {
                             borderRadius: BorderRadius.circular(10)
                           ),
                           width: double.maxFinite,
-                          padding: EdgeInsets.symmetric(vertical: 25),
+                          padding: const EdgeInsets.symmetric(vertical: 25),
                           child: Text("Pay",style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold,fontSize: 17),),
                         ),
                       ),

@@ -19,10 +19,10 @@ class StartApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
         darkTheme: darkTheme,
-        home: WelcomePage(),
+        home: const WelcomePage(),
         routes: {
-          WelcomePage.routeName:(context)=> WelcomePage(),
-          HomePage.routeName:(context)=>  HomePage(),
+          WelcomePage.routeName:(context)=> const WelcomePage(),
+          HomePage.routeName:(context)=>  const HomePage(),
         },
       ),);
 
