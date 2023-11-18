@@ -17,7 +17,6 @@ class MyTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       obscureText: obscureText,
-
       style: TextStyle(
           fontSize: 15,
           color: Theme.of(context).colorScheme.inversePrimary

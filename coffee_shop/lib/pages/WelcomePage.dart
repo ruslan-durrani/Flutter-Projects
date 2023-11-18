@@ -42,7 +42,7 @@ class WelcomePage extends StatelessWidget {
                     ),
                     width: double.maxFinite,
                     padding: EdgeInsets.symmetric(vertical: 25),
-                    child: Text("Pay",style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold,fontSize: 17),),
+                    child: Text("Get Coffee",style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold,fontSize: 17),),
                   ),
                 ),
               ],

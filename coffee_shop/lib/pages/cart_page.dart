@@ -1,3 +1,4 @@
+import 'package:coffee_shop/components/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -71,16 +72,7 @@ class _CartPageState extends State<CartPage> {
                             );
                           });
                         },
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.inversePrimary,
-                            borderRadius: BorderRadius.circular(10)
-                          ),
-                          width: double.maxFinite,
-                          padding: const EdgeInsets.symmetric(vertical: 25),
-                          child: Text("Pay",style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold,fontSize: 17),),
-                        ),
+                        child: MyButton(buttonText: "Pay")
                       ),
                     ],
                   ),
