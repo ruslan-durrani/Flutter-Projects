@@ -17,7 +17,7 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage> {
   addToCart(Coffee coffee){
     Provider.of<CoffeeShop>(context, listen: false).addToCart(coffee);
-    showSnackBar(context);
+    showSnackBar(context,"Item added successfully");
   }
   @override
   Widget build(BuildContext context) {
