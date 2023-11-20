@@ -39,6 +39,7 @@ dependencies:
   provider:
   firebase_core:
   firebase_auth:
+  carousel_slider:
 
 dev_dependencies:
   flutter_test:

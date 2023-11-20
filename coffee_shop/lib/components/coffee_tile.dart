@@ -25,7 +25,9 @@ class CoffeeTile extends StatelessWidget {
           children: [
             Text(coffee.name, style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary, fontWeight: FontWeight.bold),),
             SizedBox(width: 10,),
-            Text(itemCount==null?"":itemCount.toString(),)
+            Text(itemCount==null?"":itemCount.toString(),style: TextStyle(
+              color: Theme.of(context).colorScheme.inversePrimary
+            ),)
           ],
         ),
         subtitle:Text(coffee.price,style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary, fontWeight: FontWeight.normal)),

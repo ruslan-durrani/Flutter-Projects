@@ -43,13 +43,19 @@ class _Signup_ScreenState extends State<Signup_Screen> {
     }
     else{
       try{
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password).then((value)
+        {
+          Navigator.pop(context);
+          showSnackBar(context, "Account created successfully");
+        });
       }
       catch (FirebaseAuthException ){
+        Navigator.pop(context);
         showSnackBar(context,"Error occured");
+
       }
     }
-    Navigator.pop(context);
+
 
   }
   @override
