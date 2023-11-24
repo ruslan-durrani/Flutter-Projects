@@ -1,19 +1,16 @@
 import 'package:coffee_shop/auth/authStream.dart';
 import 'package:coffee_shop/models/CoffeeShop.dart';
+import 'package:coffee_shop/pages/CoffeeAddForm.dart';
 import 'package:coffee_shop/pages/CoffeeDetailPage.dart';
 import 'package:coffee_shop/pages/WelcomePage.dart';
 import 'package:coffee_shop/pages/auth_toggler.dart';
 import 'package:coffee_shop/pages/home_page.dart';
-import 'package:coffee_shop/pages/login_page.dart';
-import 'package:coffee_shop/pages/shop_page.dart';
 import 'package:coffee_shop/theme/dark_theme.dart';
 import 'package:coffee_shop/theme/light_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'components/my_drawer.dart';
 import 'firebase_options.dart';
 
 Future<void> main () async {
