@@ -23,7 +23,7 @@ class CoffeeTile extends StatelessWidget {
       child: ListTile(
         title: Row(
           children: [
-            Text(coffee.name, style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary, fontWeight: FontWeight.bold),),
+            Text(coffee.title, style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary, fontWeight: FontWeight.bold),),
             SizedBox(width: 10,),
             Text(itemCount==null?"":itemCount.toString(),style: TextStyle(
               color: Theme.of(context).colorScheme.inversePrimary
@@ -31,7 +31,7 @@ class CoffeeTile extends StatelessWidget {
           ],
         ),
         subtitle:Text(coffee.price,style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary, fontWeight: FontWeight.normal)),
-        leading: Image(image: AssetImage(coffee.imagePath)),
+        leading: Image(image: AssetImage(coffee.imageUrl)),
         trailing: IconButton(onPressed: onPressed, icon:  Icon(icon, color: Theme.of(context).colorScheme.inversePrimary,)),
       ),
     );

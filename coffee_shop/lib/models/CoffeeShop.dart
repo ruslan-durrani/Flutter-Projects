@@ -5,10 +5,10 @@ import 'coffee.dart';
 
 class CoffeeShop extends ChangeNotifier{
   List<Coffee> coffeeSaleList = [
-    Coffee(name: "Expresso", price: "100\$", imagePath: "./assets/expresso.png"),
-    Coffee(name: "Iced Coffee", price: "300\$", imagePath: "./assets/iced-coffee.png"),
-    Coffee(name: "Black Latte", price: "150\$", imagePath: "./assets/latte.png"),
-    Coffee(name: "Long Black", price: "150\$", imagePath: "./assets/expresso.png"),
+    Coffee(title: "Expresso", price: "100\$", imageUrl: "./assets/expresso.png", description: 'This is expressos\'s descriptions', category: 'Expresso', quantity: '10'),
+    Coffee(title: "Iced Coffee", price: "300\$", imageUrl: "./assets/iced-coffee.png", description: '', category: 'Ice', quantity: '10'),
+    Coffee(title: "Black Latte", price: "150\$", imageUrl: "./assets/latte.png", description: 'Latu', category: 'Latte', quantity: '10'),
+    Coffee(title: "Long Black", price: "150\$", imageUrl: "./assets/expresso.png", description: 'this is expresso', category: 'Expresso', quantity: '10'),
   ];
 
   List<Map<String,dynamic>> _userCart = [];
@@ -19,7 +19,7 @@ class CoffeeShop extends ChangeNotifier{
     bool found = false;
 
     for (var element in _userCart) {
-      if (element["coffee"].name == coffee.name) {
+      if (element["coffee"].title == coffee.title) {
         element["count"] = element["count"] + 1;
         found = true;
         break;

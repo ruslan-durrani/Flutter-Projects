@@ -5,8 +5,8 @@ class MyTextField extends StatelessWidget {
   TextEditingController controller;
   String hint;
   bool obscureText;
-
-  MyTextField({Key? key, required this.controller, required this.hint, required this.obscureText}) : super(key: key);
+  bool isMultiLine = false;
+  MyTextField({Key? key,this.isMultiLine = false, required this.controller, required this.hint, required this.obscureText}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,9 @@ class MyTextField extends StatelessWidget {
         fontSize: 15,
         color: Theme.of(context).colorScheme.inversePrimary,
       ),
+      maxLines: isMultiLine?5:1,
       decoration: InputDecoration(
+
         hintStyle: TextStyle(fontSize: 15,color: colorScheme.inversePrimary),
         hintText: hint,
         focusedBorder: OutlineInputBorder(
