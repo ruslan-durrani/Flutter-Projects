@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:coffee_shop/Firebase/firestore_database.dart';
 import 'package:coffee_shop/components/get_image_with_loading_builder.dart';
 import 'package:coffee_shop/components/get_populated_lcoal_images.dart';
 import 'package:coffee_shop/components/my_button.dart';
@@ -19,8 +20,11 @@ class AddCoffeeForm extends StatefulWidget {
   State<AddCoffeeForm> createState() => _AddCoffeeFormState();
 }
 
+
 class _AddCoffeeFormState extends State<AddCoffeeForm> {
+
   List<XFile> files = [];
+  List<String> categories = [];
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
@@ -45,6 +49,13 @@ class _AddCoffeeFormState extends State<AddCoffeeForm> {
   void submitCoffeeItem()async{
     showSnackBar(context, "Add Item Button Pressed");
     // TODO Validate Title
+    if(titleController.text.trim().length<5){
+      showSnackBar(context, "Minimum title length is 5");
+    }
+    else if(descriptionController.text.trim().length<15){
+      showSnackBar(context, "Minimum title length is 15");
+    }
+    // else if()
     // TODO Validate Description
     // TODO Validate Price
     // TODO Validate Category
@@ -58,6 +69,15 @@ class _AddCoffeeFormState extends State<AddCoffeeForm> {
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
+    Future<List<Map<String, dynamic>>> coffeeCategories;
+
+    @override
+    void initState() {
+      super.initState();
+      coffeeCategories = FirestoreDatabase().getCoffeeCategories();
+      print(coffeeCategories);
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: colorScheme.background,

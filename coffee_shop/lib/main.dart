@@ -1,3 +1,4 @@
+import 'package:coffee_shop/Firebase/firestore_database.dart';
 import 'package:coffee_shop/auth/authStream.dart';
 import 'package:coffee_shop/models/CoffeeShop.dart';
 import 'package:coffee_shop/pages/CoffeeAddForm.dart';
