@@ -1,11 +1,16 @@
 import 'dart:io';
 
+import 'package:coffee_shop/components/get_image_with_loading_builder.dart';
+import 'package:coffee_shop/components/get_populated_lcoal_images.dart';
 import 'package:coffee_shop/components/my_button.dart';
 import 'package:coffee_shop/components/my_textField.dart';
 import 'package:coffee_shop/utility/my_snakbar.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../Firebase/firebase_storage.dart';
 
 class AddCoffeeForm extends StatefulWidget {
   const AddCoffeeForm({Key? key}) : super(key: key);
@@ -23,7 +28,6 @@ class _AddCoffeeFormState extends State<AddCoffeeForm> {
   TextEditingController sizeController = TextEditingController();
   TextEditingController ingredientsController = TextEditingController();
 
-
   Future<void> getLocalImages() async {
     List<XFile>? result = await ImagePicker().pickMultiImage();
     if (result != null) {
@@ -32,17 +36,24 @@ class _AddCoffeeFormState extends State<AddCoffeeForm> {
       });
     }
   }
-
   Future<void> removeSelectedCoffeeFromList(XFile file) async{
-    // files.remove(file);
     setState(() {
       files.remove(file);
     });
   }
 
-
   void submitCoffeeItem()async{
     showSnackBar(context, "Add Item Button Pressed");
+    // TODO Validate Title
+    // TODO Validate Description
+    // TODO Validate Price
+    // TODO Validate Category
+    // TODO Validate Size
+    await FirebaseStorageService.instance.uploadImages(files,).then((value) {
+      showDialog(context: context, builder: (context){
+        return getImageWithLoadingBuilder(context, value.first);
+      });
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -129,34 +140,7 @@ class _AddCoffeeFormState extends State<AddCoffeeForm> {
                             children: [
                               if (files.isNotEmpty)
                                 ...files.map((file) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          decoration:BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          height: MediaQuery.of(context).size.width * .3,
-                                          width: MediaQuery.of(context).size.width * .3,
-                                          margin: const EdgeInsets.all(5),
-                                          child: Image.file(File(file.path),fit: BoxFit.fill,),
-                                        ),
-                                        Positioned(
-                                          bottom:8,right:12,
-                                          child: GestureDetector(
-                                            onTap: () => removeSelectedCoffeeFromList(file),
-                                            child: CircleAvatar(
-                                              radius: 12,
-                                              backgroundColor: colorScheme.secondary,
-                                              child: Icon(
-                                                Icons.cancel,color: colorScheme.inversePrimary,),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
+                                  return getPopulatedLocalImages(MediaQuery.of(context).size,file,()=>removeSelectedCoffeeFromList(file),colorScheme);
                                 }).toList(),
                             ],
                           ),
