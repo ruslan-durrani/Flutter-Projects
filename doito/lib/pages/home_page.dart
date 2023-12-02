@@ -17,29 +17,37 @@ class _HomePageState extends State<HomePage> {
       listTileData.elementAt(index)["isChecked"] = changed;
     });
   }
+  onSavedButtonPressed(String title,String description){
+    setState(() {
+      listTileData.add({
+        "title":title,
+        "description":description,
+        "isChecked":false
+      });
+    });
+  }
   void createNewTask(){
-    showModalBottomSheet(
+    showDialog(
         context: context,
-        backgroundColor: Colors.transparent,
         builder: (context){
-          return buildNewTaskForm();
-        }
+          return buildNewTaskForm(onSavedButtonPressed: onSavedButtonPressed,);
+          }
         );
-    // showBottomSheet(context: context, builder: (context){
-    //   return buildNewTaskForm();
-    // });
   }
   List<Map<String,dynamic>> listTileData = [
     {
       "title":"Make Tutorial",
+      "description":"description",
       "isChecked":true,
     },
     {
       "title":"Football Match",
+      "description":"description",
       "isChecked":false,
     },
     {
       "title":"Final Year Project",
+      "description":"description",
       "isChecked":true,
     }
   ];
