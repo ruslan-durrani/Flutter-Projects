@@ -19,13 +19,23 @@ class FirestoreDatabase{
 
   CollectionReference categories = FirebaseFirestore.instance.collection("Coffee_Categories");
   // Post a message
-  Future<void> addCoffeeToMarket(String coffeeName,List<String> ingredients,int quantity){
+  Future<void> addCoffeeToMarket(
+      {
+        required String coffeeName,
+        required String description,
+        required int quantity,
+        required String coffeeCategory,
+        required double price,
+        required List<String> coffeeImages
+}){
     return coffees.add({
       "coffeeOwner":user!.email,
       "coffeeName":coffeeName,
-      "coffeeIngredients":[],
+      "coffeeDescription":description,
       "coffeeQuantity":quantity,
-      "coffeeImages":[],
+      "coffeeCategory":coffeeCategory,
+      "coffeePrice":price,
+      "coffeeImages":coffeeImages,
       "coffeeTimestamp":Timestamp.now(),
       "coffeeLikes":[],
     });
@@ -37,6 +47,8 @@ class FirestoreDatabase{
         .snapshots();
     return coffees;
   }
+
+
   Future<List<Map<String, dynamic>>> getCoffeeCategories() async {
     try {
       final coffeeCategories = await FirebaseFirestore.instance

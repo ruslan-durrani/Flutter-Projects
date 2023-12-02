@@ -14,7 +14,6 @@ class FirebaseStorageService {
 
   Future<List<String>> uploadImages(List<XFile> images) async {
     List<String> downloadUrls = [];
-
     try {
       for (int i = 0; i < images.length; i++) {
         XFile image = images[i];
