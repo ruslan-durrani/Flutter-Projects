@@ -52,6 +52,11 @@ class _HomePageState extends State<HomePage> {
     }
   ];
 
+  void deleteSlided(int index){
+    setState(() {
+      listTileData.removeAt(index);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
@@ -72,7 +77,7 @@ class _HomePageState extends State<HomePage> {
           itemCount: listTileData.length,
           itemBuilder: (BuildContext context, int index) {
             // This function is called for each item in the list
-            return TodoListTile(title: listTileData[index]["title"], isChecked: listTileData[index]["isChecked"],onChanged: (value)=>checkBoxOnChange(value,index),);
+            return TodoListTile(title: listTileData[index]["title"], isChecked: listTileData[index]["isChecked"],onChanged: (value)=>checkBoxOnChange(value,index),deleteSlided: (context)=>deleteSlided(index),);
           },
         )
       ),
