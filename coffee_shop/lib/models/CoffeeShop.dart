@@ -19,7 +19,7 @@ class CoffeeShop extends ChangeNotifier{
     bool found = false;
 
     for (var element in _userCart) {
-      if (element["coffee"].title == coffee.title) {
+      if ( element["coffee"].title  == coffee.title ) {
         element["count"] = element["count"] + 1;
         found = true;
         break;

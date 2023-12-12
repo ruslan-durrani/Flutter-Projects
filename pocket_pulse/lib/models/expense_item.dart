@@ -1,6 +1,6 @@
 class ExpenseItem{
   String name;
-  String amount;
+  double amount;
   DateTime dateTime;
   ExpenseItem({required this.name,required this.amount, required this.dateTime});
 }
