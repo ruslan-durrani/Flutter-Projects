@@ -13,7 +13,7 @@ class StartApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      darkTheme: darkTheme,
+      // darkTheme: darkTheme,
 
       home: HomePage(),
     );
