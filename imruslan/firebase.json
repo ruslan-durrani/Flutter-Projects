@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "imruslan-60b15",
     "public": "build/web",
     "ignore": [
       "firebase.json",
