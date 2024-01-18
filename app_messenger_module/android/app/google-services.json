@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "474733292748",
+    "project_id": "dailycommutte",
+    "storage_bucket": "dailycommutte.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474733292748:android:a65141089e5111dc862669",
+        "android_client_info": {
+          "package_name": "com.example.app_messenger_module"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX8OW83tX5dWYVulX3vl6xV_cpLzhUUtc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
