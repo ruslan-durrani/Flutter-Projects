@@ -12,7 +12,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       drawer: Drawer(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -38,24 +40,32 @@ class HomePage extends StatelessWidget {
         ),
       ),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: colorScheme.secondary,
         title: Text("Messages",style: TextStyle(
-          color: Theme.of(context).colorScheme.inversePrimary
+          color: colorScheme.inversePrimary
         ),
         ),
       ),
-        // MyTextField(hintText: "Search", isObscure: false, controller: TextEditingController()),
       body: Container(
         height: double.maxFinite,
         padding: EdgeInsets.symmetric(horizontal: 0),
-        child: Container(
-          height: 200,
-          child: ListView.builder(
-              itemCount: 20,
-              itemBuilder: (context,index){
-                return MyUserCardComponent();
-              }),
-        ),
+        child: Column(
+          children: [
+            Container(
+              // flex: 1,
+              child: MyTextField(hintText: "Search",trailingIcon: Icons.search, isObscure: true, controller: TextEditingController()),),
+            Container(
+              height: MediaQuery.of(context).size.height * .7,
+              // flex: 5,
+              child: ListView.builder(
+                itemCount: 20,
+                itemBuilder: (context,index){
+                  return MyUserCardComponent();
+                }
+                ),
+            )
+          ],
+        )
       )
     );
   }

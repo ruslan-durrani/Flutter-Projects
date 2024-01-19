@@ -5,11 +5,13 @@ class MyTextField extends StatelessWidget {
   final String hintText;
   final bool isObscure;
   final TextEditingController controller;
+  final IconData? trailingIcon;
   const MyTextField({
     super.key,
     required this.hintText,
     required this.isObscure,
     required this.controller,
+    this.trailingIcon,
 
   });
 
@@ -23,6 +25,7 @@ class MyTextField extends StatelessWidget {
         controller: controller,
         obscureText: isObscure,
         decoration: InputDecoration(
+          prefixIcon: trailingIcon != null?Icon(trailingIcon):null,
           hintText: hintText,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -31,7 +34,6 @@ class MyTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-
       ),
     );
   }
