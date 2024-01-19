@@ -18,7 +18,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   void handleLogin(){
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Authenticating user...")));
     FirebaseAuth.instance.signInWithEmailAndPassword(email: controllerEmail.text.trim().toString(), password: controllerPassword.text.trim().toString()).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Loggin in 🚀")));
       Navigator.pushReplacementNamed(context, HomePage.routeName);
     });
   }
@@ -31,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: colorScheme.background,
       appBar: AppBar(title: Text("Login",style: TextStyle(fontWeight: FontWeight.bold),),centerTitle: false,backgroundColor: colorScheme.background,),
       body: Container(
@@ -74,7 +77,6 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             )
-            //register if not a user
           ],
 
         ),

@@ -36,7 +36,7 @@ class AuthService{
 
   }
   // Sign out
-  signOut()async{
+   signOut()async{
     await _auth.signOut();
   }
 }

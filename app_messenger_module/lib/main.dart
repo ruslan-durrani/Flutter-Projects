@@ -1,7 +1,9 @@
+import 'package:app_messenger_module/auth/auth_gate.dart';
 import 'package:app_messenger_module/firebase_options.dart';
 import 'package:app_messenger_module/pages/home_page.dart';
 import 'package:app_messenger_module/auth/login_or_signup.dart';
 import 'package:app_messenger_module/pages/login_page.dart';
+import 'package:app_messenger_module/pages/settings_page.dart';
 import 'package:app_messenger_module/themes/light_mode.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +21,13 @@ class StartMessenger extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: lightMode,
-      home: LoginOrSignUp(),
+      home: AuthGate(),
       initialRoute: '/',
       routes: {
 
         // '/': (context) => LoginOrSignUp(),
         HomePage.routeName: (context) => HomePage(),
+        SettingsPage.routeName: (context) => SettingsPage(),
       },
     );
   }
