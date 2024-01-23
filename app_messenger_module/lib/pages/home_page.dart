@@ -1,44 +1,28 @@
-import 'package:app_messenger_module/auth/AuthService.dart';
 import 'package:app_messenger_module/components/DrawerItem.dart';
 import 'package:app_messenger_module/components/MyTextField.dart';
 import 'package:app_messenger_module/pages/settings_page.dart';
+import 'package:app_messenger_module/services/auth/AuthService.dart';
+import 'package:app_messenger_module/services/chat/chat_service.dart';
+import 'package:app_messenger_module/services/chat/users_service.dart';
 import 'package:flutter/material.dart';
 
+import '../components/GetDrawer.dart';
 import '../components/MyUserCardComponent.dart';
-
+//todo Chat Room Users here only.
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
   static final routeName = '/home';
+
+  final ChatService _chatService = ChatService();
+  final UsersService _usersService = UsersService();
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: Drawer(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height * .8,
-              alignment: Alignment.topCenter,
-              padding: EdgeInsets.symmetric(vertical: 60,horizontal: 20),
-              child: ListView(
-                children: [
-                  Image(image: AssetImage("./assets/img/msg_logo.png")),
-                  DrawerItem(iconData: Icons.home_filled, title: "HOME", onTap: ()=>Navigator.pop(context),),
-                  DrawerItem(iconData: Icons.settings, title: "SETTINGS", onTap: ()=>Navigator.pushNamed(context,SettingsPage.routeName),),
-                ],
-              ),
-            ),
-            Container(
-                height: MediaQuery.of(context).size.height * .2,
-                padding: EdgeInsets.symmetric(vertical: 60,horizontal: 20),
-                child: DrawerItem(iconData: Icons.logout, title: "LOGOUT", onTap: AuthService().signOut,)),
-
-          ],
-        ),
-      ),
+      drawer: GetDrawer(),
       appBar: AppBar(
         backgroundColor: colorScheme.secondary,
         title: Text("Messages",style: TextStyle(
@@ -57,16 +41,42 @@ class HomePage extends StatelessWidget {
             Container(
               height: MediaQuery.of(context).size.height * .7,
               // flex: 5,
-              child: ListView.builder(
-                itemCount: 20,
-                itemBuilder: (context,index){
-                  return MyUserCardComponent();
-                }
-                ),
+              child: _buildStreamHomeUser(),
             )
           ],
         )
       )
     );
   }
+  Widget _buildStreamHomeUser() {
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: _usersService.getUserChatsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Text("Error Occurred");
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text("Loading...");
+        }
+
+        // Checking if data is null
+        if (snapshot.data == null || snapshot.data == []) {
+          return const Text("No data available");
+        }
+
+        // Building the ListView if data is available
+        return ListView(
+          children: snapshot.data!.map<Widget>((userData) {
+            if(userData["uid"]!=_authService.getCurrentUser()!.uid)
+              return MyUserCardComponent(
+                title: '${userData["name"]}',
+                subTitle: '${userData["email"]}',
+              );
+            return Container();
+          }).toList(),
+        );
+      },
+    );
+  }
+
 }
+//

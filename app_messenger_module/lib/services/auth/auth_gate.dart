@@ -1,7 +1,8 @@
-import 'package:app_messenger_module/auth/login_or_signup.dart';
 import 'package:app_messenger_module/pages/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'login_or_signup.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});

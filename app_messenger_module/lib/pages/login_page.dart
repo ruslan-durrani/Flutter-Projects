@@ -1,6 +1,7 @@
 import 'package:app_messenger_module/components/MyButton.dart';
 import 'package:app_messenger_module/components/MyTextField.dart';
 import 'package:app_messenger_module/pages/home_page.dart';
+import 'package:app_messenger_module/services/auth/AuthService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,12 +18,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  void handleLogin(){
+  final AuthService _auth = AuthService();
+
+  Future<void> handleLogin() async {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Authenticating user...")));
-    FirebaseAuth.instance.signInWithEmailAndPassword(email: controllerEmail.text.trim().toString(), password: controllerPassword.text.trim().toString()).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Loggin in 🚀")));
-      Navigator.pushReplacementNamed(context, HomePage.routeName);
-    });
+    await _auth.signIn(controllerEmail.text.trim(), controllerPassword.text.trim(), context);
+    ScaffoldMessenger.of(context).dispose();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Loggin in 🚀")));
+    Navigator.pushReplacementNamed(context, HomePage.routeName);
   }
 
   TextEditingController controllerEmail = TextEditingController();

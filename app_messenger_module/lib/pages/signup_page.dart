@@ -1,4 +1,5 @@
 import 'package:app_messenger_module/pages/home_page.dart';
+import 'package:app_messenger_module/services/auth/AuthService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final AuthService _auth = AuthService();
   TextEditingController controllerEmail = TextEditingController();
 
   TextEditingController controllerPassword = TextEditingController();
@@ -27,13 +29,13 @@ class _SignUpState extends State<SignUp> {
 
   handleSignUp() async {
     if(controllerEmail.text.trim().isEmpty){
-      print("Email not valid or emply");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Email field is required")));
     }
     else if(controllerConfirmPassword.text.trim() == controllerPassword.text.trim() ){
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: controllerEmail.text.trim(), password: controllerPassword.text.trim()).then((value){
-        Navigator.pushReplacementNamed(context, HomePage.routeName);
-
-      });
+      await _auth.signUp(controllerEmail.text.trim(), controllerPassword.text.trim(), context);
+      ScaffoldMessenger.of(context).dispose();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Loggin in 🚀")));
+      Navigator.pushReplacementNamed(context, HomePage.routeName);
     }
   }
 
