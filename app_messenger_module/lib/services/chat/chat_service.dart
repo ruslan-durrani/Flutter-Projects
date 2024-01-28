@@ -35,10 +35,10 @@ class ChatService{
     List<String> ids = [_auth.currentUser!.uid,receiverId];
     ids.sort();
     String chatRoomKey = ids.join("_");
-    userService.updateChatLists(receiverId);
     await _firestore.collection("users_chat_room").doc(chatRoomKey).collection("messages").add(
       msg.toMap()
     );
+    await userService.updateChatLists(receiverId);
 
   }
    Stream<QuerySnapshot> getUsersMessage(receiverId)  {

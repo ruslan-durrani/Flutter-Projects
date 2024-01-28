@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 
 import '../components/GetDrawer.dart';
 import '../components/MyUserCardComponent.dart';
+import '../models/userModel.dart';
+import 'chat_screen.dart';
 //todo Chat Room Users here only.
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -66,12 +68,15 @@ class HomePage extends StatelessWidget {
         // Building the ListView if data is available
         return ListView(
           children: snapshot.data!.map<Widget>((userData) {
+            User user = User(
+                id: userData["uid"],
+                name: userData["name"],
+                email: userData["email"],
+                userChatsList: []
+            );
             if(userData["uid"]!=_authService.getCurrentUser()!.uid)
-              return MyUserCardComponent(
-                title: '${userData["name"]}',
-                subTitle: '${userData["email"]}',
-              );
-            return Container();
+              return MyUserCardComponent(title: '${userData["name"]}',subTitle: "${userData["email"]}",iconData: Icons.message,uid: userData["uid"],onReceiverTap: ()=>Navigator.pushNamed(context, ChatScreen.routeName,arguments:user ),);
+            return Container(child: Text("Hello"),);
           }).toList(),
         );
       },

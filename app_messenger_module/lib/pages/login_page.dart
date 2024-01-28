@@ -20,11 +20,32 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final AuthService _auth = AuthService();
 
+  // Future<void> handleLogin() async {
+  //   if (!mounted) return;
+  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Authenticating user...")));
+  //   await _auth.signIn(controllerEmail.text.trim(), controllerPassword.text.trim(), context);
+  //   ScaffoldMessenger.of(context).clearSnackBars();
+  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Loggin in 🚀")));
+  //   Navigator.pushReplacementNamed(context, HomePage.routeName);
+  // }
+
   Future<void> handleLogin() async {
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Authenticating user...")));
+
     await _auth.signIn(controllerEmail.text.trim(), controllerPassword.text.trim(), context);
-    ScaffoldMessenger.of(context).dispose();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Loggin in 🚀")));
+
+    if (!mounted) return; // Check again after async operation
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    if (!mounted) return; // Check again
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Logging in 🚀")));
+
+    if (!mounted) return; // Check again
+
     Navigator.pushReplacementNamed(context, HomePage.routeName);
   }
 
