@@ -31,12 +31,11 @@ class UsersService{
         List<DocumentSnapshot> userDocuments = await Future.wait(futures);
         List<Map<String, dynamic>> chatUsers = userDocuments.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-        print("Chat screen content home page"+chatUsers.toString());
+        // print("Chat screen content home page"+chatUsers.toString());
 
         return chatUsers;
       } catch (e) {
         print('Error fetching user chats: $e');
-        // Handle the error or return an empty list
         return [];
       }
     });
@@ -89,8 +88,8 @@ class UsersService{
 
         List<dynamic> existingListDataReceiver = documentSnapshotReceiver.get('userChatsList');
         List<dynamic> existingListDataSender = documentSnapshotSender.get('userChatsList');
-        print("My List: "+existingListDataSender.toList().toString());
-        print("Receiver List: "+existingListDataReceiver.toList().toString());
+        // print("My List: "+existingListDataSender.toList().toString());
+        // print("Receiver List: "+existingListDataReceiver.toList().toString());
         // Add the new entity to the list
         if(!existingListDataReceiver.contains(currentUserUId)) {
           existingListDataReceiver.add(currentUserUId);//todo

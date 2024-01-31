@@ -11,12 +11,19 @@ import '../components/MyUserCardComponent.dart';
 import '../models/userModel.dart';
 import 'chat_screen.dart';
 //todo Chat Room Users here only.
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
   static final routeName = '/home';
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final ChatService _chatService = ChatService();
+
   final UsersService _usersService = UsersService();
+
   final AuthService _authService = AuthService();
 
   @override
@@ -50,6 +57,7 @@ class HomePage extends StatelessWidget {
       )
     );
   }
+
   Widget _buildStreamHomeUser() {
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: _usersService.getUserChatsStream(),
@@ -61,9 +69,10 @@ class HomePage extends StatelessWidget {
         }
 
         // Checking if data is null
-        if (snapshot.data == null || snapshot.data == []) {
+        if (snapshot.data == null || snapshot.data!.isEmpty) {
           return const Text("No data available");
         }
+        // print("Home page snap shot: "+snapshot.toString());
 
         // Building the ListView if data is available
         return ListView(
@@ -74,14 +83,14 @@ class HomePage extends StatelessWidget {
                 email: userData["email"],
                 userChatsList: []
             );
-            if(userData["uid"]!=_authService.getCurrentUser()!.uid)
+            if(userData["uid"]!=_authService.getCurrentUser()!.uid.toString()) {
               return MyUserCardComponent(title: '${userData["name"]}',subTitle: "${userData["email"]}",iconData: Icons.message,uid: userData["uid"],onReceiverTap: ()=>Navigator.pushNamed(context, ChatScreen.routeName,arguments:user ),);
+            }
             return Container(child: Text("Hello"),);
           }).toList(),
         );
       },
     );
   }
-
 }
 //

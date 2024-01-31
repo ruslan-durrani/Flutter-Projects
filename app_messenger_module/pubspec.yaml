@@ -38,6 +38,7 @@ dependencies:
   firebase_core:
   firebase_auth:
   cloud_firestore:
+  firebase_messaging: 
 
 
 dev_dependencies:
