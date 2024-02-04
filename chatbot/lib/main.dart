@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'app.dart'; // You will create this in the next step
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(App());
 }
-import 'package:flutter/material.dart';
-import 'chat_screen.dart'; // You will create this in the next step
 
 class App extends StatelessWidget {
   @override
@@ -18,7 +15,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ChatScreen(),
+      // home: ChatScreen(),
     );
   }
 }

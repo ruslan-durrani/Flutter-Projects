@@ -13,23 +13,6 @@ class ChatService{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   UsersService userService = UsersService();
 
-  // Get User Stream
-  /*
-  [
-  {
-    email: "@"
-    id: 123
-  },
-  {
-    email: "@"
-    id: 123
-  },
-  {
-    email: "@"
-    id: 123
-  }
-  ]
-   */
   Future<String?> uploadImage(String imagePath) async {
     File file = File(imagePath);
     String fileName = 'chat_images/${DateTime.now().millisecondsSinceEpoch}_${_auth.currentUser!.uid}';

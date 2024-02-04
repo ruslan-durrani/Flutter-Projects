@@ -1,5 +1,6 @@
 import 'package:app_messenger_module/components/DrawerItem.dart';
 import 'package:app_messenger_module/components/MyTextField.dart';
+import 'package:app_messenger_module/pages/chatbot.dart';
 import 'package:app_messenger_module/pages/settings_page.dart';
 import 'package:app_messenger_module/services/auth/AuthService.dart';
 import 'package:app_messenger_module/services/chat/chat_service.dart';
@@ -20,7 +21,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ChatService _chatService = ChatService();
 
   final UsersService _usersService = UsersService();
 
@@ -30,6 +30,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+          onPressed:()=> Navigator.pushNamed(context, ChatBotScreen.routeName),
+        child: const Image(
+          height: 40,
+            image: AssetImage("./assets/img/bot.png")
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       drawer: GetDrawer(),
       appBar: AppBar(
@@ -86,7 +94,7 @@ class _HomePageState extends State<HomePage> {
             if(userData["uid"]!=_authService.getCurrentUser()!.uid.toString()) {
               return MyUserCardComponent(title: '${userData["name"]}',subTitle: "${userData["email"]}",iconData: Icons.message,uid: userData["uid"],onReceiverTap: ()=>Navigator.pushNamed(context, ChatScreen.routeName,arguments:user ),);
             }
-            return Container(child: Text("Hello"),);
+            return const Text("Hello");
           }).toList(),
         );
       },

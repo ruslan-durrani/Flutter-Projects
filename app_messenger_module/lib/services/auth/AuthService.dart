@@ -1,6 +1,5 @@
 
 
-import 'package:app_messenger_module/services/notification/notification_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/material.dart';
 class AuthService{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final NotificationManager notifyManager = NotificationManager();
   //Get Current user
   User? getCurrentUser(){
     return _auth.currentUser;
@@ -59,13 +57,11 @@ class AuthService{
 
   Future<void> storeUserRecord(UserCredential user) async {
     try {
-      String? token = await notifyManager.getToken().then((value) => value);
+
       await _firestore.collection("users").doc(user.user!.uid).set({
         "uid": user.user!.uid,
         "name": user.user!.email!.split("@").first,
         "email": user.user!.email,
-        "notification_token": token
-        // "userChatsList": user.user!.,
       }, SetOptions(merge: true));
       print("Data added to document ${user.user!.uid}");
     } catch (e) {
