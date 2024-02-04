@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:app_messenger_module/models/messageModel.dart';
 import 'package:app_messenger_module/services/chat/users_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ChatService{
 
@@ -27,8 +30,21 @@ class ChatService{
   }
   ]
    */
+  Future<String?> uploadImage(String imagePath) async {
+    File file = File(imagePath);
+    String fileName = 'chat_images/${DateTime.now().millisecondsSinceEpoch}_${_auth.currentUser!.uid}';
+
+    try {
+      TaskSnapshot taskSnapshot = await FirebaseStorage.instance.ref(fileName).putFile(file);
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print("Error uploading image: $e");
+      return null;
+    }
+  }
   sendMessage( receiverId, {message = "",photoUrl=""}) async {
-    if(photoUrl==""){
+    if(photoUrl!=""){
       // save into storage
     }
     Message msg = Message(message: message, senderId: _auth.currentUser!.uid, receiverId: receiverId, photoUrl: photoUrl,timeStamp:Timestamp.now()) ;

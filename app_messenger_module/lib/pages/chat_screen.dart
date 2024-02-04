@@ -1,101 +1,36 @@
 import 'package:app_messenger_module/components/MessageItem.dart';
 import 'package:app_messenger_module/components/MyTextField.dart';
+import 'package:app_messenger_module/models/userModel.dart';
 import 'package:app_messenger_module/services/chat/chat_service.dart';
 import 'package:flutter/material.dart';
-
-import '../models/userModel.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   static String routeName = "/chatScreen";
-  ChatScreen({super.key});
+  ChatScreen({Key? key}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  TextEditingController messageController =  TextEditingController();
+  final TextEditingController messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   late User user;
 
-  Future<void> sendMessage() async {
-    await _chatService.sendMessage(user.id,message: messageController.text);
-  }
-
-
   @override
-  Widget build(BuildContext context){
-    final argsUser = ModalRoute.of(context)!.settings.arguments as User;
-    user = argsUser;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(argsUser.name),
-        actions: [
-          GestureDetector(
-            onTap: (){},
-            child: Padding(padding: EdgeInsets.only(right: 20),child: Icon(Icons.info,color: Colors.grey,),),
-          )
-        ],
-      ),
-      body: Container(
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              Expanded(
-                flex: 6,
-                  child: Container(
-                child: _buildMessages(argsUser.id),
-              )),
-            ],
-          )
-      ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        color: Colors.white,
-        child: Row(
-          children: [
-            Expanded(child: MyTextField(hintText: "your message", isObscure: false, controller: messageController)),
-            GestureDetector(
-              onTap: _handleAttachmentPressed,
-              child: Container(
-                  padding: EdgeInsets.all(5),
-                  child: Icon(Icons.attach_file)),
-            ),
-            GestureDetector(
-              onTap: () => sendMessage(),
-              child: Container(
-                padding: EdgeInsets.all(10),
-                child: Icon(Icons.send)
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    user = ModalRoute.of(context)!.settings.arguments as User;
   }
 
-  Widget _buildMessages(receiverId){
-    return StreamBuilder(stream: _chatService.getUsersMessage(receiverId), builder: (context,snapshot){
-      if(snapshot.hasError){
-        return ScaffoldMessenger(child: Container(child: Text("Error Occured"),));
-      }
-      else if(snapshot.connectionState == ConnectionState.waiting){
-        return ScaffoldMessenger(child: Container(child: Text("Loading..."),));
-      }
-      return ListView(
-        children: snapshot.data!.docs.map((userData){
-         print(userData.data());
-          // final msg = userData as Message;
-          return Column(
-            children: [
-              MessageItem(isReceiver: userData["senderId"]==receiverId?true:false, message: userData["message"]),
-              // Text(userData["timeStamp"].)
-            ],
-          );
-        }).toList(),
-      );
-    });
+  Future<void> sendMessage({String? imagePath}) async {
+    if (imagePath != null) {
+      await _chatService.sendMessage(user.id, photoUrl: imagePath);
+    } else {
+      await _chatService.sendMessage(user.id, message: messageController.text);
+    }
+    messageController.clear();
   }
 
   void _handleAttachmentPressed() {
@@ -103,40 +38,109 @@ class _ChatScreenState extends State<ChatScreen> {
       context: context,
       builder: (BuildContext context) => SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // _handleImageSelection();
-              },
-              child:  Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: ListTile(
-                  title: Text("Camera"),
-                  subtitle: Text("Capture image using camera"),
-                  leading: Icon(Icons.camera_alt_sharp,color: Colors.blue,),
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // _handleImageSelection();
-              },
-              child:  Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: ListTile(
-                  title: Text("Gallery"),
-                  subtitle: Text("Select image using camera"),
-                  leading: Icon(Icons.image,color: Colors.blue,),
-                ),
-              ),
-            ),
+            _buildModalOption("Camera", Icons.camera_alt, ImageSource.camera),
+            _buildModalOption("Gallery", Icons.photo_library, ImageSource.gallery),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildModalOption(String title, IconData icon, ImageSource source) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: () async {
+        Navigator.pop(context);
+        XFile? image = await ImagePicker().pickImage(source: source);
+        if (image != null) {
+          String? imageUrl = await _chatService.uploadImage(image.path);
+          if (imageUrl != null) {
+            await sendMessage(imagePath: imageUrl);
+          }
+        }
+      },
+    );
+  }
+
+  Widget _buildMessages(String receiverId) {
+    return StreamBuilder(
+      stream: _chatService.getUsersMessage(receiverId),
+      builder: (context, AsyncSnapshot snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text("Error Occurred"));
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        var messages = snapshot.data.docs;
+        return ListView.builder(
+          itemCount: messages.length,
+          itemBuilder: (context, index) {
+            var messageData = messages[index];
+            return MessageItem(
+              isReceiver: messageData["senderId"] == receiverId,
+              message: messageData["message"],
+              photoUrl: messageData["photoUrl"],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(user.name),
+        actions: [
+          GestureDetector(
+            onTap: () {},
+            child: Padding(
+              padding: EdgeInsets.only(right: 20),
+              child: Icon(Icons.info, color: Colors.grey),
+            ),
+          )
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: _buildMessages(user.id),
+          ),
+          _buildMessageInputField(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessageInputField() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: MyTextField(
+              hintText: "Your message",
+              isObscure: false,
+              controller: messageController,
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.attach_file),
+            onPressed: _handleAttachmentPressed,
+          ),
+          IconButton(
+            icon: Icon(Icons.send),
+            onPressed: () => sendMessage(),
+          ),
+        ],
+      ),
+    );
+  }
 }
