@@ -19,8 +19,8 @@ class AuthService{
           password: password
       );
 
-
-      return await storeUserRecord (user).then((value) => user);
+      return user;
+      // return await storeUserRecord (user).then((value) => user);
       // return user;
     }
     on FirebaseAuthException catch(e){
@@ -62,6 +62,7 @@ class AuthService{
         "uid": user.user!.uid,
         "name": user.user!.email!.split("@").first,
         "email": user.user!.email,
+        "userChatsList":[]
       }, SetOptions(merge: true));
       print("Data added to document ${user.user!.uid}");
     } catch (e) {

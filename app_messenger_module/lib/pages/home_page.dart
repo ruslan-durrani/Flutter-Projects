@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
-          onPressed:()=> Navigator.pushNamed(context, ChatBotScreen.routeName),
+          onPressed:() => Navigator.pushNamed(context, ChatBotScreen.routeName),
         child: const Image(
           height: 40,
             image: AssetImage("./assets/img/bot.png")

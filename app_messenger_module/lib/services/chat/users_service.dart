@@ -21,11 +21,14 @@ class UsersService{
         if (currentUser == null) throw Exception('Current user data is null');
         List<String> userChatsList = List<String>.from(currentUser['userChatsList']);
         List<Future<DocumentSnapshot>> futures = [];
+
         for (String chatUid in userChatsList) {
           futures.add(_firestore.collection('users').doc(chatUid).get());
         }
         List<DocumentSnapshot> userDocuments = await Future.wait(futures);
         List<Map<String, dynamic>> chatUsers = userDocuments.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+        // List<Map<String, dynamic>> chatUsers = userDocuments.map((doc) => doc.data() as Map<String, dynamic>).toList();
         return chatUsers;
       } catch (e) {
         print('Error fetching user chats: $e');
@@ -52,17 +55,18 @@ class UsersService{
         if(!existingListDataReceiver.contains(currentUserUId)) {
           existingListDataReceiver.add(currentUserUId);//todo
           await documentReferenceReceiver.update({'userChatsList': existingListDataReceiver});
+          print("Saved 1");
         }
         if(!existingListDataSender.contains(receiverId)) {
           existingListDataSender.add(receiverId.toString());
           await documentReferenceSender.update({'userChatsList': existingListDataSender});
-
+          print("Saved 2");
         }
       } else {
 
       }
     } catch (error) {
-
+      print("Errp: $error");
     }
   }
 }
