@@ -6,13 +6,16 @@ import 'package:lost_get/presentation_layer/screens/Authentication/ResetPassword
 import 'package:lost_get/presentation_layer/screens/Authentication/SignUp/email_verification_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Authentication/Signin/sign_in_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Authentication/SignUp/sign_up_screen.dart';
+import 'package:lost_get/presentation_layer/screens/ChatBot/chatbot_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Dashboard/dashboard_screen.dart';
+import 'package:lost_get/presentation_layer/screens/Messenger/chat_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Onboarding/onboard_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePassword/change_password.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/ChangePhoneNumberVerified/change_phone_number_verified.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/change_phone_number.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/ChangePhoneNumberVerification/change_phone_number_verification.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/manage_account.dart';
+import '../../models/user_profile.dart';
 import '../../presentation_layer/screens/Profile Settings/Settings/ManageAccount/ChangePassword/ChangePasswordVerified/change_password_verified.dart';
 import '../../presentation_layer/screens/Profile Settings/Settings/UserPreference/user_preference_screen.dart';
 import '../../presentation_layer/screens/Profile Settings/EditProfile/edit_profile.dart';
@@ -91,6 +94,13 @@ class AppRouter {
                 subCategoryName: args["subCategoryName"]));
       case MapScreen.routeName:
         return MaterialPageRoute(builder: ((context) => const MapScreen()));
+      case ChatScreen.routeName:
+        final UserProfile userProfile = routeSettings.arguments as UserProfile;
+        return MaterialPageRoute(builder: ((context) => ChatScreen(userProfile: userProfile)));
+      case ChatBotScreen.routeName:
+        return MaterialPageRoute(builder: (context) =>  ChatBotScreen());
+
+
     }
     return null;
   }

@@ -100,7 +100,10 @@ class SignInController {
                     dateOfBirth: "",
                     preferenceList: <String, dynamic>{},
                     gender: "",
-                    joinedDateTime: DateTime.now());
+                    joinedDateTime: DateTime.now(),
+                    userChatsList: [],
+                  uid: user.uid
+                );
 
                 await _userRepository.createUserProfile(
                     userCredential.user!.uid, userProfile);
