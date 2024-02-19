@@ -49,10 +49,11 @@ class ChatService{
       receiverId: {"unreadCount": 0}
     }, SetOptions(merge: true));
     _firestore.collection("users_chat_room").doc(getChatRoomKey(receiverId)).collection("messages")
-        .where("receiverId", isEqualTo: receiverId)
+        .where("receiverId", isEqualTo: _auth.currentUser!.uid)
         .where("isRead", isEqualTo: false)
         .get().then((querySnapshot) {
       for (var doc in querySnapshot.docs) {
+        // Mark each message as read
         doc.reference.update({"isRead": true});
       }
     });

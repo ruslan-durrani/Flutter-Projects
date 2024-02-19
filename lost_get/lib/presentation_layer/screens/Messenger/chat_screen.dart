@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../services/chat_system_services/chat_service.dart';
@@ -20,11 +22,14 @@ class _ChatScreenState extends State<ChatScreen> {
   final ChatService _chatService = ChatService();
   late UserProfile _userReceiver;
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   void initState() {
     super.initState();
     _userReceiver = widget.userProfile;
-    _chatService.markMessagesAsRead(_userReceiver.uid!);
+      _chatService.markMessagesAsRead(_userReceiver.uid!);
   }
 
   Future<void> _sendMessage({String? imagePath}) async {

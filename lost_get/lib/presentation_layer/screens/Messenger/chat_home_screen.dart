@@ -49,56 +49,13 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
   }
 
   Widget _buildStreamHomeUser() {
-    return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: _chatService.getUserChatsStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return const Text("Error Occurred");
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: const CircularProgressIndicator()); // Better loading indication.
-        }
-        if (snapshot.data == null || snapshot.data!.isEmpty) {
-          return const Text("No data available");
-        }
-
-        final currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
-        final filteredData = snapshot.data!.where((data) => data["uid"] != currentUserUid).toList();
-
-        return ListView.builder(
-          itemCount: filteredData.length,
-          itemBuilder: (context, index) {
-            final userData = filteredData[index];
-            final userProfile = UserProfile.fromMap(userData); // Consider implementing a fromMap constructor.
-
-            return MyUserCardComponent(
-              imageUrl: userProfile.imgUrl,
-              title: userProfile.fullName!,
-              subTitle: userProfile.email!,
-              iconData: Icons.message,
-              uid: userData["uid"],
-              onReceiverTap: () => Navigator.pushNamed(
-                context,
-                ChatScreen.routeName,
-                arguments: userProfile,
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-/*
-Widget _buildStreamHomeUser() {
+    final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: _chatService.getUserChatsStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) return Text("Error Occurred");
         if (snapshot.connectionState == ConnectionState.waiting) return CircularProgressIndicator();
 
-        final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
         if (snapshot.data == null || snapshot.data!.isEmpty) {
           return Text("No data available");
         }
@@ -109,17 +66,18 @@ Widget _buildStreamHomeUser() {
             final userData = snapshot.data![index];
             final userProfile = UserProfile.fromMap(userData);
 
-            // Assuming you have a method to fetch unread message count
             return FutureBuilder<DocumentSnapshot>(
-              future: _firestore.collection("chat_meta").doc(_chatService.getChatRoomKey(userProfile.uid!)).get(),
+              future: FirebaseFirestore.instance.collection("chat_meta").doc(_chatService.getChatRoomKey(userProfile.uid!)).get(),
               builder: (context, chatMetaSnapshot) {
-                if (!chatMetaSnapshot.hasData) return SizedBox();
-                var unreadCount = chatMetaSnapshot.data!.get("${userProfile.uid}.unreadCount") ?? 0;
+                if (!chatMetaSnapshot.hasData || !chatMetaSnapshot.data!.exists) return SizedBox();
+                Map<String, dynamic> meta = chatMetaSnapshot.data!.data() as Map<String, dynamic>;
+                var unreadCount = meta.containsKey('unreadCount') ? meta['unreadCount'][currentUserUid] ?? 0 : 0;
                 bool hasUnreadMessages = unreadCount > 0;
 
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(userProfile.imgUrl!),
+                    backgroundImage: userProfile.imgUrl != null && userProfile.imgUrl!.isNotEmpty ? NetworkImage(userProfile.imgUrl!) : null,
+                    child: userProfile.imgUrl == null || userProfile.imgUrl!.isEmpty ? const Icon(Icons.person, size: 30) : null,
                   ),
                   title: Text(userProfile.fullName!),
                   subtitle: Text(hasUnreadMessages ? "$unreadCount new messages" : "All caught up!"),
@@ -138,4 +96,46 @@ Widget _buildStreamHomeUser() {
       },
     );
   }
- */
+}
+
+
+// Widget _buildStreamHomeUser() {
+  //   return StreamBuilder<List<Map<String, dynamic>>>(
+  //     stream: _chatService.getUserChatsStream(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.hasError) {
+  //         return const Text("Error Occurred");
+  //       }
+  //       if (snapshot.connectionState == ConnectionState.waiting) {
+  //         return const Center(child: const CircularProgressIndicator()); // Better loading indication.
+  //       }
+  //       if (snapshot.data == null || snapshot.data!.isEmpty) {
+  //         return const Text("No data available");
+  //       }
+  //
+  //       final currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+  //       final filteredData = snapshot.data!.where((data) => data["uid"] != currentUserUid).toList();
+  //
+  //       return ListView.builder(
+  //         itemCount: filteredData.length,
+  //         itemBuilder: (context, index) {
+  //           final userData = filteredData[index];
+  //           final userProfile = UserProfile.fromMap(userData); // Consider implementing a fromMap constructor.
+  //
+  //           return MyUserCardComponent(
+  //             imageUrl: userProfile.imgUrl,
+  //             title: userProfile.fullName!,
+  //             subTitle: userProfile.email!,
+  //             iconData: Icons.message,
+  //             uid: userData["uid"],
+  //             onReceiverTap: () => Navigator.pushNamed(
+  //               context,
+  //               ChatScreen.routeName,
+  //               arguments: userProfile,
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
