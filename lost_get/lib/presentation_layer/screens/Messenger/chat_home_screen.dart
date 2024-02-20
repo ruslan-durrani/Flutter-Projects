@@ -17,6 +17,8 @@ class ChatHomeScreen extends StatefulWidget {
 class _ChatHomeScreenState extends State<ChatHomeScreen> {
   final ChatService _chatService = ChatService();
   final TextEditingController _searchController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
   }
 
   Widget _buildStreamHomeUser() {
-    final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
+    final currentUserUid = _auth.currentUser!.uid;
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: _chatService.getUserChatsStream(),
       builder: (context, snapshot) {
@@ -66,18 +68,32 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
             final userData = snapshot.data![index];
             final userProfile = UserProfile.fromMap(userData);
 
+            // Assuming you have a method to fetch unread message count
             return FutureBuilder<DocumentSnapshot>(
-              future: FirebaseFirestore.instance.collection("chat_meta").doc(_chatService.getChatRoomKey(userProfile.uid!)).get(),
+              future: _firestore.collection("chat_meta").doc(_chatService.getChatRoomKey(userProfile.uid!)).get(),
               builder: (context, chatMetaSnapshot) {
-                if (!chatMetaSnapshot.hasData || !chatMetaSnapshot.data!.exists) return SizedBox();
-                Map<String, dynamic> meta = chatMetaSnapshot.data!.data() as Map<String, dynamic>;
-                var unreadCount = meta.containsKey('unreadCount') ? meta['unreadCount'][currentUserUid] ?? 0 : 0;
+                if (!chatMetaSnapshot.hasData) return SizedBox();
+
+                // Ensure document exists and contains the unreadCount field for the current user
+                var unreadCount = 0;
+                if (chatMetaSnapshot.data!.exists) {
+                  Map<String, dynamic>? metaData = chatMetaSnapshot.data!.data() as Map<String, dynamic>?;
+                  if (metaData != null && metaData.containsKey(currentUserUid) && metaData[currentUserUid] is Map) {
+                    Map<String, dynamic> userMetaData = metaData[currentUserUid];
+                    unreadCount = userMetaData["unreadCount"] ?? 0;
+                  }
+                }
+
                 bool hasUnreadMessages = unreadCount > 0;
 
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: userProfile.imgUrl != null && userProfile.imgUrl!.isNotEmpty ? NetworkImage(userProfile.imgUrl!) : null,
-                    child: userProfile.imgUrl == null || userProfile.imgUrl!.isEmpty ? const Icon(Icons.person, size: 30) : null,
+                    backgroundImage: userProfile.imgUrl != null && userProfile.imgUrl!.isNotEmpty
+                        ? NetworkImage(userProfile.imgUrl!)
+                        : null,
+                    child: userProfile.imgUrl == null || userProfile.imgUrl!.isEmpty
+                        ? const Icon(Icons.person, size: 30)
+                        : null,
                   ),
                   title: Text(userProfile.fullName!),
                   subtitle: Text(hasUnreadMessages ? "$unreadCount new messages" : "All caught up!"),
@@ -96,6 +112,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
       },
     );
   }
+
 }
 
 
