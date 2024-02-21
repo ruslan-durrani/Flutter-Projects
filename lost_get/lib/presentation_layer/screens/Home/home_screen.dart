@@ -3,8 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lost_get/models/user_profile.dart';
+import 'package:lost_get/presentation_layer/screens/Home/components/all_items.dart';
+import 'package:lost_get/presentation_layer/screens/Home/controller/home_screen_reports_controller.dart';
+import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCard.dart';
+import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCarousal.dart';
+import 'package:lost_get/presentation_layer/screens/Home/widgets/section_heading.dart';
 import 'package:lost_get/services/chat_system_services/chat_service.dart';
 
+import '../../../models/report_item.dart';
 import '../../widgets/my_user_component.dart';
 import '../ChatBot/chatbot_screen.dart';
 import '../Messenger/chat_screen.dart';
@@ -61,9 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
           QuickFilterBar(
             onFilterSelected: _handleFilterChange, // Pass the filter change handler
           ),
-          Expanded(
-            child: _buildBodyContent(), // Build the body content based on the selected filter
-          ),
+          _buildBodyContent(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -77,12 +81,52 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  onItemTapped(item){
+
+  }
   Widget _buildBodyContent() {
     // Based on the selected filter index, return different Widgets/content
+    HomeScreenController controller = HomeScreenController();
     switch (_selectedFilterIndex) {
       case 0:
+        return Container(
+          padding: EdgeInsets.all(10),
+          height: MediaQuery.of(context).size.height * .7,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                getSectionHeading("Recommendations", context, (){}),
+                ReportedItemsCarousel(reportedItems: controller.getRecommendationsItem(), onTap: (item)=>onItemTapped(item)),
+                getSectionHeading("Nearby", context, (){}),
+                ReportedItemsCarousel(reportedItems: controller.getNearbyItem(), onTap: (item)=>onItemTapped(item)),
+                getSectionHeading("Categories", context, (){}),
+                ReportedItemsCarousel(reportedItems: controller.getCategoriesItem(), onTap: (item)=>onItemTapped(item)),
+                getSectionHeading("Recent Uploads", context, (){}),
+                ReportedItemsCarousel(reportedItems: controller.getRecentUploadsItem(), onTap: (item)=>onItemTapped(item)),
+              ],
+            ),
+          ),
+        );
       // This is just an example, replace with your actual content for 'All'
-        return Center(child: Text('All selected'));
+      //   return ReportedItemCard(item: ReportItemModel(
+      //     title: "Macbook M1 Lost",
+      //     description: "Bag Lost near Library Comsats University Islamabad",
+      //     status: "Lost",
+      //     imageUrls: [
+      //       "https://example.com/image.jpg" // Placeholder image URL
+      //     ],
+      //     userId: "user123",
+      //     category: "Electronics",
+      //     subCategory: "Laptops",
+      //     publishDateTime: DateTime.now().subtract(Duration(days: 7)),
+      //     address: "Library Comsats University",
+      //     city: "Islamabad",
+      //     country: "Pakistan",
+      //     coordinates: GeoPoint(33.6844, 73.0479), // Dummy coordinates for Islamabad
+      //     flagged: false,
+      //     published: true,
+      //   ), onTap: (){});
+        // return Center(child: Text('All selected'));
       case 1:
       // Replace with your actual content for 'Mobile'
         return Center(child: Text('Mobile selected'));
