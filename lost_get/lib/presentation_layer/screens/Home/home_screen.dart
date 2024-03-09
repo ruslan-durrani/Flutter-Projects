@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lost_get/models/user_profile.dart';
 import 'package:lost_get/presentation_layer/screens/Home/components/all_items.dart';
 import 'package:lost_get/presentation_layer/screens/Home/controller/home_screen_reports_controller.dart';
+import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCard.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCarousal.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/section_heading.dart';
@@ -29,6 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final ChatService _chatService = ChatService();
   int _selectedFilterIndex = 0; // The index of the selected filter
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   // Define a method to handle filter change
   void _handleFilterChange(int index) {
     setState(() {
@@ -82,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   onItemTapped(item){
-
+    Navigator.pushNamed(context, ItemDetailScreen.routeName);
   }
   Widget _buildBodyContent() {
     // Based on the selected filter index, return different Widgets/content
@@ -107,26 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         );
-      // This is just an example, replace with your actual content for 'All'
-      //   return ReportedItemCard(item: ReportItemModel(
-      //     title: "Macbook M1 Lost",
-      //     description: "Bag Lost near Library Comsats University Islamabad",
-      //     status: "Lost",
-      //     imageUrls: [
-      //       "https://example.com/image.jpg" // Placeholder image URL
-      //     ],
-      //     userId: "user123",
-      //     category: "Electronics",
-      //     subCategory: "Laptops",
-      //     publishDateTime: DateTime.now().subtract(Duration(days: 7)),
-      //     address: "Library Comsats University",
-      //     city: "Islamabad",
-      //     country: "Pakistan",
-      //     coordinates: GeoPoint(33.6844, 73.0479), // Dummy coordinates for Islamabad
-      //     flagged: false,
-      //     published: true,
-      //   ), onTap: (){});
-        // return Center(child: Text('All selected'));
       case 1:
       // Replace with your actual content for 'Mobile'
         return Center(child: Text('Mobile selected'));

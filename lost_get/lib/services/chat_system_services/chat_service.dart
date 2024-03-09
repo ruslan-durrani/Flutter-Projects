@@ -1,8 +1,10 @@
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
 
 import '../../models/message.dart';
 
@@ -19,6 +21,20 @@ class ChatService{
         return user;
       }).where((element) => element["uid"]!=_auth.currentUser!.uid).toList();
     });
+  }
+
+
+  // Add to ChatService
+  Stream<List<Map<String, dynamic>>> searchUserChats(String query) {
+    String searchUpperBound = query.substring(0, query.length - 1) + String.fromCharCode(query.codeUnitAt(query.length - 1) + 1);
+
+    return _firestore
+        .collection('users')
+        .where('fullName', isGreaterThanOrEqualTo: query)
+        .where('fullName', isLessThan: searchUpperBound)
+        .snapshots()
+        .map((snapshot) =>
+        snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList());
   }
 
   Stream<List<Map<String, dynamic>>> getUserChatsStream() {
@@ -46,7 +62,7 @@ class ChatService{
   }
   Future<void> markMessagesAsRead(String receiverId) async {
     _firestore.collection("chat_meta").doc(getChatRoomKey(receiverId)).set({
-      receiverId: {"unreadCount": 0}
+      _auth.currentUser!.uid: {"unreadCount": 0,}// "notified":true
     }, SetOptions(merge: true));
     _firestore.collection("users_chat_room").doc(getChatRoomKey(receiverId)).collection("messages")
         .where("receiverId", isEqualTo: _auth.currentUser!.uid)
@@ -60,6 +76,47 @@ class ChatService{
   }
 
 
+  // void listenForUnreadMessages() {
+  //   _firestore.collection('chat_meta')
+  //       .snapshots().listen((snapshot) {
+  //     for (var doc in snapshot.docs) {
+  //       var chatMeta = doc.data();
+  //       String currentUserUid = _auth.currentUser!.uid;
+  //       if (chatMeta.containsKey(currentUserUid)) {
+  //         var userMeta = chatMeta[currentUserUid];
+  //         if (userMeta['unreadCount'] > 0 && !userMeta['notified']) {
+  //           // Trigger a local notification
+  //           NotificationService().showNotification("Hey ${_auth.currentUser!.displayName!}", "You have unread messages");
+  //           // Update 'notified' to true to avoid repeated notifications
+  //           doc.reference.update({
+  //             "$currentUserUid.notified": true,
+  //           });
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
+
+  // notifyUserAboutTheNewMessage(UserProfile senderObject) async {
+  //   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //   DocumentSnapshot chatMetaSnapshot = await _firestore.collection("chat_meta").doc(getChatRoomKey(senderObject.uid)).get();
+  //   if (chatMetaSnapshot.exists) {
+  //     Map<String, dynamic> receiverMeta = chatMetaSnapshot.get(_auth.currentUser!.uid) ?? {};
+  //     int unreadCount = receiverMeta["unreadCount"] ?? 0;
+  //     bool notified = receiverMeta["notified"] ?? false;
+  //
+  //     if (unreadCount > 0 && !notified) {
+  //       // Placeholder for sending notification logic
+  //
+  //       await NotificationService().showNotification(senderObject.fullName!, "New messages");
+  //       // After sending the notification, update the notified field to true
+  //       _firestore.collection("chat_meta").doc(getChatRoomKey(senderObject.uid)).set(
+  //           {
+  //             _auth.currentUser!.uid: {"notified": true,}
+  //           }, SetOptions(merge: true));
+  //     }
+  //   }
+  // }
 
 
   updateChatLists(String receiverId) async {
@@ -123,7 +180,7 @@ class ChatService{
       // save into storage
     }
     Message msg = Message(
-      message: message,
+      message: photoUrl.isEmpty?message:"Image",
       senderId: _auth.currentUser!.uid,
       receiverId: receiverId,
       photoUrl: photoUrl,
@@ -135,9 +192,14 @@ class ChatService{
     String chatRoomKey = ids.join("_");
     await _firestore.collection("users_chat_room").doc(chatRoomKey).collection("messages").add(msg.toMap());
 
-    // Increment unread message count for the receiver
     _firestore.collection("chat_meta").doc(chatRoomKey).set({
-      receiverId: {"unreadCount": FieldValue.increment(1)}
+      receiverId: {
+        "unreadCount": FieldValue.increment(1),
+      },
+      "lastMsg": {
+        "message":photoUrl.isEmpty?message:"image",
+        "sender":_auth.currentUser!.uid
+      },
     }, SetOptions(merge: true));
 
     await updateChatLists(receiverId);

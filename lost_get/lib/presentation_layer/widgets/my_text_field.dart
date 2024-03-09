@@ -24,7 +24,9 @@ class MyTextField extends StatelessWidget {
         autofocus: true,
         controller: controller,
         obscureText: isObscure,
+
         decoration: InputDecoration(
+          labelStyle: Theme.of(context).textTheme.bodySmall,
           prefixIcon: trailingIcon != null?Icon(trailingIcon):null,
           hintText: hintText,
           enabledBorder: OutlineInputBorder(

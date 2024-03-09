@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 
 import '../../business_logic_layer/Authentication/Signin/bloc/sign_in_bloc.dart';
 import '../../business_logic_layer/Provider/password_validator_provider.dart';
+import '../../presentation_layer/screens/Messenger/business_logic/ChatHomeProvider.dart';
 
 class AppBlocProvider {
   static get allBlocProvider => [
@@ -41,6 +42,7 @@ class AppBlocProvider {
         BlocProvider(create: (_) => AddReportDetailBloc()),
         BlocProvider(create: (_) => MyReportsBloc()),
         ChangeNotifierProvider(create: (_) => PasswordStrengthProvider()),
-        ChangeNotifierProvider(create: (_) => ChangeThemeMode())
+        ChangeNotifierProvider(create: (_) => ChangeThemeMode()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
       ];
 }

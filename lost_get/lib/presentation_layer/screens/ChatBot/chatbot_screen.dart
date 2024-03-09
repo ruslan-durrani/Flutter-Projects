@@ -41,8 +41,9 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chatbot"),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text("Chatbot",style: Theme.of(context).textTheme.titleLarge,),
+        // backgroundColor: Theme.of(context).colorScheme.primary,
+        elevation: 1,
       ),
       body: chatBox == null
           ? const Center(child: CircularProgressIndicator())
@@ -70,7 +71,8 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                           ),
                           child: Text(
                             message["message"],
-                            style: TextStyle(color: isUser ? Colors.white : Colors.black),
+                             style:Theme.of(context).textTheme.bodySmall!.copyWith(color: isUser ? Colors.white : Colors.black)
+
                           ),
                         ),
                       ),
@@ -95,7 +97,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         spacing: 8.0,
         children: options.map((option) => ActionChip(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          label: Text(option, style: const TextStyle(color: Colors.white)),
+          label: Text(option, style:Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white)),
           onPressed: () => _handleChipTap(option),
         )).toList(),
       ),

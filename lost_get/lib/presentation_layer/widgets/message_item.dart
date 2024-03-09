@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MessageItem extends StatelessWidget {
+class MessageItem extends StatefulWidget {
   final bool isReceiver;
   final String message;
   final String photoUrl;
@@ -15,35 +15,40 @@ class MessageItem extends StatelessWidget {
   });
 
   @override
+  State<MessageItem> createState() => _MessageItemState();
+}
+
+class _MessageItemState extends State<MessageItem> {
+  @override
   Widget build(BuildContext context) {
 
     return Align(
-      alignment: isReceiver ? Alignment.centerLeft : Alignment.centerRight,
+      alignment: widget.isReceiver ? Alignment.centerLeft : Alignment.centerRight,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         child: Column(
-          crossAxisAlignment: isReceiver ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          crossAxisAlignment: widget.isReceiver ? CrossAxisAlignment.start : CrossAxisAlignment.end,
           children: [
             Container(
 
-              padding: photoUrl.isEmpty ? EdgeInsets.symmetric(horizontal: 10, vertical: 8) : EdgeInsets.all(0),
+              padding: widget.photoUrl.isEmpty ? EdgeInsets.symmetric(horizontal: 10, vertical: 8) : EdgeInsets.all(0),
               decoration: BoxDecoration(
-                color: isReceiver ? Colors.grey[300] : Colors.blue[400],
+                color: widget.isReceiver ? Colors.grey[300] : Colors.blue[400],
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
-                  bottomLeft: isReceiver ? Radius.circular(0) : Radius.circular(12),
-                  bottomRight: isReceiver ? Radius.circular(12) : Radius.circular(0),
+                  bottomLeft: widget.isReceiver ? Radius.circular(0) : Radius.circular(12),
+                  bottomRight: widget.isReceiver ? Radius.circular(12) : Radius.circular(0),
                 ),
               ),
               constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
-              child: photoUrl.isEmpty ? _buildTextMessage() : _buildImageMessage(),
+              child: widget.photoUrl.isEmpty ? _buildTextMessage() : _buildImageMessage(),
             ),
-            if (!isReceiver) // Showing read receipt only for sent messages
+            if (!widget.isReceiver) // Showing read receipt only for sent messages
               Icon(
-                isRead ? Icons.done_all : Icons.done,
+                widget.isRead ? Icons.done_all : Icons.done,
                 size: 12,
-                color: isRead ? Colors.blue : Colors.blue,
+                color: widget.isRead ? Colors.blue : Colors.blue,
               ),
           ],
         ),
@@ -55,11 +60,8 @@ class MessageItem extends StatelessWidget {
     return Column(
       children: [
         Text(
-          message,
-          style: TextStyle(
-              fontSize: 16,
-              color: isReceiver ? Colors.black87 : Colors.white
-          ),
+          widget.message,
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: widget.isReceiver ? Colors.black87 : Colors.white)
         ),
 
       ],
@@ -72,7 +74,7 @@ class MessageItem extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.network(
-            photoUrl,
+            widget.photoUrl,
             fit: BoxFit.cover,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;

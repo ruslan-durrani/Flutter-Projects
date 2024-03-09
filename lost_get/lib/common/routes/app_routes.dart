@@ -8,6 +8,7 @@ import 'package:lost_get/presentation_layer/screens/Authentication/Signin/sign_i
 import 'package:lost_get/presentation_layer/screens/Authentication/SignUp/sign_up_screen.dart';
 import 'package:lost_get/presentation_layer/screens/ChatBot/chatbot_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Dashboard/dashboard_screen.dart';
+import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Messenger/chat_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Onboarding/onboard_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePassword/change_password.dart';
@@ -99,6 +100,8 @@ class AppRouter {
         return MaterialPageRoute(builder: ((context) => ChatScreen(userProfile: userProfile)));
       case ChatBotScreen.routeName:
         return MaterialPageRoute(builder: (context) =>  ChatBotScreen());
+      case ItemDetailScreen.routeName:
+        return MaterialPageRoute(builder: (context) =>  ItemDetailScreen());
 
 
     }

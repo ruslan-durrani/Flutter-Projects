@@ -39,6 +39,7 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
         decoration: BoxDecoration(color: Colors.white),
         child: Card(
           clipBehavior: Clip.antiAlias,
+          elevation: 0.0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
@@ -103,8 +104,9 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                     ),
                     SizedBox(height: 10,),
                     Text(
+                      softWrap:true,
                       widget.item.description ?? 'No description provided.',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),

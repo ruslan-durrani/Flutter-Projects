@@ -4,11 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lost_get/business_logic_layer/Provider/change_theme_mode.dart';
 import 'package:lost_get/common/routes/app_routes.dart';
 import 'package:lost_get/common/bloc_provider/bloc_provider.dart';
+import 'package:lost_get/services/chat_system_services/chat_service.dart';
 import 'package:lost_get/utils/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:workmanager/workmanager.dart';
 import 'common/global.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await Global.init();
 
   runApp(const MyApp());

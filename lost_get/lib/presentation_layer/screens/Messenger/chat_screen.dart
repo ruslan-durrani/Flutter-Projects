@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lost_get/presentation_layer/widgets/text_field.dart';
 import '../../../services/chat_system_services/chat_service.dart';
 import '../../widgets/message_item.dart';
 import '../../widgets/my_text_field.dart';
 import 'package:lost_get/models/user_profile.dart';
+
+import '../Add Report/add_report_detail_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   static const routeName = "/chatScreen";
@@ -63,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildModalOption({required String title, required IconData icon, required ImageSource source}) {
     return ListTile(
       leading: Icon(icon),
-      title: Text(title),
+      title: Text(title,style: Theme.of(context).textTheme.titleSmall,),
       onTap: () async {
         Navigator.pop(context);
         final XFile? image = await ImagePicker().pickImage(source: source);
@@ -81,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return StreamBuilder(
       stream: _chatService.getUsersMessage(_userReceiver.uid),
       builder: (context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) return Center(child: Text("Error Occurred"));
+        if (snapshot.hasError) return Center(child: Text("Error Occurred",style: Theme.of(context).textTheme.titleSmall,));
         if (snapshot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
 
         final messages = snapshot.data?.docs ?? [];
@@ -134,9 +137,10 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             _userAvatar(),
             const SizedBox(width: 20),
-            Text(_userReceiver.fullName!),
+            Text(_userReceiver.fullName!,style: Theme.of(context).textTheme.titleMedium ,),
           ],
         ),
+        // appBar: createAppBar(context, _userReceiver.fullName!),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),

@@ -7,6 +7,7 @@ class Message {
   final String photoUrl;
   final Timestamp timeStamp;
   final bool isRead; // Add isRead field to track read status
+  
 
   Message({
     required this.message,
