@@ -55,8 +55,8 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                     decoration: BoxDecoration(
                       // color: Colors.grey,
                       image: DecorationImage(
-                        image: AssetImage(widget.item.imageUrls?.first ?? ''),
-                        // image: NetworkImage(widget.item.imageUrls?.first ?? ''),
+                        // image: AssetImage(widget.item.imageUrls?.first ?? ''),
+                        image: NetworkImage(widget.item.imageUrls?.first ?? ''),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -68,7 +68,7 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                       children: [
                         Chip(
                           label: Text(widget.item.status ?? 'Unknown', style: TextStyle(color: Colors.white)),
-                          backgroundColor: Colors.red,
+                          backgroundColor: widget.item.status!.contains("Found")?Colors.green:Colors.red,
                         ),
                         Chip(
                           label: Text(_formatDateTime(widget.item.publishDateTime), style: TextStyle(color: Colors.white)),
@@ -83,24 +83,28 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                 color: Colors.white,
                 padding: EdgeInsets.all(16.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          widget.item.title ?? 'Unknown',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: widget.item.title ?? 'Unknown',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                        Text(
-                          widget.item.city ?? 'Unknown location',
-                          style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey[600]),
-                        ),
-                      ],
+                          TextSpan(
+                            text: '\n',
+                          ),
+                          TextSpan(
+                            text: widget.item.city ?? 'Unknown location',
+                            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 10,),
                     Text(

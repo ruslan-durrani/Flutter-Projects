@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReportItemModel {
+  String? id;
   final String? title;
   final String? description;
   final String? status;
@@ -17,7 +18,10 @@ class ReportItemModel {
   final bool? published;
 
   ReportItemModel(
-      {required this.title,
+
+      {
+        this.id,
+        required this.title,
       required this.description,
       required this.status,
       this.imageUrls,
@@ -34,6 +38,7 @@ class ReportItemModel {
 
   Map<String, dynamic> toMap() {
     return {
+      "id":id,
       'title': title,
       'description': description,
       'status': status,
@@ -66,6 +71,7 @@ class ReportItemModel {
     }
 
     return ReportItemModel(
+      id:data['id'],
       title: data['title'],
       description: data['description'],
       status: data['status'],

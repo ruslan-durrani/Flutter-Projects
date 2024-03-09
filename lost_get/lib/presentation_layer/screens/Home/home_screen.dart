@@ -27,7 +27,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  final ChatService _chatService = ChatService();
   int _selectedFilterIndex = 0; // The index of the selected filter
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -43,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     // You can also fetch data based on the selected filter here
   }
+  HomeScreenController controller = HomeScreenController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
           QuickFilterBar(
             onFilterSelected: _handleFilterChange, // Pass the filter change handler
           ),
-          _buildBodyContent(),
+      _buildBodyContent()
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -89,11 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   onItemTapped(item){
-    Navigator.pushNamed(context, ItemDetailScreen.routeName);
+    print("Dannieesss aaah");
+    Navigator.pushNamed(context, ItemDetailScreen.routeName,arguments: item);
   }
   Widget _buildBodyContent() {
     // Based on the selected filter index, return different Widgets/content
-    HomeScreenController controller = HomeScreenController();
+
     switch (_selectedFilterIndex) {
       case 0:
         return Container(
@@ -102,14 +103,88 @@ class _HomeScreenState extends State<HomeScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                getSectionHeading("Recommendations", context, (){}),
-                ReportedItemsCarousel(reportedItems: controller.getRecommendationsItem(), onTap: (item)=>onItemTapped(item)),
-                getSectionHeading("Nearby", context, (){}),
-                ReportedItemsCarousel(reportedItems: controller.getNearbyItem(), onTap: (item)=>onItemTapped(item)),
-                getSectionHeading("Categories", context, (){}),
-                ReportedItemsCarousel(reportedItems: controller.getCategoriesItem(), onTap: (item)=>onItemTapped(item)),
-                getSectionHeading("Recent Uploads", context, (){}),
-                ReportedItemsCarousel(reportedItems: controller.getRecentUploadsItem(), onTap: (item)=>onItemTapped(item)),
+                FutureBuilder(
+                  future: controller.fetchAllItems(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error fetching data"));
+                    } else {
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            getSectionHeading("Recommendations", context, (){}),
+                            ReportedItemsCarousel(reportedItems: controller.listOfRecommendedItems, onTap: onItemTapped),
+                            // Add more sections as needed
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+                FutureBuilder(
+                  future: controller.fetchAllItems(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error fetching data"));
+                    } else {
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            getSectionHeading("Nearby", context, (){}),
+                            ReportedItemsCarousel(reportedItems: controller.listOfRecommendedItems, onTap: (item) {}),
+                            // Add more sections as needed
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+
+                FutureBuilder(
+                  future: controller.fetchAllItems(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error fetching data"));
+                    } else {
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            getSectionHeading("Categories", context, (){}),
+                            ReportedItemsCarousel(reportedItems: controller.listOfRecommendedItems, onTap: (item)=>onItemTapped(item)),
+                            // Add more sections as needed
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+
+                FutureBuilder(
+                  future: controller.fetchAllItems(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error fetching data"));
+                    } else {
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            getSectionHeading("Recent Uploads", context, (){}),
+                            ReportedItemsCarousel(reportedItems: controller.listOfRecommendedItems, onTap: (item)=>{print("DaNNY")}),
+                            // Add more sections as needed
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),

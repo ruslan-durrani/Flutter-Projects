@@ -98,7 +98,7 @@ class SignInController {
                     imgUrl: "",
                     phoneNumber: "",
                     dateOfBirth: "",
-                    preferenceList: <String, dynamic>{},
+                    preferenceList: [],
                     gender: "",
                     joinedDateTime: DateTime.now(),
                     userChatsList: [],

@@ -36,7 +36,7 @@ class SignUpController {
             imgUrl: "",
             phoneNumber: "",
             dateOfBirth: "",
-            preferenceList: <String, dynamic>{},
+            preferenceList: [],
             gender: "",
             joinedDateTime: DateTime.now(),
             userChatsList: [],

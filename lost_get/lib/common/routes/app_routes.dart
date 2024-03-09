@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lost_get/models/report_item.dart';
 import 'package:lost_get/presentation_layer/screens/Add%20Report/add_report_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Add%20Report/map_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Add%20Report/sub_category_screen.dart';
@@ -96,13 +97,15 @@ class AppRouter {
       case MapScreen.routeName:
         return MaterialPageRoute(builder: ((context) => const MapScreen()));
       case ChatScreen.routeName:
-        final UserProfile userProfile = routeSettings.arguments as UserProfile;
-        return MaterialPageRoute(builder: ((context) => ChatScreen(userProfile: userProfile)));
+        final args = routeSettings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (context) => ChatScreen(args: args));
+
       case ChatBotScreen.routeName:
         return MaterialPageRoute(builder: (context) =>  ChatBotScreen());
-      case ItemDetailScreen.routeName:
-        return MaterialPageRoute(builder: (context) =>  ItemDetailScreen());
 
+        case ItemDetailScreen.routeName:
+        final ReportItemModel reportedItem = routeSettings.arguments as ReportItemModel;
+        return MaterialPageRoute(builder: ((context) => ItemDetailScreen(item: reportedItem)));
 
     }
     return null;

@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lost_get/common/constants/colors.dart';
+import 'package:lost_get/models/report_item.dart';
+import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart';
 import 'package:lost_get/presentation_layer/widgets/text_field.dart';
 import '../../../services/chat_system_services/chat_service.dart';
 import '../../widgets/message_item.dart';
@@ -12,9 +16,9 @@ import '../Add Report/add_report_detail_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   static const routeName = "/chatScreen";
-  final UserProfile userProfile;
+  final Map<String, dynamic> args;
 
-  const ChatScreen({Key? key, required this.userProfile}) : super(key: key);
+  ChatScreen({Key? key, required this.args}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -24,15 +28,14 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   late UserProfile _userReceiver;
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String? _reportedItemId;
 
   @override
   void initState() {
     super.initState();
-    _userReceiver = widget.userProfile;
-      _chatService.markMessagesAsRead(_userReceiver.uid!);
+    _userReceiver = widget.args['userProfile'];
+    _reportedItemId = widget.args['reportedItemId'];
+    _chatService.markMessagesAsRead(_userReceiver.uid!);
   }
 
   Future<void> _sendMessage({String? imagePath}) async {
@@ -40,7 +43,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (imagePath != null) {
       await _chatService.sendMessage(receiverId, photoUrl: imagePath);
     } else if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(receiverId, message: _messageController.text);
+      await _chatService.sendMessage(receiverId, message: _messageController.text, reportedItemId:_reportedItemId);
     }
     _messageController.clear();
   }
@@ -131,6 +134,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Reported Item ID: ${_reportedItemId}");
+    print("Full Name: ${_userReceiver.fullName}");
+    if(_reportedItemId != null){
+      // queryReportedItemBasedOnId(_reportedItemId);
+    }
+    else {
+      // queryChatMetaReprotedItemId(_reportedItemId);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -150,11 +161,40 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(child: _buildMessages()),
-          _buildMessageInputField(),
-        ],
+      body: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.primaryColor,
+
+          leading: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage( 'https://via.placeholder.com/150'),
+              )
+            ),
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text( 'Title Goes here',style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
+              Text( 'Description goes here',style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),),
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.arrow_forward_ios_sharp,color: Colors.white,),
+              onPressed: () {
+
+              },
+            ),
+          ],
+
+        ),
+        body: Column(
+          children: [
+            Expanded(child: _buildMessages()),
+            _buildMessageInputField(),
+          ],
+        ),
       ),
     );
   }

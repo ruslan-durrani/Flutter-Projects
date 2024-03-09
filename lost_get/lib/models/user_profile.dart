@@ -7,11 +7,11 @@ class UserProfile {
   final String? phoneNumber;
   final DateTime? joinedDateTime;
   final String? biography;
-  final Map<String, dynamic>? preferenceList;
+  final List<dynamic>? preferenceList;
   final String? dateOfBirth;
   final String? imgUrl;
   final String? gender;
-  final List<String>? userChatsList;
+  final List<dynamic>? userChatsList;
   final String? uid;
 
   const UserProfile({
@@ -54,15 +54,15 @@ class UserProfile {
         fullName: data['fullName'],
         biography: data['biography'],
         phoneNumber: data['phoneNumber'],
-        preferenceList: data['preferenceList'] as Map<String, dynamic>,
+        preferenceList: data['preferenceList'] as List<String>,
         isAdmin: data['isAdmin'],
         email: data['email'],
         imgUrl: data['imgUrl'],
         dateOfBirth: data['dateOfBirth'],
         gender: data['gender'],
         joinedDateTime: data['joinedDateTime'].toDate(),
-      userChatsList: data["userChatsList"],
-      uid: data["uid"],
+        userChatsList: data["userChatsList"] as List<String>,
+        uid: data["uid"],
        );
   }
   factory UserProfile.fromMap(Map<String, dynamic> map) {
@@ -77,11 +77,12 @@ class UserProfile {
       joinedDateTime: (map['joinedDateTime'] as Timestamp).toDate(),
       phoneNumber: map['phoneNumber'] ?? '',
       biography: map['biography'] ?? '',
-      preferenceList: map['preferenceList'] as Map<String, dynamic>? ?? {},
+      preferenceList: map['preferenceList'] as List<dynamic>,
       imgUrl: map['imgUrl'] ?? '',
       dateOfBirth: map['dateOfBirth'],
       gender: map['gender'] ?? '',
-      userChatsList: userChatsList,
+      // userChatsList: userChatsList,
+      userChatsList:map["userChatsList"] as List<dynamic>
     );
   }
 }

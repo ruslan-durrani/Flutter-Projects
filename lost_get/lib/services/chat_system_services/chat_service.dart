@@ -175,7 +175,7 @@ class ChatService{
     }
   }
 
-  Future<void> sendMessage(String receiverId, {String message = "", String photoUrl = ""}) async {
+  Future<void> sendMessage(String receiverId, {String message = "", String photoUrl = "", String? reportedItemId}) async {
     if (photoUrl != "") {
       // save into storage
     }
@@ -200,6 +200,7 @@ class ChatService{
         "message":photoUrl.isEmpty?message:"image",
         "sender":_auth.currentUser!.uid
       },
+      "reportedItemId":reportedItemId,
     }, SetOptions(merge: true));
 
     await updateChatLists(receiverId);

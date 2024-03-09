@@ -177,11 +177,21 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
                   title: Text(userProfile.fullName!,style: Theme.of(context).textTheme.titleMedium,),
                   subtitle: hasUnreadMessages ? Text("$unreadCount new messages",style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),):Text(lastMsg,style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.normal,color: Colors.black.withOpacity(.7)),),
                   onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => ChatScreen(userProfile: userProfile,),
+                    //   ),
+                    // );
                     Navigator.pushNamed(
                       context,
                       ChatScreen.routeName,
-                      arguments: userProfile,
+                      arguments: {
+                        'userProfile': userProfile,
+                        "reportedItemId":chatMetaSnapshot.data!["reportedItemId"]
+                      },
                     );
+
                   },
                 );
               },
