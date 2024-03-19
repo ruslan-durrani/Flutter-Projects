@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 class QuickFilterBar extends StatefulWidget {
-  final Function(int) onFilterSelected;
+  final Function(String) onFilterSelected;
+  final List<String> categories;
 
-  QuickFilterBar({Key? key, required this.onFilterSelected}) : super(key: key);
+  QuickFilterBar({Key? key, required this.onFilterSelected, required this.categories}) : super(key: key);
 
   @override
   _QuickFilterBarState createState() => _QuickFilterBarState();
@@ -11,13 +12,13 @@ class QuickFilterBar extends StatefulWidget {
 
 class _QuickFilterBarState extends State<QuickFilterBar> {
   int _selectedCategoryIndex = 0; // 'All' is selected by default
-  List<String> categories = ['All', 'Mobile', 'Cars', 'Wallet'];
+  List<String> categories = ['All',"Electronics" ,"Human",'Mobile', 'Cars', 'Wallet'];
 
   void _selectCategory(int index) {
     setState(() {
       _selectedCategoryIndex = index;
     });
-    widget.onFilterSelected(index);
+    widget.onFilterSelected(categories[index]);
   }
 
   @override

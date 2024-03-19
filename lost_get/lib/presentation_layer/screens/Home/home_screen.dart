@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lost_get/common/constants/colors.dart';
 import 'package:lost_get/models/user_profile.dart';
 import 'package:lost_get/presentation_layer/screens/Home/components/all_items.dart';
 import 'package:lost_get/presentation_layer/screens/Home/controller/home_screen_reports_controller.dart';
@@ -10,6 +11,7 @@ import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCar
 import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCarousal.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/section_heading.dart';
 import 'package:lost_get/services/chat_system_services/chat_service.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../models/report_item.dart';
 import '../../widgets/my_user_component.dart';
@@ -27,7 +29,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  int _selectedFilterIndex = 0; // The index of the selected filter
+  String _currentFilter = "All"; // The index of the selected filter
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
@@ -36,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
   // Define a method to handle filter change
-  void _handleFilterChange(int index) {
+  void _handleFilterChange(String filter) {
     setState(() {
-      _selectedFilterIndex = index;
+      _currentFilter = filter;
     });
     // You can also fetch data based on the selected filter here
   }
@@ -72,11 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           QuickFilterBar(
-            onFilterSelected: _handleFilterChange, // Pass the filter change handler
+            onFilterSelected: _handleFilterChange, categories: ['All',"Electronics" ,"Human",'Mobile', 'Cars', 'Wallet'], // Pass the filter change handler
           ),
       _buildBodyContent()
         ],
       ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed:() => Navigator.pushNamed(context, ChatBotScreen.routeName),
@@ -89,14 +92,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   onItemTapped(item){
-    print("Dannieesss aaah");
     Navigator.pushNamed(context, ItemDetailScreen.routeName,arguments: item);
   }
   Widget _buildBodyContent() {
     // Based on the selected filter index, return different Widgets/content
 
-    switch (_selectedFilterIndex) {
-      case 0:
+    switch (_currentFilter) {
+      case "All":
         return Container(
           padding: EdgeInsets.all(10),
           height: MediaQuery.of(context).size.height * .7,
@@ -107,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   future: controller.fetchAllItems(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return Center(child: Container());
                     } else if (snapshot.hasError) {
                       return Center(child: Text("Error fetching data"));
                     } else {
@@ -127,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   future: controller.fetchAllItems(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return getShimmerContainer();
                     } else if (snapshot.hasError) {
                       return Center(child: Text("Error fetching data"));
                     } else {
@@ -148,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   future: controller.fetchAllItems(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return getShimmerContainer();
                     } else if (snapshot.hasError) {
                       return Center(child: Text("Error fetching data"));
                     } else {
@@ -169,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   future: controller.fetchAllItems(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return getShimmerContainer();
                     } else if (snapshot.hasError) {
                       return Center(child: Text("Error fetching data"));
                     } else {
@@ -189,18 +191,104 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         );
-      case 1:
-      // Replace with your actual content for 'Mobile'
-        return Center(child: Text('Mobile selected'));
-      case 2:
-      // Replace with your actual content for 'Cars'
-        return Center(child: Text('Cars selected'));
-      case 3:
-      // Replace with your actual content for 'Wallet'
-        return Center(child: Text('Wallet selected'));
+      //
+      // case 1:
+      // // Replace with your actual content for 'Mobile'
+      //
+      //   return ListView(
+      //       children:[
+      //         Text('Mobile selected'),
+      //         ReportedItemsCarousel(reportedItems: controller.listOfRecommendedItems, onTap: (item)=>onItemTapped(item))
+      //       ]
+      //   );
+      // case 2:
+      // // Replace with your actual content for 'Cars'
+      //   return Center(child: Text('Cars selected'));
+      // case 3:
+      // // Replace with your actual content for 'Wallet'
+      //   return Center(child: Text('Wallet selected'));
       default:
-        return Center(child: Text('Content not available'));
+        return Expanded(
+          child: FutureBuilder<List<ReportItemModel>>(
+            future: controller.specificCategory(_currentFilter),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text("An error occurred"));
+              } else if (snapshot.data!.isEmpty) {
+                return Center(child: Text("No items found in this category"));
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+
+                    final ReportItemModel item = snapshot.data![index];
+                    return ReportedItemCard(item: item, onTap: ()=>onItemTapped(item));
+                  },
+                );
+              }
+            },
+          ),
+        );
     }
+  }
+
+  Widget getShimmerContainer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Column(
+        children: [
+          // Recommendation Header
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Recommendations',
+                  style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'view all',
+                  style: TextStyle(fontSize: 16.0, color: Colors.blue),
+                ),
+              ],
+            ),
+          ),
+          // Example of a shimmer effect on a card
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Container(
+                    width: 50.0,
+                    height: 50.0,
+                    color: Colors.white,
+                  ),
+                  title: Container(
+                    height: 10.0,
+                    color: Colors.white,
+                  ),
+                  subtitle: Container(
+                    height: 10.0,
+                    color: Colors.white,
+                  ),
+                  trailing: Container(
+                    width: 40.0,
+                    height: 20.0,
+                    color: Colors.white,
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+          // Additional placeholders for other content
+        ],
+      ),
+    );
   }
 
 }
@@ -214,43 +302,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-/*
-Widget _buildUser(){
-    return StreamBuilder(stream: _chatService.getUserStream(), builder: (context,snapshot){
-      if(snapshot.hasError){
-        return ScaffoldMessenger(child: Container(child: Text("Error Occured"),));
-      }
-      else if(snapshot.connectionState == ConnectionState.waiting){
-        return ScaffoldMessenger(child: Container(child: Text("Loading..."),));
-      }
-      return ListView(
-        children: snapshot.data!.map<Widget>((userData){
-          UserProfile userProfile = UserProfile(
-              fullName: userData["fullName"],
-              email: userData["email"],
-              isAdmin: userData["isAdmin"] as bool,
-              joinedDateTime: (userData["joinedDateTime"] as Timestamp).toDate(),
-              phoneNumber: userData["phoneNumber"],
-              biography: userData["biography"],
-              preferenceList: userData["preferenceList"] as Map<String, dynamic>,
-              imgUrl: userData["imgUrl"],
-              dateOfBirth: userData["dateOfBirth"],
-              gender: userData["gender"],
-              userChatsList: (userData["userChatsList"] as List).map<String>((item) => item as String).toList(),
-              uid: userData["uid"]
-          );
-          return MyUserCardComponent(
-            imageUrl: '${userProfile.imgUrl}',
-            title: '${userProfile.fullName}',
-            subTitle: "${userProfile.email}",
-            iconData: Icons.message,
-            uid: userData["uid"],
-            onReceiverTap: ()=>Navigator.pushNamed(context, ChatScreen.routeName, arguments: userProfile)
-
-          );
-          // return Container();
-        }).toList(),
-      );
-    });
-  }
- */
+// floatingActionButton: Padding(
+//   padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 10),
+//   child: Row(
+//     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//     children: [
+//
+//       FloatingActionButton(
+//         backgroundColor: Colors.white,
+//         onPressed:() => Navigator.pushNamed(context, ChatBotScreen.routeName),
+//         child: const Image(
+//             height: 40,
+//             image: AssetImage("./assets/icons/bot.png")
+//         ),
+//       ),
+//       FloatingActionButton(
+//         backgroundColor: Colors.white,
+//         onPressed:() => Navigator.pushNamed(context, ChatBotScreen.routeName),
+//         child: SvgPicture.asset('assets/icons/scan_qr_icon.svg',height: 30,), // Replace with your SVG file path
+//       ),
+//     ],
+//   ),
+// )

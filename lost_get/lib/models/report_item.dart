@@ -88,4 +88,6 @@ class ReportItemModel {
       publishDateTime: data['publishDateTime'].toDate(),
     );
   }
+
+
 }

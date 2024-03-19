@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final ChatService _chatService = ChatService();
   late UserProfile _userReceiver;
   String? _reportedItemId;
+  ReportItemModel? _reportItem;
+
+  navigateToDetailPage()=> Navigator.pushNamed(context, ItemDetailScreen.routeName,arguments: _reportItem);
 
   @override
   void initState() {
@@ -36,6 +40,52 @@ class _ChatScreenState extends State<ChatScreen> {
     _userReceiver = widget.args['userProfile'];
     _reportedItemId = widget.args['reportedItemId'];
     _chatService.markMessagesAsRead(_userReceiver.uid!);
+    if (_reportedItemId != null) {
+      fetchReportedItemByReportedItemId(_reportedItemId.toString()).then((item) {
+        setState(() {
+          _reportItem = item;
+        });
+      });
+    }
+
+  }
+  Future<ReportItemModel?> fetchReportedItemByReportedItemId(String reportedItemId) async {
+    {
+
+      // Fetch all documents in the 'reportItem' collection
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection(
+          'reportItems').get();
+
+      // Iterate through all the documents
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+        // Assuming 'id' is the field in each document you want to compare with reportedItemId
+        if (data['id'] == _reportedItemId) {
+          // If a match is found, create and return a ReportItemModel from the document
+          return ReportItemModel(
+            id: doc.id,
+            title: data['title'],
+            description: data['description'],
+            status: data['status'],
+            imageUrls: List<String>.from(data['imageUrls']),
+            userId: data['userId'],
+            category: data['category'],
+            subCategory: data['subCategory'],
+            publishDateTime: (data['publishDateTime'] as Timestamp).toDate(),
+            address: data['address'],
+            city: data['city'],
+            country: data['country'],
+            coordinates: data['coordinates'],
+            flagged: data['flagged'],
+            published: data['published'],
+          );
+        }
+      }
+
+      // Return null if no matching document is found
+      return null;
+    }
   }
 
   Future<void> _sendMessage({String? imagePath}) async {
@@ -134,14 +184,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Reported Item ID: ${_reportedItemId}");
-    print("Full Name: ${_userReceiver.fullName}");
-    if(_reportedItemId != null){
-      // queryReportedItemBasedOnId(_reportedItemId);
-    }
-    else {
-      // queryChatMetaReprotedItemId(_reportedItemId);
-    }
+    // print("Reported Item ID: ${_reportedItemId}");
+    // print("Full Name: ${_userReceiver.fullName}");
+    // if(_reportedItemId != null ){
+    //   queryReportedItemBasedOnId(_reportedItemId);
+    // }
+    // else {
+    //   // queryChatMetaReprotedItemId(_reportedItemId);
+    // }
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -164,27 +214,35 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primaryColor,
-
-          leading: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage( 'https://via.placeholder.com/150'),
-              )
+          leading: GestureDetector(
+            onTap: navigateToDetailPage,
+            child: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage( _reportItem?.imageUrls!.first??'https://via.placeholder.com/150'),
+                  )
+              ),
             ),
           ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text( 'Title Goes here',style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
-              Text( 'Description goes here',style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),),
-            ],
+          title: GestureDetector(
+            onTap: navigateToDetailPage,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_reportItem?.title.toString() ?? 'Default Value',
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
+                ),
+
+                Text(_reportItem?.description.toString() ??"No description",style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),),
+              ],
+            ),
           ),
           actions: [
             IconButton(
               icon: Icon(Icons.arrow_forward_ios_sharp,color: Colors.white,),
-              onPressed: () {
 
-              },
+              onPressed: (){},
+              // onPressed: navigateToDetailPage,
             ),
           ],
 

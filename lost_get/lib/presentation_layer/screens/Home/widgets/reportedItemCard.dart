@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lost_get/common/constants/colors.dart';
 
 import '../../../../models/report_item.dart'; // Add intl package to your pubspec.yaml
 
@@ -36,12 +37,17 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
       onTap: widget.onTap,
       child: Container(
         width: MediaQuery.of(context).size.width * .8,
-        decoration: BoxDecoration(color: Colors.white),
-        child: Card(
-          clipBehavior: Clip.antiAlias,
-          elevation: 0.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
+        decoration: BoxDecoration(
+            color: Colors.white,
+
+        ),
+        child: Container(
+          // clipBehavior: Clip.antiAlias,
+          // elevation: 0.0,
+          decoration: BoxDecoration(
+              border: Border.all(width: 2,color: AppColors.primaryColor.withOpacity(.2),),
+              borderRadius: BorderRadius.circular(25)
+
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,10 +56,11 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                 alignment: Alignment.bottomLeft,
                 children: <Widget>[
                   Container(
-                    width: double.infinity,
+                    width: double.maxFinite,
                     height: 200,
                     decoration: BoxDecoration(
                       // color: Colors.grey,
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
                       image: DecorationImage(
                         // image: AssetImage(widget.item.imageUrls?.first ?? ''),
                         image: NetworkImage(widget.item.imageUrls?.first ?? ''),

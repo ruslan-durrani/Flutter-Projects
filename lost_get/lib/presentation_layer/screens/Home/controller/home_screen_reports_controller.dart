@@ -34,13 +34,16 @@ class HomeScreenController {
   List<ReportItemModel> listOfNearbyItems = [];
   List<ReportItemModel> listOfCategories = [];
   List<ReportItemModel> listOfRecentUploads = [];
+  List<ReportItemModel> listOfSpecificCategory = [];
 
   Future<void> fetchAllItems() async {
     try {
       final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('reportItems').get();
       List<ReportItemModel> items = querySnapshot.docs.map((doc) => ReportItemModel.fromSnapshot(doc)).toList();
 
-      // Assuming all items are relevant for each category for simplicity
+      // Remove flagged items
+      List<ReportItemModel> unflaggedItems = items.where((item) => !item.flagged!).toList();
+      items = unflaggedItems;
       listOfRecommendedItems = items;
       listOfNearbyItems = items;
       listOfCategories = items;
@@ -49,4 +52,35 @@ class HomeScreenController {
       print("Error fetching items: $error");
     }
   }
+
+  Future<List<ReportItemModel>> specificCategory(String category ) async {
+    try {
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('reportItems').get();
+      List<ReportItemModel> items = querySnapshot.docs.map((doc) => ReportItemModel.fromSnapshot(doc)).toList();
+
+      // Remove flagged items
+      List<ReportItemModel> unflaggedItems = items.where((item) => !item.flagged!).toList();
+
+      // Assuming you're looking for items in the "Electronics" category
+      String specificCategory = category;
+      List<ReportItemModel> itemsInSpecificCategory = unflaggedItems.where((item) => item.category == specificCategory).toList();
+
+      // If you need to separate items by categories dynamically, consider using a Map
+      Map<String, List<ReportItemModel>> itemsByCategory = {};
+      for (var item in unflaggedItems) {
+        if (!itemsByCategory.containsKey(item.category)) {
+          itemsByCategory[item.category!] = [];
+        }
+        itemsByCategory[item.category]!.add(item);
+      }
+
+      return itemsInSpecificCategory;
+    } catch (error) {
+      print("Error fetching items: $error");
+      return [];
+    }
+
+  }
+
+
 }
