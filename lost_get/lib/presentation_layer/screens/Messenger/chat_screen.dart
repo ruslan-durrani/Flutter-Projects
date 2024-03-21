@@ -32,8 +32,6 @@ class _ChatScreenState extends State<ChatScreen> {
   String? _reportedItemId;
   ReportItemModel? _reportItem;
 
-  navigateToDetailPage()=> Navigator.pushNamed(context, ItemDetailScreen.routeName,arguments: _reportItem);
-
   @override
   void initState() {
     super.initState();
@@ -41,52 +39,49 @@ class _ChatScreenState extends State<ChatScreen> {
     _reportedItemId = widget.args['reportedItemId'];
     _chatService.markMessagesAsRead(_userReceiver.uid!);
     if (_reportedItemId != null) {
-      fetchReportedItemByReportedItemId(_reportedItemId.toString()).then((item) {
+      fetchReportedItemByReportedItemId().then((item) {
         setState(() {
-          _reportItem = item;
+          _reportItem = item; // Set the reported item in the state
         });
       });
     }
-
   }
-  Future<ReportItemModel?> fetchReportedItemByReportedItemId(String reportedItemId) async {
-    {
+  Future<ReportItemModel?> fetchReportedItemByReportedItemId() async {
+    // Fetch all documents in the 'reportItem' collection
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('reportItems').get();
 
-      // Fetch all documents in the 'reportItem' collection
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection(
-          'reportItems').get();
+    // Iterate through all the documents
+    for (var doc in querySnapshot.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-      // Iterate through all the documents
-      for (var doc in querySnapshot.docs) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
-        // Assuming 'id' is the field in each document you want to compare with reportedItemId
-        if (data['id'] == _reportedItemId) {
-          // If a match is found, create and return a ReportItemModel from the document
-          return ReportItemModel(
-            id: doc.id,
-            title: data['title'],
-            description: data['description'],
-            status: data['status'],
-            imageUrls: List<String>.from(data['imageUrls']),
-            userId: data['userId'],
-            category: data['category'],
-            subCategory: data['subCategory'],
-            publishDateTime: (data['publishDateTime'] as Timestamp).toDate(),
-            address: data['address'],
-            city: data['city'],
-            country: data['country'],
-            coordinates: data['coordinates'],
-            flagged: data['flagged'],
-            published: data['published'],
-          );
-        }
+      // Assuming 'id' is the field in each document you want to compare with reportedItemId
+      if (data['id'] == _reportedItemId) {
+        // If a match is found, create and return a ReportItemModel from the document
+        return ReportItemModel(
+          id: doc.id,
+          title: data['title'],
+          description: data['description'],
+          status: data['status'],
+          imageUrls: List<String>.from(data['imageUrls']),
+          userId: data['userId'],
+          category: data['category'],
+          subCategory: data['subCategory'],
+          publishDateTime: (data['publishDateTime'] as Timestamp).toDate(),
+          address: data['address'],
+          city: data['city'],
+          country: data['country'],
+          coordinates: data['coordinates'],
+          flagged: data['flagged'],
+          published: data['published'],
+        );
       }
-
-      // Return null if no matching document is found
-      return null;
     }
+
+    // Return null if no matching document is found
+    return null;
   }
+
+
 
   Future<void> _sendMessage({String? imagePath}) async {
     final String receiverId = _userReceiver.uid!;
@@ -214,35 +209,27 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primaryColor,
-          leading: GestureDetector(
-            onTap: navigateToDetailPage,
-            child: Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage( _reportItem?.imageUrls!.first??'https://via.placeholder.com/150'),
-                  )
-              ),
+
+          leading: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage( _reportItem!.imageUrls!.first),
+                )
             ),
           ),
-          title: GestureDetector(
-            onTap: navigateToDetailPage,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(_reportItem?.title.toString() ?? 'Default Value',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
-                ),
-
-                Text(_reportItem?.description.toString() ??"No description",style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),),
-              ],
-            ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text( _reportItem!.title.toString() ??'Title Goes here',style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),),
+              Text( _reportItem!.description.toString()??'Description goes here',style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),),
+            ],
           ),
           actions: [
             IconButton(
               icon: Icon(Icons.arrow_forward_ios_sharp,color: Colors.white,),
+              onPressed: () {
 
-              onPressed: (){},
-              // onPressed: navigateToDetailPage,
+              },
             ),
           ],
 
@@ -266,3 +253,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
+//
+// void queryReportedItemBasedOnId(String? reportedItemId) {
+//
+// }

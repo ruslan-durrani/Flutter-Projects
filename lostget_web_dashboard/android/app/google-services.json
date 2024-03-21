@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "846938609983",
+    "project_id": "lostget-faafe",
+    "storage_bucket": "lostget-faafe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846938609983:android:cc61872bfe52dc93129b8a",
+        "android_client_info": {
+          "package_name": "com.example.responsive_admin_dashboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "846938609983-mqhokda7j05oftcpfp5s9v4gg8ij96j4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8TsPvMTINZb6H4Eca3tckJsdyL8XM8uU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "846938609983-mqhokda7j05oftcpfp5s9v4gg8ij96j4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "846938609983-hci8ok6vuvs9viuine804tf251s7urt7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.praidux.lostGet.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846938609983:android:841e6ae9673bdafa129b8a",
+        "android_client_info": {
+          "package_name": "com.praidux.lost_get"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "846938609983-mqhokda7j05oftcpfp5s9v4gg8ij96j4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8TsPvMTINZb6H4Eca3tckJsdyL8XM8uU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "846938609983-mqhokda7j05oftcpfp5s9v4gg8ij96j4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "846938609983-hci8ok6vuvs9viuine804tf251s7urt7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.praidux.lostGet.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

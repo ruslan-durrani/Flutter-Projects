@@ -1,0 +1,2 @@
+final String USER_LOGGED_IN = "USER_LOGGED_IN";
+final String USER_CUSTOM_TOKEN = "USER_CUSTOM_TOKEN";
