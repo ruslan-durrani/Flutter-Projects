@@ -85,7 +85,7 @@ class FireStoreService {
     List<Map<String, dynamic>> map = [];
     for (int i = 0; i < now.difference(twoWeeksAgo).inDays; i++) {
       map.add({
-        "user_count": 100,
+        "user_count": 0,
         "date_millisecond": now.subtract(Duration(days: 14 - i)).millisecondsSinceEpoch
       });
     }
@@ -93,15 +93,18 @@ class FireStoreService {
     try {
       QuerySnapshot usersSnapshot = await FirebaseFirestore.instance.collection('users').get();
       final userDoc = usersSnapshot.docs;
-      for (int i = 0; i<userDoc.length;i++){
+      for (int i = 0; i<userDoc.length; i++) {
         Timestamp joinTimestamp = userDoc[i]['joinedDateTime'];
         DateTime joinDate = joinTimestamp.toDate();
+        print("Processing user: $joinDate"); // Debug print
         int daysAgo = now.difference(joinDate).inDays;
         if (joinDate.isAfter(twoWeeksAgo) && joinDate.isBefore(now)) {
           registrationCounts[13 - daysAgo]++;
           map[13-daysAgo].update("user_count", (value) => ++value);
+          print("Updated count for day ${13-daysAgo} to ${map[13-daysAgo]["user_count"]}"); // Debug print
         }
       }
+
 
       print(registrationCounts);
       return map;

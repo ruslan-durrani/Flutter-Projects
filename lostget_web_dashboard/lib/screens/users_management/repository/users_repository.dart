@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:responsive_admin_dashboard/screens/users_management/repository/users_base_repository.dart';
 import '../../../global/services/firebase_service.dart';
-import '../models/userProfile.dart';
+import '../models/user_profile.dart';
 
 class UserRepository extends BaseUsersRepository{
   final FirebaseFirestore _firebaseFirestore;

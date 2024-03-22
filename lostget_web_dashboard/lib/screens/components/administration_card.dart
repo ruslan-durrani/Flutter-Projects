@@ -1,9 +1,11 @@
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_admin_dashboard/constants/constants.dart';
-import 'package:responsive_admin_dashboard/data/data.dart';
-import 'package:responsive_admin_dashboard/screens/users_management/bloc/user_profiles_bloc.dart';
 
+import '../../constants/constants.dart';
+
+import '../users_management/bloc/user_profiles_bloc.dart';
 import '../users_management/ui/data_table.dart';
 import '../users_management/ui/sub_screens_ui/user_detail_page.dart';
 import 'administration_info_detail.dart';

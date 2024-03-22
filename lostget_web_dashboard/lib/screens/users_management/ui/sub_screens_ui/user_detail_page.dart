@@ -1,25 +1,23 @@
-import 'dart:html';
-import 'dart:js_interop';
+
 
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:responsive_admin_dashboard/global/widgets/title_text.dart';
-import 'package:responsive_admin_dashboard/screens/my_profile/widgets/widgets.dart';
-import 'package:responsive_admin_dashboard/screens/users_management/models/userProfile.dart';
-import 'package:responsive_admin_dashboard/screens/users_management/ui/data_table.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../constants/responsive.dart';
 import '../../../../global/services/firestore_service.dart';
+import '../../../../global/widgets/title_text.dart';
 import '../../../../global/widgets/toastFlutter.dart';
 import '../../../my_profile/bloc/my_profile_bloc.dart';
 import '../../../my_profile/edit_profile_bloc/edit_profile_bloc.dart';
+import '../../../my_profile/widgets/widgets.dart';
+import '../../models/user_profile.dart';
 import '../../widgets.dart';
+import '../data_table.dart';
 
 class UserDetailsPage extends StatefulWidget {
   UserProfile userProfile;

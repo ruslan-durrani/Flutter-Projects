@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import '../models/userProfile.dart';
+import '../models/user_profile.dart';
 
 part 'user_profiles_event.dart';
 part 'user_profiles_state.dart';

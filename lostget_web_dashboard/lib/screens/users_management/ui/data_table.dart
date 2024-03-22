@@ -6,7 +6,7 @@ import 'package:responsive_admin_dashboard/screens/users_management/ui/sub_scree
 
 import '../../../global/widgets/toastFlutter.dart';
 import '../../my_profile/widgets/widgets.dart';
-import '../models/userProfile.dart';
+import '../models/user_profile.dart';
 
 enum UserManagementOptions{View, Update, Delete}
 

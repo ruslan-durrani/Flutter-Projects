@@ -4,7 +4,8 @@ import 'dart:js_interop';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../models/userProfile.dart';
+import '../models/user_profile.dart';
+
 
 part 'data_table_event.dart';
 part 'data_table_state.dart';

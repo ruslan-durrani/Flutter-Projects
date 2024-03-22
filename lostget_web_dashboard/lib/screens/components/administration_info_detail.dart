@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_admin_dashboard/screens/my_profile/widgets/widgets.dart';
 import '../../constants/constants.dart';
-import '../users_management/models/userProfile.dart';
+import '../users_management/models/user_profile.dart';
 
 class AdministrationInfoDetail extends StatelessWidget {
   final UserProfile info;
