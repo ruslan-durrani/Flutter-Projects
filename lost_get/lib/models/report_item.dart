@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 class ReportItemModel {
-  String? id;
+  final String? id;
   final String? title;
   final String? description;
   final String? status;
@@ -16,12 +17,11 @@ class ReportItemModel {
   final GeoPoint? coordinates;
   final bool? flagged;
   final bool? published;
+  final bool? recovered;
 
   ReportItemModel(
-
-      {
-        this.id,
-        required this.title,
+      {required this.id,
+      required this.title,
       required this.description,
       required this.status,
       this.imageUrls,
@@ -34,11 +34,12 @@ class ReportItemModel {
       required this.country,
       required this.coordinates,
       required this.flagged,
+      required this.recovered,
       required this.published});
 
   Map<String, dynamic> toMap() {
     return {
-      "id":id,
+      'id': id,
       'title': title,
       'description': description,
       'status': status,
@@ -52,7 +53,8 @@ class ReportItemModel {
       'coordinates': coordinates,
       'flagged': flagged,
       'publishDateTime': publishDateTime,
-      'published': published
+      'published': published,
+      'recovered': recovered
     };
   }
 
@@ -69,9 +71,8 @@ class ReportItemModel {
         imageUrls = [data['imageUrls'] as String];
       }
     }
-
     return ReportItemModel(
-      id:data['id'],
+      id: data['id'],
       title: data['title'],
       description: data['description'],
       status: data['status'],
@@ -86,8 +87,53 @@ class ReportItemModel {
       flagged: data["flagged"],
       published: data['published'],
       publishDateTime: data['publishDateTime'].toDate(),
+      recovered: data['recovered'],
     );
   }
 
+  factory ReportItemModel.fromJson(Map<String, dynamic> json) {
+    List<String> imageUrls = [];
+    if (json['imageUrls'] != null) {
+      if (json['imageUrls'] is List<dynamic>) {
+        // Convert dynamic list to List<String>
+        imageUrls = List<String>.from(json['imageUrls'] as List<dynamic>);
+      } else {
+        // If it's a single string, convert it to a list
+        imageUrls = [json['imageUrls'] as String];
+      }
+    }
 
+    DateTime? publishDateTime;
+    if (json['publishDateTime'] != null) {
+      publishDateTime = DateTime.tryParse(json['publishDateTime']);
+    }
+
+    return ReportItemModel(
+        id: json['id'],
+        title: json['title'],
+        description: json['description'],
+        category: json['category'],
+        subCategory: json['subCategory'],
+        address: json["address"],
+        city: json["city"],
+        coordinates: GeoPoint(
+          json["coordinates"]['latitude'].toDouble(),
+          json["coordinates"]['longitude'].toDouble(),
+        ),
+        country: json["country"],
+        flagged: json["flagged"],
+        publishDateTime: publishDateTime,
+        published: json["published"],
+        recovered: json["recovered"],
+        status: json["status"],
+        userId: json["userId"],
+        imageUrls: imageUrls);
+  }
+
+  // factory GeoPoint.fromJson(Map<String, dynamic> json) {
+  //   return GeoPoint(
+  //     json['latitude'] as double,
+  //     json['longitude'] as double,
+  //   );
+  // }
 }

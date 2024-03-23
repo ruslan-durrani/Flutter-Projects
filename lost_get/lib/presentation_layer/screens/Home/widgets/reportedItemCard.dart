@@ -37,18 +37,18 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
       onTap: widget.onTap,
       child: Container(
         width: MediaQuery.of(context).size.width * .8,
-        decoration: BoxDecoration(
-            color: Colors.white,
-
+        decoration: const BoxDecoration(
+          color: Colors.white,
         ),
         child: Container(
           // clipBehavior: Clip.antiAlias,
           // elevation: 0.0,
           decoration: BoxDecoration(
-              border: Border.all(width: 2,color: AppColors.primaryColor.withOpacity(.2),),
-              borderRadius: BorderRadius.circular(25)
-
-          ),
+              border: Border.all(
+                width: 2,
+                color: AppColors.primaryColor.withOpacity(.2),
+              ),
+              borderRadius: BorderRadius.circular(25)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -60,7 +60,9 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                     height: 200,
                     decoration: BoxDecoration(
                       // color: Colors.grey,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25)),
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25)),
                       image: DecorationImage(
                         // image: AssetImage(widget.item.imageUrls?.first ?? ''),
                         image: NetworkImage(widget.item.imageUrls?.first ?? ''),
@@ -69,16 +71,21 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Chip(
-                          label: Text(widget.item.status ?? 'Unknown', style: TextStyle(color: Colors.white)),
-                          backgroundColor: widget.item.status!.contains("Found")?Colors.green:Colors.red,
+                          label: Text(widget.item.status ?? 'Unknown',
+                              style: const TextStyle(color: Colors.white)),
+                          backgroundColor: widget.item.status!.contains("Found")
+                              ? Colors.green
+                              : Colors.red,
                         ),
                         Chip(
-                          label: Text(_formatDateTime(widget.item.publishDateTime), style: TextStyle(color: Colors.white)),
+                          label: Text(
+                              _formatDateTime(widget.item.publishDateTime),
+                              style: TextStyle(color: Colors.white)),
                           backgroundColor: Colors.black,
                         ),
                       ],
@@ -97,25 +104,28 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                         children: [
                           TextSpan(
                             text: widget.item.title ?? 'Unknown',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
                           ),
-                          TextSpan(
+                          const TextSpan(
                             text: '\n',
                           ),
                           TextSpan(
                             text: widget.item.city ?? 'Unknown location',
-                            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                            style: TextStyle(
+                                fontSize: 14, color: Colors.grey[600]),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Text(
-                      softWrap:true,
+                      softWrap: true,
                       widget.item.description ?? 'No description provided.',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),

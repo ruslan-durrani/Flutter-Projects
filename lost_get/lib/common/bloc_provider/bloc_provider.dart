@@ -16,6 +16,8 @@ import 'package:lost_get/business_logic_layer/ProfileSettings/Settings/bloc/sett
 import 'package:lost_get/business_logic_layer/ProfileSettings/UserPreference/bloc/user_preference_bloc.dart';
 import 'package:lost_get/business_logic_layer/ProfileSettings/bloc/profile_settings_bloc.dart';
 import 'package:lost_get/business_logic_layer/Provider/change_theme_mode.dart';
+import 'package:lost_get/business_logic_layer/Provider/modify_report_provider.dart';
+import 'package:lost_get/business_logic_layer/QRCodeScanner/bloc/qr_code_scanner_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../business_logic_layer/Authentication/Signin/bloc/sign_in_bloc.dart';
@@ -41,8 +43,10 @@ class AppBlocProvider {
         BlocProvider(create: (_) => ChangePasswordBloc()),
         BlocProvider(create: (_) => AddReportDetailBloc()),
         BlocProvider(create: (_) => MyReportsBloc()),
+        BlocProvider(create: (_) => QrCodeScannerBloc()),
         ChangeNotifierProvider(create: (_) => PasswordStrengthProvider()),
         ChangeNotifierProvider(create: (_) => ChangeThemeMode()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => ModifyReportProvider())
       ];
 }

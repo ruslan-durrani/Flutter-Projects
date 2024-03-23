@@ -42,6 +42,7 @@ dependencies:
   firebase_core: ^2.15.1
   firebase_auth: ^4.7.2
   fluttertoast: ^8.2.2
+  profanity_filter: ^2.0.0
   smooth_page_indicator: ^1.1.0
   shared_preferences: ^2.2.0
   dropdown_textfield: ^1.0.8
@@ -76,6 +77,14 @@ dependencies:
   workmanager: ^0.5.2
   cached_network_image:
   shimmer: ^3.0.0
+  firebase_messaging: ^14.7.16
+  pdf: ^3.10.8
+  share: ^2.0.4
+  path_provider: ^2.1.2
+  open_file: ^3.3.2
+  external_path: ^1.0.3
+  qr_flutter: ^4.1.0
+  qr_code_scanner: ^1.0.1
 
 
 dev_dependencies:

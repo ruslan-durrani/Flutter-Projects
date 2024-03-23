@@ -1,34 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lost_get/utils/api_services.dart';
 
 import '../../../../models/report_item.dart';
-import '../widgets/reportedItemCard.dart';
 
-
-  // List<ReportItemModel> listOfRecommendedItems=[];
-  // List<ReportItemModel> listOfNearbyItems=[];
-  // List<ReportItemModel> listOfCategories=[];
-  // List<ReportItemModel> listOfRecentUploads=[];
-  //
-  // ReportItemModel dummyItem = ReportItemModel(
-  // title: "Macbook M1 Lost",
-  // description: "Bag Lost near Library Comsats University Islamabad",
-  // status: "Lost",
-  // imageUrls: [
-  // "assets/icons/watch_item_dummy.jpg" // Placeholder image URL
-  // ],
-  // userId: "user123",
-  // category: "Electronics",
-  // subCategory: "Laptops",
-  // publishDateTime: DateTime.now().subtract(Duration(days: 7)),
-  // address: "Library Comsats University",
-  // city: "Islamabad",
-  // country: "Pakistan",
-  // coordinates: GeoPoint(33.6844, 73.0479), // Dummy coordinates for Islamabad
-  // flagged: false,
-  // published: true,
-  // );
- 
 class HomeScreenController {
   List<ReportItemModel> listOfRecommendedItems = [];
   List<ReportItemModel> listOfNearbyItems = [];
@@ -38,13 +13,21 @@ class HomeScreenController {
 
   Future<void> fetchAllItems() async {
     try {
-      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('reportItems').get();
-      List<ReportItemModel> items = querySnapshot.docs.map((doc) => ReportItemModel.fromSnapshot(doc)).toList();
+      final QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('reportItems').get();
+      List<ReportItemModel> items = querySnapshot.docs
+          .map((doc) => ReportItemModel.fromSnapshot(doc))
+          .toList();
 
       // Remove flagged items
-      List<ReportItemModel> unflaggedItems = items.where((item) => !item.flagged!).toList();
+      List<ReportItemModel> unflaggedItems = items
+          .where(
+              (item) => !item.flagged! && !item.recovered! && item.published!)
+          .toList();
+
+      listOfRecommendedItems =
+          await recommendReports(FirebaseAuth.instance.currentUser!.uid);
       items = unflaggedItems;
-      listOfRecommendedItems = items;
       listOfNearbyItems = items;
       listOfCategories = items;
       listOfRecentUploads = items;
@@ -53,17 +36,25 @@ class HomeScreenController {
     }
   }
 
-  Future<List<ReportItemModel>> specificCategory(String category ) async {
+  Future<List<ReportItemModel>> specificCategory(String category) async {
     try {
-      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('reportItems').get();
-      List<ReportItemModel> items = querySnapshot.docs.map((doc) => ReportItemModel.fromSnapshot(doc)).toList();
+      final QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('reportItems').get();
+      List<ReportItemModel> items = querySnapshot.docs
+          .map((doc) => ReportItemModel.fromSnapshot(doc))
+          .toList();
 
       // Remove flagged items
-      List<ReportItemModel> unflaggedItems = items.where((item) => !item.flagged!).toList();
+      List<ReportItemModel> unflaggedItems = items
+          .where(
+              (item) => !item.flagged! && !item.recovered! && item.published!)
+          .toList();
 
       // Assuming you're looking for items in the "Electronics" category
       String specificCategory = category;
-      List<ReportItemModel> itemsInSpecificCategory = unflaggedItems.where((item) => item.category == specificCategory).toList();
+      List<ReportItemModel> itemsInSpecificCategory = unflaggedItems
+          .where((item) => item.category == specificCategory)
+          .toList();
 
       // If you need to separate items by categories dynamically, consider using a Map
       Map<String, List<ReportItemModel>> itemsByCategory = {};
@@ -79,8 +70,5 @@ class HomeScreenController {
       print("Error fetching items: $error");
       return [];
     }
-
   }
-
-
 }

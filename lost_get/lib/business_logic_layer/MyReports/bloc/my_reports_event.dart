@@ -8,3 +8,15 @@ sealed class MyReportsEvent extends Equatable {
 }
 
 class MyReportsLoadEvent extends MyReportsEvent {}
+
+class DeactivateReportEvent extends MyReportsEvent {
+  final String itemId;
+
+  const DeactivateReportEvent({required this.itemId});
+}
+
+class MarkAsRecoveredReportEvent extends MyReportsEvent {
+  final String itemId;
+
+  const MarkAsRecoveredReportEvent({required this.itemId});
+}

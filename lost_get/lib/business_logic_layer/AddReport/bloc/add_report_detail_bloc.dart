@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lost_get/data_store_layer/repository/report_item_repository.dart';
 import 'package:lost_get/models/report_item.dart';
+import 'package:lost_get/utils/api_services.dart';
 
 part 'add_report_detail_event.dart';
 part 'add_report_detail_state.dart';
@@ -40,7 +41,10 @@ class AddReportDetailBloc
     event.reportItemModel.imageUrls = imagesUrl;
     bool result =
         await addReportRepository.publishReport(event.reportItemModel);
+
     if (result) {
+      checkProfaneImages(
+          id: event.reportItemModel.id!, uid: event.reportItemModel.userId!);
       emit(SuccessState());
     } else {
       emit(ErrorState());

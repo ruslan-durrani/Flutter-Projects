@@ -24,7 +24,7 @@ class AddReportConstant {
       {
         "id": 2,
         "title": "Personal Items",
-        "imageUrl": "assets/icons/electronics.svg",
+        "imageUrl": "assets/icons/personal_item.svg",
         "subCat": [
           {"title": "Wallets and Purses"},
           {"title": "Personal Identification Documents"},
@@ -36,7 +36,7 @@ class AddReportConstant {
       {
         "id": 3,
         "title": "Clothing and Accessories",
-        "imageUrl": "assets/icons/electronics.svg",
+        "imageUrl": "assets/icons/clothe.svg",
         "subCat": [
           {"title": "Coats and Jackets"},
           {"title": "Hats and Caps"},
@@ -49,7 +49,7 @@ class AddReportConstant {
       {
         "id": 4,
         "title": "Books and Documents",
-        "imageUrl": "assets/icons/electronics.svg",
+        "imageUrl": "assets/icons/books.svg",
         "subCat": [
           {"title": "Diaries and Planners"},
           {"title": "Notebooks"},
@@ -59,7 +59,7 @@ class AddReportConstant {
       {
         "id": 5,
         "title": "Travel Items",
-        "imageUrl": "assets/icons/electronics.svg",
+        "imageUrl": "assets/icons/travel_item.svg",
         "subCat": [
           {"title": "Luggage"},
           {"title": "Notebooks"},
@@ -71,7 +71,7 @@ class AddReportConstant {
       {
         "id": 6,
         "title": "Animals",
-        "imageUrl": "assets/icons/electronics.svg",
+        "imageUrl": "assets/icons/animal.svg",
         "subCat": [
           {"title": "Dogs"},
           {"title": "Cats"},
@@ -85,7 +85,7 @@ class AddReportConstant {
       {
         "id": 7,
         "title": "Miscellaneous",
-        "imageUrl": "assets/icons/electronics.svg",
+        "imageUrl": "assets/icons/miscelleanous.svg",
         "subCat": [
           {"title": "Umbrellas"},
           {"title": "Food Containers"},
@@ -96,7 +96,7 @@ class AddReportConstant {
       {
         "id": 8,
         "title": "Health and Beauty",
-        "imageUrl": "assets/icons/electronics.svg",
+        "imageUrl": "assets/icons/beauty.svg",
         "subCat": [
           {"title": "Makeup and Cosmetics"},
           {"title": "Hair Accessories"},
@@ -107,7 +107,7 @@ class AddReportConstant {
       {
         "id": 9,
         "title": "Human",
-        "imageUrl": "assets/icons/electronics.svg",
+        "imageUrl": "assets/icons/human.svg",
         "subCat": [
           {"title": "Children"},
           {"title": "Adults"}
@@ -116,8 +116,7 @@ class AddReportConstant {
       {
         "id": 10,
         "title": "Office and School Supplies",
-        "imageUrl":
-            "assets/icons/school_supplies.svg", // Update with correct asset
+        "imageUrl": "assets/icons/office.svg", // Update with correct asset
         "subCat": [
           {"title": "Pens, Pencils, and Markers"},
           {"title": "Notebooks and Binders"},
@@ -131,8 +130,7 @@ class AddReportConstant {
       {
         "id": 11,
         "title": "Sports and Recreation",
-        "imageUrl":
-            "assets/icons/sports_recreation.svg", // Update with correct asset
+        "imageUrl": "assets/icons/sports.svg", // Update with correct asset
         "subCat": [
           {"title": "Sporting Equipment"},
           {"title": "Gym Gear"},
@@ -147,7 +145,7 @@ class AddReportConstant {
         "id": 12,
         "title": "Musical Instruments",
         "imageUrl":
-            "assets/icons/musical_instruments.svg", // Update with correct asset
+            "assets/icons/musical_instrument.svg", // Update with correct asset
         "subCat": [
           {"title": "Guitars"},
           {"title": "Violins"},
@@ -165,11 +163,7 @@ class AddReportConstant {
         "id": 1,
         "title": "Azad Kashmir",
         "subLocation": [
-          {"title": "Bagh, Azad Kashmir",
-           "microLocation": [
-            
-           ]
-          },
+          {"title": "Bagh, Azad Kashmir", "microLocation": []},
           {"title": "Mirpur, Azad Kashmir"},
           {"title": "Muzaffarabad, Azad Kashmir"},
           {"title": "Kotli, Azad Kashmir"},

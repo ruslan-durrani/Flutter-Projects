@@ -51,7 +51,7 @@ class _AddReportScreenState extends State<AddReportScreen> {
                 var data = categoryList[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.popAndPushNamed(
+                    Navigator.pushNamed(
                       context,
                       SubCategoryScreen.route,
                       arguments: {

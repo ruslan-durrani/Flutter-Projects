@@ -19,7 +19,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   DashboardBloc dashboardBloc = DashboardBloc();
-  final List<Widget> _fragments =  [
+  final List<Widget> _fragments = const [
     HomeScreen(),
     ChatHomeScreen(),
     AddReportScreen(),

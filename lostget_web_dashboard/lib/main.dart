@@ -6,6 +6,7 @@ import 'package:responsive_admin_dashboard/global/routes_navigation/models/navig
 import 'package:responsive_admin_dashboard/global/services/global_initializers.dart';
 import 'package:responsive_admin_dashboard/screens/add_admin/controller/passwordProvider.dart';
 import 'global/theme_data_provider/theme_provider.dart';
+import 'screens/reportedItem_management/provider/reported_item_provider.dart';
 
 
 
@@ -14,6 +15,8 @@ void main() async{
   runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (context)=>ThemeProvider()),
       ChangeNotifierProvider(create: (context)=>PasswordProvider()),
+      ChangeNotifierProvider(create: (context)=>ReportedItemsProvider()),
+
   ],child: MyApp(),),
   );
 }

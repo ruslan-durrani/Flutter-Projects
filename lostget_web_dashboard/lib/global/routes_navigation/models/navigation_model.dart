@@ -13,6 +13,7 @@ import 'package:responsive_admin_dashboard/screens/dashboard/dashboard_cubit/das
 import 'package:responsive_admin_dashboard/screens/dashboard/dashboard_pager.dart';
 import 'package:responsive_admin_dashboard/screens/dashboard/userBarChartCubit/user_registered_count_cubit.dart';
 import 'package:responsive_admin_dashboard/screens/my_profile/bloc/my_profile_bloc.dart';
+import 'package:responsive_admin_dashboard/screens/reportedItem_management/ui/reportedItemManagement.dart';
 import 'package:responsive_admin_dashboard/screens/settings/ui/settings_screen.dart';
 import 'package:responsive_admin_dashboard/screens/users_management/ui/user_management.dart';
 import '../../../screens/authentication/auth_screen.dart';
@@ -74,9 +75,10 @@ final List<NavigationBlocRouteBinder> binderList = [
       lazy: false,
     ),
     Container(
-      child: Center(
-        child: Text("Item Management"),
-      ),
+      child: ReportedItemManagement()
+      // child: Center(
+      //   child: Text("Item Management"),
+      // ),
     ),
   ),
   NavigationBlocRouteBinder(

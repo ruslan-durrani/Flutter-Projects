@@ -6,6 +6,7 @@ import 'package:lost_get/common/global.dart';
 import 'package:lost_get/models/user_profile.dart';
 
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
+import 'package:lost_get/utils/push_notification_service.dart';
 
 import '../../business_logic_layer/Authentication/Signin/bloc/sign_in_bloc.dart';
 import '../../data_store_layer/repository/users_repository.dart';
@@ -33,6 +34,14 @@ class SignInController {
               final user = userCredential.user;
               if (user != null && user.emailVerified) {
                 String? idToken = await user.getIdToken();
+
+                PushNotificationService pushNotificationService =
+                    PushNotificationService();
+                String? token = await pushNotificationService.getDeviceToken();
+                if (token != null) {
+                  pushNotificationService.storeTokenInFirestore(
+                      userCredential.user!.uid, token);
+                }
 
                 Global.storageService
                     .setString(
@@ -100,10 +109,9 @@ class SignInController {
                     dateOfBirth: "",
                     preferenceList: [],
                     gender: "",
-                    joinedDateTime: DateTime.now(),
+                    uid: user.uid,
                     userChatsList: [],
-                  uid: user.uid
-                );
+                    joinedDateTime: DateTime.now());
 
                 await _userRepository.createUserProfile(
                     userCredential.user!.uid, userProfile);
@@ -116,6 +124,14 @@ class SignInController {
                       AppConstants.STORAGE_USER_TOKEN_KEY, idToken.toString())
                   .whenComplete(
                       () => signInBloc.add(LoginButtonSuccessEvent()));
+
+              PushNotificationService pushNotificationService =
+                  PushNotificationService();
+              String? token = await pushNotificationService.getDeviceToken();
+              if (token != null) {
+                pushNotificationService.storeTokenInFirestore(
+                    userCredential.user!.uid, token);
+              }
             }
           });
         } catch (e) {

@@ -8,10 +8,10 @@ class ReportedItemsCarousel extends StatelessWidget {
   final Function(ReportItemModel) onTap;
 
   const ReportedItemsCarousel({
-    Key? key,
+    super.key,
     required this.reportedItems,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class ReportedItemsCarousel extends StatelessWidget {
         return Builder(
           builder: (BuildContext context) {
             return Container(
-              margin: EdgeInsets.only(right: 5),
+              margin: const EdgeInsets.only(right: 5),
               child: ReportedItemCard(
                 item: item,
                 onTap: () => onTap(item),

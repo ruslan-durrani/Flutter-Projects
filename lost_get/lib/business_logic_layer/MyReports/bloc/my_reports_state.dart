@@ -20,3 +20,13 @@ class MyReportsLoadedState extends MyReportsState {
 }
 
 class MyReportsEmptyState extends MyReportsState {}
+
+class ReportDeactivatedSuccessfully extends MyReportsActionState {}
+
+class ReportDeactivationError extends MyReportsActionState {}
+
+class LoadingState extends MyReportsActionState {}
+
+class ReportMarkedAsRecoveredSuccessfullyState extends MyReportsActionState {}
+
+class ReportMarkedAsRecoveredErrorState extends MyReportsActionState {}

@@ -22,9 +22,7 @@ class SignUpController {
           .createUserWithEmailAndPassword(
               email: emailAddress, password: password)
           .then((credentials) async {
-
         if (credentials.user != null) {
-          User? user = credentials.user;
           await credentials.user!.sendEmailVerification();
           UserRepository userRepository = UserRepository();
 
@@ -39,8 +37,8 @@ class SignUpController {
             preferenceList: [],
             gender: "",
             joinedDateTime: DateTime.now(),
+            uid: credentials.user!.uid,
             userChatsList: [],
-              uid: user!.uid
           );
 
           await userRepository

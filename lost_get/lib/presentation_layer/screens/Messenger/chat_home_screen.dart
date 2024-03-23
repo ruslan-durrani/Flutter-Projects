@@ -134,7 +134,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
                   onTap: () => Navigator.pushNamed(
                     context,
                     ChatScreen.routeName,
-                    arguments: {'userProfile': userProfile, "reportedItemId": chatMetaSnapshot.data?["reportedItemId"]},
+                    arguments: {'userProfile': userProfile, "reportedItemId": chatMetaSnapshot.data!["reportedItemId"]},
                   ),
                 );
               },

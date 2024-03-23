@@ -27,13 +27,11 @@ class UserProfile {
     required this.dateOfBirth,
     required this.gender,
     required this.userChatsList,
-
   });
 
   Map<String, dynamic> toMap() {
     return {
       'isAdmin': isAdmin,
-      'uid': uid,
       'fullName': fullName,
       'email': email,
       'phoneNumber': phoneNumber,
@@ -43,7 +41,8 @@ class UserProfile {
       'dateOfBirth': dateOfBirth,
       'gender': gender,
       'joinedDateTime': joinedDateTime,
-      'userChatsList':userChatsList
+      'uid': uid,
+      'userChatsList': userChatsList,
     };
   }
 
@@ -51,38 +50,37 @@ class UserProfile {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
     return UserProfile(
-        fullName: data['fullName'],
-        biography: data['biography'],
-        phoneNumber: data['phoneNumber'],
-        preferenceList: data['preferenceList'] as List<String>,
-        isAdmin: data['isAdmin'],
-        email: data['email'],
-        imgUrl: data['imgUrl'],
-        dateOfBirth: data['dateOfBirth'],
-        gender: data['gender'],
-        joinedDateTime: data['joinedDateTime'].toDate(),
-        userChatsList: data["userChatsList"] as List<String>,
-        uid: data["uid"],
-       );
+      fullName: data['fullName'],
+      biography: data['biography'],
+      phoneNumber: data['phoneNumber'],
+      preferenceList: data['preferenceList'] as List<dynamic>,
+      isAdmin: data['isAdmin'],
+      email: data['email'],
+      imgUrl: data['imgUrl'],
+      dateOfBirth: data['dateOfBirth'],
+      gender: data['gender'],
+      joinedDateTime: data['joinedDateTime'].toDate(),
+      userChatsList: data['userChatsList'],
+      uid: data['uid'],
+    );
   }
   factory UserProfile.fromMap(Map<String, dynamic> map) {
     // Ensure proper type casting for userChatsList
-    final List<String> userChatsList = (map['userChatsList'] as List).map((item) => item.toString()).toList();
+    final List<String> userChatsList =
+        (map['userChatsList'] as List).map((item) => item.toString()).toList();
 
     return UserProfile(
-      uid: map['uid'] ?? '',
-      fullName: map['fullName'] ?? '',
-      email: map['email'] ?? '',
-      isAdmin: map['isAdmin'] ?? false,
-      joinedDateTime: (map['joinedDateTime'] as Timestamp).toDate(),
-      phoneNumber: map['phoneNumber'] ?? '',
-      biography: map['biography'] ?? '',
-      preferenceList: map['preferenceList'] as List<dynamic>,
-      imgUrl: map['imgUrl'] ?? '',
-      dateOfBirth: map['dateOfBirth'],
-      gender: map['gender'] ?? '',
-      // userChatsList: userChatsList,
-      userChatsList:map["userChatsList"] as List<dynamic>
-    );
+        uid: map['uid'] ?? '',
+        fullName: map['fullName'] ?? '',
+        email: map['email'] ?? '',
+        isAdmin: map['isAdmin'] ?? false,
+        joinedDateTime: (map['joinedDateTime'] as Timestamp).toDate(),
+        phoneNumber: map['phoneNumber'] ?? '',
+        biography: map['biography'] ?? '',
+        preferenceList: map['preferenceList'] as List<dynamic>,
+        imgUrl: map['imgUrl'] ?? '',
+        dateOfBirth: map['dateOfBirth'],
+        gender: map['gender'] ?? '',
+        userChatsList: map["userChatsList"] as List<dynamic>);
   }
 }

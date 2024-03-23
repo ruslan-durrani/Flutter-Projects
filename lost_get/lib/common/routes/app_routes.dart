@@ -9,15 +9,16 @@ import 'package:lost_get/presentation_layer/screens/Authentication/Signin/sign_i
 import 'package:lost_get/presentation_layer/screens/Authentication/SignUp/sign_up_screen.dart';
 import 'package:lost_get/presentation_layer/screens/ChatBot/chatbot_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Dashboard/dashboard_screen.dart';
+import 'package:lost_get/presentation_layer/screens/Home/QRScanner/qr_code_scanner_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Messenger/chat_screen.dart';
+import 'package:lost_get/presentation_layer/screens/My%20Reports/ModifyReport/modify_report_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Onboarding/onboard_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePassword/change_password.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/ChangePhoneNumberVerified/change_phone_number_verified.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/change_phone_number.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/ChangePhoneNumberVerification/change_phone_number_verification.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/manage_account.dart';
-import '../../models/user_profile.dart';
 import '../../presentation_layer/screens/Profile Settings/Settings/ManageAccount/ChangePassword/ChangePasswordVerified/change_password_verified.dart';
 import '../../presentation_layer/screens/Profile Settings/Settings/UserPreference/user_preference_screen.dart';
 import '../../presentation_layer/screens/Profile Settings/EditProfile/edit_profile.dart';
@@ -101,12 +102,22 @@ class AppRouter {
         return MaterialPageRoute(builder: (context) => ChatScreen(args: args));
 
       case ChatBotScreen.routeName:
-        return MaterialPageRoute(builder: (context) =>  ChatBotScreen());
+        return MaterialPageRoute(builder: (context) => ChatBotScreen());
 
-        case ItemDetailScreen.routeName:
-        final ReportItemModel reportedItem = routeSettings.arguments as ReportItemModel;
-        return MaterialPageRoute(builder: ((context) => ItemDetailScreen(item: reportedItem)));
+      case ItemDetailScreen.routeName:
+        final ReportItemModel reportedItem =
+            routeSettings.arguments as ReportItemModel;
+        return MaterialPageRoute(
+            builder: ((context) => ItemDetailScreen(item: reportedItem)));
 
+      case QRCodeScannerScreen.routeName:
+        return MaterialPageRoute(
+            builder: (context) => const QRCodeScannerScreen());
+
+      case ModifyReportScreen.routeName:
+        final args = routeSettings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: ((context) => ModifyReportScreen(id: args['id'])));
     }
     return null;
   }

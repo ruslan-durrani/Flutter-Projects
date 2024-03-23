@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location/location.dart';
 import 'package:lost_get/models/report_item.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
@@ -40,7 +41,6 @@ class ReportItemRepository extends BaseUsersRepository {
       // Handle successful addition if needed
       return true;
     } catch (e) {
-      print(e.toString());
       return false;
     }
   }
@@ -60,8 +60,120 @@ class ReportItemRepository extends BaseUsersRepository {
 
       return reports;
     } catch (e) {
-      print('Error fetching user reports: $e');
       return [];
+    }
+  }
+
+  Future<ReportItemModel?> getAUserReport(String reportId) async {
+    try {
+      final snapshot = await _firebaseFirestore
+          .collection("reportItems")
+          .where("id", isEqualTo: reportId)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        // Handle the case where no document with the given ID is found
+        return null;
+      }
+
+      final ReportItemModel report =
+          ReportItemModel.fromSnapshot(snapshot.docs.first);
+
+      return report;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<bool> deleteUserReport(String reportId) async {
+    try {
+      final snapshot = await _firebaseFirestore
+          .collection("reportItems")
+          .where("id", isEqualTo: reportId)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return false;
+      }
+
+      final document = snapshot.docs.first;
+
+      await _firebaseFirestore
+          .collection("reportItems")
+          .doc(document.id)
+          .delete();
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateReport(
+      String reportId,
+      GeoPoint? coordinate,
+      String? status,
+      String? country,
+      String? city,
+      String? address,
+      String? title,
+      String? description) async {
+    try {
+      final snapshot = await _firebaseFirestore
+          .collection("reportItems")
+          .where("id", isEqualTo: reportId)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return false;
+      }
+
+      final document = snapshot.docs.first;
+
+      // Prepare the fields to update
+      Map<String, dynamic> updateData = {};
+      if (coordinate != null) updateData['coordinates'] = coordinate;
+      if (city != null) updateData["city"] = city;
+      if (address != null) updateData["address"] = address;
+      if (country != null) updateData["country"] = country;
+      if (status != null) updateData['status'] = status;
+      if (title != null) updateData['title'] = title;
+      if (description != null) updateData['description'] = description;
+
+      if (updateData.isNotEmpty) {
+        await document.reference.update(updateData);
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> markReportAsRecovered(String reportId) async {
+    try {
+      final snapshot = await _firebaseFirestore
+          .collection("reportItems")
+          .where("id", isEqualTo: reportId)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return false;
+      }
+
+      final document = snapshot.docs.first;
+
+      // Prepare the fields to update
+      Map<String, dynamic> updateData = {};
+      updateData['recovered'] = true;
+
+      if (updateData.isNotEmpty) {
+        await document.reference.update(updateData);
+      }
+
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }

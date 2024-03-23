@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,14 +15,15 @@ import 'package:lost_get/business_logic_layer/Provider/change_theme_mode.dart';
 import 'package:lost_get/common/constants/add_report_constant.dart';
 import 'package:lost_get/common/constants/colors.dart';
 import 'package:lost_get/models/report_item.dart';
-import 'package:lost_get/presentation_layer/screens/My%20Reports/my_reports_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Add%20Report/map_screen.dart';
 import 'package:lost_get/presentation_layer/widgets/alert_dialog.dart';
 import 'package:lost_get/presentation_layer/widgets/button.dart';
+import 'package:lost_get/presentation_layer/widgets/controller_validators.dart';
 import 'package:lost_get/presentation_layer/widgets/custom_dialog.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddReportDetailScreen extends StatefulWidget {
   static const routeName = '/add_report_detail_screen';
@@ -250,16 +253,22 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                           color: Colors.grey.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(5)),
                       child: ListTile(
-                        contentPadding: const EdgeInsets.all(0),
+                        contentPadding: const EdgeInsets.all(5),
                         leading: CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: SvgPicture.asset(
-                            categoryData[widget.categoryId]["imageUrl"],
+                            categoryData[widget.categoryId - 1]["imageUrl"],
                           ),
                         ),
                         title: Text(
-                          "${categoryData[widget.categoryId]["title"]}, ${widget.subCategoryName}",
+                          "${categoryData[widget.categoryId - 1]["title"]}",
                           style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        subtitle: Text(
+                          widget.subCategoryName,
+                          style: GoogleFonts.roboto(
+                              fontSize: 11.sp,
+                              color: const Color.fromARGB(255, 91, 91, 91)),
                         ),
                       ),
                     ),
@@ -303,6 +312,9 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                       child: TextFormField(
                         controller: _titleController,
                         textAlign: TextAlign.start,
+                        validator: (value) {
+                          return ControllerValidator.validateTitle(value!);
+                        },
                         onChanged: (title) {
                           // editProfileBloc.add(FullNameOnChangedEvent(fullName));
                         },
@@ -330,6 +342,10 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                         onChanged: (title) {
                           // editProfileBloc.add(FullNameOnChangedEvent(fullName));
                         },
+                        validator: (value) {
+                          return ControllerValidator.validateDescription(
+                              value!);
+                        },
                         style: Theme.of(context).textTheme.bodySmall,
                         maxLines: 5,
                         keyboardType: TextInputType.text,
@@ -349,27 +365,36 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                     CreateButton(
                         title: "Submit Report",
                         handleButton: () {
-                          ReportItemModel reportItemModel = ReportItemModel(
-                              title: _titleController.text,
-                              description: _descriptionController.text,
-                              status: statusIsSelected[0] == true
-                                  ? 'Lost'
-                                  : 'Found',
-                              userId: FirebaseAuth.instance.currentUser?.uid,
-                              category: categoryData[widget.categoryId]
-                                  ["title"],
-                              subCategory: widget.subCategoryName,
-                              publishDateTime: DateTime.now(),
-                              address: locationData["address"],
-                              city: locationData["city"],
-                              country: locationData["country"],
-                              coordinates: GeoPoint(locationData["latitude"],
-                                  locationData["longitude"]),
-                              flagged: false,
-                              published: true);
-                          addReportDetailBloc.add(PublishButtonClickedEvent(
-                              reportItemModel: reportItemModel,
-                              imageFiles: _images));
+                          if (_images.isEmpty) {
+                            createToast(description: "Please add images");
+                          } else if (location == "Choose") {
+                            createToast(description: "Please add location");
+                          } else if (formKey.currentState!.validate()) {
+                            final id = const Uuid().v4();
+                            ReportItemModel reportItemModel = ReportItemModel(
+                                id: id,
+                                recovered: false,
+                                title: _titleController.text,
+                                description: _descriptionController.text,
+                                status: statusIsSelected[0] == true
+                                    ? 'Lost'
+                                    : 'Found',
+                                userId: FirebaseAuth.instance.currentUser?.uid,
+                                category: categoryData[widget.categoryId - 1]
+                                    ["title"],
+                                subCategory: widget.subCategoryName,
+                                publishDateTime: DateTime.now(),
+                                address: locationData["address"],
+                                city: locationData["city"],
+                                country: locationData["country"],
+                                coordinates: GeoPoint(locationData["latitude"],
+                                    locationData["longitude"]),
+                                flagged: false,
+                                published: false);
+                            addReportDetailBloc.add(PublishButtonClickedEvent(
+                                reportItemModel: reportItemModel,
+                                imageFiles: _images));
+                          }
                         }),
                   ],
                 ),
@@ -432,6 +457,8 @@ PreferredSizeWidget? createAppBar(context, String text) {
               Navigator.pop(context);
             },
             () {
+              Navigator.pop(context);
+              Navigator.pop(context);
               Navigator.pop(context);
               Navigator.pop(context);
             },

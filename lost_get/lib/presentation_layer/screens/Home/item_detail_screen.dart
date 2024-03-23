@@ -113,7 +113,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                             color: AppColors.primaryColor,
                             size: 50.0,
                             ),
-                        ));
+                        )
+                        );
                       },);},
                     child: CachedNetworkImage(
 

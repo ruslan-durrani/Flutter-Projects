@@ -50,9 +50,9 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
             leading: IconButton(
               onPressed: () => Navigator.pop(context),
               icon: SvgPicture.asset(
-                'assets/icons/exit_light.svg',
-                width: 20,
-                height: 20,
+                'assets/icons/back.svg',
+                width: 32,
+                height: 32,
                 colorFilter: colorFilter,
               ),
             ),
@@ -68,7 +68,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                       context,
                       AddReportDetailScreen.routeName,
                       arguments: {
-                        'categoryId': widget.categoryId,
+                        'categoryId': categoryList['id'],
                         'subCategoryName': data["title"]
                       },
                     );

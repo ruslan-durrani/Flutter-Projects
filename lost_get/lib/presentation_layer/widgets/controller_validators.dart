@@ -27,4 +27,20 @@ class ControllerValidator {
     }
     return null;
   }
+
+  static String? validateTitle(String value) {
+    if (value.isEmpty) {
+      return 'Title field is empty';
+    } else if (value.length < 10) {
+      return 'It must be at least 10 characters';
+    }
+  }
+
+  static String? validateDescription(String value) {
+    if (value.isEmpty) {
+      return 'Description field is empty';
+    } else if (value.length < 30) {
+      return 'It must be at least 30 characters';
+    }
+  }
 }

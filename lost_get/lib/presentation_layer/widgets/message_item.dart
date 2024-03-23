@@ -1,4 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import '../../common/constants/colors.dart';
 
 class MessageItem extends StatefulWidget {
   final bool isReceiver;
@@ -73,17 +77,25 @@ class _MessageItemState extends State<MessageItem> {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            widget.photoUrl,
+          child: CachedNetworkImage(
             fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Center(child: CircularProgressIndicator());
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Text('Unable to load image');
-            },
+            imageUrl: widget.photoUrl,
+            placeholder: (context, url) => const SpinKitFadingCircle(
+              color: AppColors.primaryColor,
+              size: 50.0,
+            ),
           ),
+          // child: Image.network(
+          //   widget.photoUrl,
+          //   fit: BoxFit.cover,
+          //   loadingBuilder: (context, child, loadingProgress) {
+          //     if (loadingProgress == null) return child;
+          //     return Center(child: CircularProgressIndicator());
+          //   },
+          //   errorBuilder: (context, error, stackTrace) {
+          //     return Text('Unable to load image');
+          //   },
+          // ),
         ),
 
       ],

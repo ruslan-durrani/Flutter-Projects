@@ -44,6 +44,7 @@ dependencies:
   cloud_firestore: ^4.8.5
   shared_preferences: ^2.2.0
   equatable:
+  cached_network_image: ^3.3.1
   dropdown_textfield: ^1.0.8
   syncfusion_flutter_datepicker: ^22.2.10
   syncfusion_flutter_calendar: ^22.2.11

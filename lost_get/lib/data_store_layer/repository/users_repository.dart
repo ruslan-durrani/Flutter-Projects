@@ -21,6 +21,7 @@ class UserRepository extends BaseUsersRepository {
           await _firebaseFirestore.collection('users').doc(uid).get();
       userData = UserProfile.fromSnapshot(snapshot);
     } catch (e) {
+      print("Error is $e");
       return null;
     }
     return userData;

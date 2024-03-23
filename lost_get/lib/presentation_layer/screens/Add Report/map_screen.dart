@@ -7,6 +7,8 @@ import 'package:geocoding/geocoding.dart' as geocode;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:location_geocoder/geocoder.dart';
+import 'package:location_geocoder/services/distant_google.dart';
 import 'package:lost_get/business_logic_layer/Provider/change_theme_mode.dart';
 import 'package:lost_get/common/constants/colors.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
@@ -30,6 +32,7 @@ class _MapScreenState extends State<MapScreen> {
   var uuid = const Uuid();
   late final String _sessionToken = uuid.v4();
   List<dynamic> _placeList = [];
+  String addressDescriptionFromPlaceId = "";
 
   @override
   void initState() {
@@ -53,11 +56,13 @@ class _MapScreenState extends State<MapScreen> {
       var data = json.decode(response.body);
 
       print('mydata');
-      print(data);
 
       if (response.statusCode == 200) {
         setState(() {
           _placeList = json.decode(response.body)['predictions'];
+
+          // fullAddress = json.decode(R)
+          // print("")
         });
       } else {
         throw Exception('Failed to load predictions');
@@ -198,6 +203,33 @@ class _MapScreenState extends State<MapScreen> {
                                 FocusScope.of(context).unfocus();
                                 fetchLatLongFromPlaceId(
                                     _placeList[index]["place_id"]);
+                                addressDescriptionFromPlaceId = "";
+                                for (var place in _placeList) {
+                                  if (place["place_id"].toString() ==
+                                      _placeList[index]["place_id"]) {
+                                    var formatAddress = place["description"]
+                                        .toString()
+                                        .split(",");
+                                    for (int i = 0;
+                                        i < formatAddress.length;
+                                        i++) {
+                                      if (formatAddress[i + 1]
+                                          .toString()
+                                          .contains("Pakistan")) {
+                                        break;
+                                      } else {
+                                        addressDescriptionFromPlaceId +=
+                                            formatAddress[i];
+                                        if (!formatAddress[i + 2]
+                                            .toString()
+                                            .contains("Pakistan")) {
+                                          addressDescriptionFromPlaceId += ", ";
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+
                                 setState(() {
                                   _placeList.clear();
                                   _searchController.clear();
@@ -230,23 +262,42 @@ class _MapScreenState extends State<MapScreen> {
             child: InkWell(
                 onTap: () async {
                   // Fetch the placemarks from the coordinates
+
                   List<geocode.Placemark> list =
                       await geocode.placemarkFromCoordinates(
                     _lastMapPosition.latitude,
                     _lastMapPosition.longitude,
                   );
 
-                  geocode.Placemark fullAddress = list[0];
+                  late geocode.Placemark fullAddress;
+                  var googleGeocoding = GoogleGeocoding(
+                      "AIzaSyByCwDRrNx0LSAdqAQIfRdg57NpVD7G8fY");
+                  var result = await googleGeocoding
+                      .findAddressesFromCoordinates(Coordinates(
+                          _lastMapPosition.latitude,
+                          _lastMapPosition.longitude));
+                  if (result.isNotEmpty && result[0].locality != null) {
+                    if (result[0].locality!.isNotEmpty) {
+                      fullAddress = list[0];
+                    }
+                  } else {
+                    fullAddress = list[0];
+                  }
                   String address =
                       "${fullAddress.thoroughfare} ${fullAddress.subThoroughfare} ${fullAddress.subLocality}";
                   String city = fullAddress.locality.toString();
                   String country = fullAddress.country.toString();
 
+                  print(
+                      "Thogouh fare is " + fullAddress.thoroughfare.toString());
+
                   // ignore: use_build_context_synchronously
                   Navigator.pop(context, {
                     "latitude": _lastMapPosition.latitude,
                     "longitude": _lastMapPosition.longitude,
-                    "address": address,
+                    "address": fullAddress.thoroughfare!.isEmpty
+                        ? addressDescriptionFromPlaceId
+                        : address,
                     "city": city,
                     "country": country,
                   });
