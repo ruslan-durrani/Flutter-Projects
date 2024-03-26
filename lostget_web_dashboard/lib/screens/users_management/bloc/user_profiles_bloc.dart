@@ -16,6 +16,7 @@ class UserProfilesBloc extends Bloc<UserProfilesEvent, UserProfilesState> {
     on<SearchFilterUsersProfilesEvent>(_searchFilterUsersProfilesEvent);
   }
   List<UserProfile> userProfileList = [];
+
   void _fetchUserProfilesEvent(
       FetchUserProfilesEvent event,
       Emitter<UserProfilesState> emit,
@@ -27,22 +28,44 @@ class UserProfilesBloc extends Bloc<UserProfilesEvent, UserProfilesState> {
       await for (QuerySnapshot<Map<String, dynamic>> snapshot
       in userProfilesStream) {
         final userProfiles = snapshot.docs.map((doc) {
-
-        print("COUNT IS _________ ${UserProfile.fromSnapshot(doc)}");
-        print(UserProfile.fromSnapshot(doc).fullName);
+          print(UserProfile.fromSnapshot(doc).fullName);
           return UserProfile.fromSnapshot(doc);
         }).toList();
-        print("fullName");
         userProfileList = userProfiles;
         emit(UserProfilesLoaded(userProfiles));
       }
     } catch (e, stacktrace) {
-      print("Error fetching user profiles: $e");
-      print("Stacktrace: $stacktrace");
       emit(UserProfilesError('Failed to fetch user profiles. Error: $e'));
     }
-
   }
+
+  // void _fetchUserProfilesEvent(
+  //     FetchUserProfilesEvent event,
+  //     Emitter<UserProfilesState> emit,
+  //     ) async {
+  //   try {
+  //     emit(UserProfilesLoading([]));
+  //     Stream<QuerySnapshot<Map<String, dynamic>>> userProfilesStream =
+  //     firestore.collection('users').snapshots();
+  //     await for (QuerySnapshot<Map<String, dynamic>> snapshot
+  //     in userProfilesStream) {
+  //       final userProfiles = snapshot.docs.map((doc) {
+  //
+  //       print("COUNT IS _________ ${UserProfile.fromSnapshot(doc)}");
+  //       print(UserProfile.fromSnapshot(doc).fullName);
+  //         return UserProfile.fromSnapshot(doc);
+  //       }).toList();
+  //       print("fullName");
+  //       userProfileList = userProfiles;
+  //       emit(UserProfilesLoaded(userProfiles));
+  //     }
+  //   } catch (e, stacktrace) {
+  //     print("Error fetching user profiles: $e");
+  //     print("Stacktrace: $stacktrace");
+  //     emit(UserProfilesError('Failed to fetch user profiles. Error: $e'));
+  //   }
+  //
+  // }
 
   FutureOr<void> _searchFilterUsersProfilesEvent(SearchFilterUsersProfilesEvent event, Emitter<UserProfilesState> emit) {
     String filteredTextNameOrEmailOrPhone = event.controllerText;

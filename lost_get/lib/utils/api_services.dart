@@ -6,7 +6,8 @@ import 'package:lost_get/presentation_layer/widgets/toast.dart';
 
 Future<void> checkProfaneImages(
     {required String id, required String uid}) async {
-  var baseUrl = Uri.parse("http://3.89.7.44:5000/check-images/");
+  var baseUrl = Uri.parse("http://54.205.162.42:5000/check-images/");
+  // var baseUrl = Uri.parse("http://3.89.7.44:5000/check-images/");
   final response = await http.post(
     baseUrl,
     headers: <String, String>{
@@ -27,7 +28,8 @@ Future<void> checkProfaneImages(
 
 Future<List<ReportItemModel>> recommendReports(String uid) async {
   print("working");
-  var baseUrl = Uri.parse("http://54.175.58.241:5001/recommend-reports/");
+  var baseUrl = Uri.parse("http://54.242.224.177:5001/recommend-reports/");
+  // var baseUrl = Uri.parse("http://54.175.58.241:5001/recommend-reports/");
   final response = await http.post(
     baseUrl,
     headers: <String, String>{

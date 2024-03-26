@@ -37,7 +37,7 @@ class _MessageItemState extends State<MessageItem> {
 
               padding: widget.photoUrl.isEmpty ? EdgeInsets.symmetric(horizontal: 10, vertical: 8) : EdgeInsets.all(0),
               decoration: BoxDecoration(
-                color: widget.isReceiver ? Colors.grey[300] : Colors.blue[400],
+                color: widget.isReceiver ? Colors.grey[300] : AppColors.primaryColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),

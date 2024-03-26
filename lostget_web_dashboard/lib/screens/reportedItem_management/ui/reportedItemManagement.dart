@@ -43,6 +43,7 @@ class ReportedItemManagement extends StatelessWidget {
       toasterFlutter('Error deleting user: $error');
     }
   }
+
   @override
   Widget build(BuildContext context) {
 
@@ -57,56 +58,72 @@ class ReportedItemManagement extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Row(
-          //   children: [
-          //     Expanded(
-          //       child: Padding(
-          //         padding: const EdgeInsets.all(28.0),
-          //         child: SearchBar(
-          //           hintText: "Search for Item",
-          //           leading: Padding(
-          //             padding: EdgeInsets.all(10), child: Icon(Icons.search),),
-          //           onChanged: (value) {
-          //
-          //           },
-          //           controller: searchController,
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
 
-        Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          DropdownButton<String>(
-            value: selectedFilter,
-            items: <String>['title', 'description', 'location'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (newValue) {
-              selectedFilter = newValue!;
-              // You might need to adjust your state management here
-            },
-          ),
-          Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(28.0),
-                child: SearchBar(
-                  hintText: "Search for Item",
-                  leading: Padding(
-                    padding: EdgeInsets.all(10), child: Icon(Icons.search),),
-                  onChanged: (value) {
-                  reportedItemsProvider.setSearchQuery(value);
-                  reportedItemsProvider.setFilterType(selectedFilter);
-                  reportedItemsProvider.fetchReportedItems();
-                  },
-                  controller: searchController,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SearchBar(
+                    controller: searchController,
+                    hintText: "Search for Item",
+                    leading: Padding(
+                      padding: EdgeInsets.all(10), child: Icon(Icons.search),),
+                    onChanged: (value) {
+                      reportedItemsProvider.setSearchQuery(value);
+                    },
+                  ),
                 ),
-              ),)]),
+                SizedBox(width: 10),
+                DropdownButton<String>(
+                  value: selectedFilter,
+                  onChanged: (newValue) {
+                    selectedFilter = newValue!;
+                    reportedItemsProvider.setFilterType(newValue);
+                  },
+                  items: <String>['title', 'description', 'location']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
+
+        // Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // children: [
+        //   DropdownButton<String>(
+        //     value: selectedFilter,
+        //     items: <String>['title', 'description', 'location'].map((String value) {
+        //       return DropdownMenuItem<String>(
+        //         value: value,
+        //         child: Text(value),
+        //       );
+        //     }).toList(),
+        //     onChanged: (newValue) {
+        //       selectedFilter = newValue!;
+        //       // You might need to adjust your state management here
+        //     },
+        //   ),
+        //   Expanded(
+        //       child: Padding(
+        //         padding: const EdgeInsets.all(28.0),
+        //         child: SearchBar(
+        //           hintText: "Search for Item",
+        //           leading: Padding(
+        //             padding: EdgeInsets.all(10), child: Icon(Icons.search),),
+        //           onChanged: (value) {
+        //           reportedItemsProvider.setSearchQuery(value);
+        //           reportedItemsProvider.setFilterType(selectedFilter);
+        //           reportedItemsProvider.fetchReportedItems();
+        //           },
+        //           controller: searchController,
+        //         ),
+        //       ),)]),
 
           Container(
             alignment: Alignment.center,

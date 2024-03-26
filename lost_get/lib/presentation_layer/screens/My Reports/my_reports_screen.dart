@@ -290,6 +290,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                   itemBuilder: ((context, index) {
                     var currentReport = state.reportItems[index];
                     return Container(
+
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -305,7 +306,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                       ),
                       margin: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 5),
-                      height: 100.h,
+                      height: 110.h,
                       width: double.infinity,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lost_get/common/constants/colors.dart';
@@ -334,8 +335,11 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 final ReportItemModel item = snapshot.data![index];
-                return ReportedItemCard(
-                    item: item, onTap: () => onItemTapped(item));
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ReportedItemCard(
+                      item: item, onTap: () => onItemTapped(item)),
+                );
               },
             );
           }

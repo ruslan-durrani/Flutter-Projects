@@ -40,19 +40,16 @@ class MyData extends DataTableSource {
       });
     }
   }
+
   Future<void> deleteUserByEmail(String userEmail) async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      final userDoc = await FirebaseFirestore.instance
           .collection('users')
-          .where('email', isEqualTo: userEmail)
+          .doc(userEmail) // Directly using document ID for deletion
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        // Assuming there is only one user with the specified email
-        var userDoc = querySnapshot.docs[0];
-
+      if (userDoc.exists) {
         await userDoc.reference.delete();
-
         toasterFlutter('User with email $userEmail successfully deleted from Firestore.');
       } else {
         toasterFlutter('No user found with the specified email.');
@@ -61,6 +58,26 @@ class MyData extends DataTableSource {
       toasterFlutter('Error deleting user: $error');
     }
   }
+
+
+  // Future<void> deleteUserByEmail(String userEmail) async {
+  //   try {
+  //     final userDoc = await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(userEmail) // Directly using document ID for deletion
+  //         .get();
+  //
+  //     if (userDoc.exists) {
+  //       await userDoc.reference.delete();
+  //       toasterFlutter('User with email $userEmail successfully deleted from Firestore.');
+  //     } else {
+  //       toasterFlutter('No user found with the specified email.');
+  //     }
+  //   } catch (error) {
+  //     toasterFlutter('Error deleting user: $error');
+  //   }
+  // }
+
   @override
   DataRow getRow(int index) {
     return DataRow(selected: state.userList.contains(userLists[index])?true:false,onSelectChanged: (value){

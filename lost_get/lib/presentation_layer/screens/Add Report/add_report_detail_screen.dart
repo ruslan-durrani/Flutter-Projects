@@ -231,14 +231,16 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                         addReportDetailBloc.add(ItemReportStatusToggleEvent());
                       },
                       isSelected: statusIsSelected,
+
                       children: <Widget>[
+
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 28.h),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width *.15),
                           child: const Text('Lost',
                               style: TextStyle(fontSize: 16)),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 28.h),
+                          padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width *.15),
                           child: const Text('Found',
                               style: TextStyle(fontSize: 16)),
                         ),

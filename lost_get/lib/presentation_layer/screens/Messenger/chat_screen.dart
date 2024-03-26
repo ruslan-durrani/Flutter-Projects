@@ -13,6 +13,8 @@ import '../../widgets/message_item.dart';
 import '../../widgets/my_text_field.dart';
 import 'package:lost_get/models/user_profile.dart';
 
+import '../Home/item_detail_screen.dart';
+
 class ChatScreen extends StatefulWidget {
   static const routeName = "/chatScreen";
   final Map<String, dynamic> args;
@@ -43,7 +45,6 @@ class _ChatScreenState extends State<ChatScreen> {
     _userReceiver = widget.args['userProfile'];
     _reportedItemId = widget.args['reportedItemId'];
     _chatService.markMessagesAsRead(_userReceiver.uid!);
-
     _messagesSubscription = _chatService.getUsersMessage(_userReceiver.uid).listen(
             (QuerySnapshot snapshot) {
           final List<Map<String, dynamic>> messages = snapshot.docs.map((doc) {
@@ -121,6 +122,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _sendMessage({String? imagePath}) async {
     final String receiverId = _userReceiver.uid!;
+    _chatService.markMessagesAsRead(_userReceiver.uid!);
     if (imagePath != null) {
       await _chatService.sendMessage(receiverId, photoUrl: imagePath);
     } else if (_messageController.text.isNotEmpty) {
@@ -242,12 +244,15 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.attach_file),
+            icon: const Icon(Icons.attach_file, color: AppColors.primaryColor,),
             onPressed: _handleAttachmentPressed,
           ),
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () => _sendMessage(),
+          Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(50),color: AppColors.primaryColor),
+            child: IconButton(
+              icon: const Icon(Icons.send, color: Colors.white,),
+              onPressed: () => _sendMessage(),
+            ),
           ),
         ],
       ),
@@ -319,7 +324,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 Icons.arrow_forward_ios_sharp,
                 color: Colors.white,
               ),
-              onPressed: () {},
+              onPressed: ()=> Navigator.pushNamed(context, ItemDetailScreen.routeName, arguments: _reportItem),
+              // onPressed: () {},
             ),
           ],
         ),

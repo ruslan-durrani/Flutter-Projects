@@ -122,9 +122,10 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     Text(
+                      maxLines: 2,
                       softWrap: true,
                       widget.item.description ?? 'No description provided.',
                       style: Theme.of(context).textTheme.bodySmall,

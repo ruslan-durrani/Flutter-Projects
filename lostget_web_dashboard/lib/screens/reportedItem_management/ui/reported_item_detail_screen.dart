@@ -48,7 +48,7 @@ class _ItemDetailScreenWebState extends State<ItemDetailScreenWeb> {
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: false,
-                viewportFraction: 1.0,
+                viewportFraction: 3.0,
                 enableInfiniteScroll: false, // Disables infinite scrolling
                 enlargeCenterPage: true,
                 pageSnapping: widget.item.imageUrls!.length > 1,
