@@ -18,6 +18,7 @@ class ReportedItemsCarousel extends StatelessWidget {
     return CarouselSlider(
       options: CarouselOptions(
         autoPlay: false,
+
         aspectRatio: 1,
         padEnds: true,
         enlargeCenterPage: false,

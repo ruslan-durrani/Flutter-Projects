@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lost_get/common/constants/colors.dart';
 import 'package:lost_get/presentation_layer/screens/Home/QRScanner/qr_code_scanner_screen.dart';
+import 'package:lost_get/presentation_layer/screens/Home/SearchPage/search_page.dart';
+import 'package:lost_get/presentation_layer/screens/Home/ViewAllItems/view_all_items.dart';
 import 'package:lost_get/presentation_layer/screens/Home/controller/home_screen_reports_controller.dart';
 import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCard.dart';
@@ -54,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: SvgPicture.asset(
                 'assets/icons/search_icon.svg'), // Replace with your SVG file path
             onPressed: () {
-              // Action for search icon
+              Navigator.pushNamed(context, SearchPage.routeName);
             },
           ),
           IconButton(
@@ -89,12 +91,12 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildBodyContent()
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        onPressed: () => Navigator.pushNamed(context, ChatBotScreen.routeName),
-        child: const Image(
-            height: 40, image: AssetImage("./assets/icons/bot.png")),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.white,
+      //   onPressed: () => Navigator.pushNamed(context, ChatBotScreen.routeName),
+      //   child: const Image(
+      //       height: 40, image: AssetImage("./assets/icons/bot.png")),
+      // ),
     );
   }
 
@@ -105,109 +107,111 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBodyContent() {
     switch (_currentFilter) {
       case "All":
-        return Container(
-          padding: const EdgeInsets.all(10),
-          height: MediaQuery.of(context).size.height * .7,
+        return Expanded(
+          // height: MediaQuery.of(context).size.height * .7,
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                FutureBuilder(
-                  future: controller.fetchAllItems(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: Container());
-                    } else if (snapshot.hasError) {
-                      return const Center(child: Text("Error fetching data"));
-                    } else {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            controller.listOfRecommendedItems.isNotEmpty
-                                ? getSectionHeading(
-                                    "Recommendations", context, () {})
-                                : Container(),
-                            controller.listOfRecommendedItems.isNotEmpty
-                                ? ReportedItemsCarousel(
-                                    reportedItems:
-                                        controller.listOfRecommendedItems,
-                                    onTap: onItemTapped)
-                                : Container(),
-                            // Add more sections as needed
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-                FutureBuilder(
-                  future: controller.fetchAllItems(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return getShimmerContainer();
-                    } else if (snapshot.hasError) {
-                      return const Center(child: Text("Error fetching data"));
-                    } else {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            getSectionHeading("Nearby", context, () {}),
-                            ReportedItemsCarousel(
-                                reportedItems: controller.listOfNearbyItems,
-                                onTap: (item) {}),
-                            // Add more sections as needed
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-                FutureBuilder(
-                  future: controller.fetchAllItems(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return getShimmerContainer();
-                    } else if (snapshot.hasError) {
-                      return const Center(child: Text("Error fetching data"));
-                    } else {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            getSectionHeading("Categories", context, () {}),
-                            ReportedItemsCarousel(
-                                reportedItems:
-                                    controller.listOfRecommendedItems,
-                                onTap: (item) => onItemTapped(item)),
-                            // Add more sections as needed
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-                FutureBuilder(
-                  future: controller.fetchAllItems(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return getShimmerContainer();
-                    } else if (snapshot.hasError) {
-                      return const Center(child: Text("Error fetching data"));
-                    } else {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            getSectionHeading("Recent Uploads", context, () {}),
-                            ReportedItemsCarousel(
-                                reportedItems:
-                                    controller.listOfRecommendedItems,
-                                onTap: (item) => {}),
-                            // Add more sections as needed
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ],
+            child: Container(
+               padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  FutureBuilder(
+                    future: controller.fetchAllItems(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: Container());
+                      } else if (snapshot.hasError) {
+                        return const Center(child: Text("Error fetching data"));
+                      } else {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              controller.listOfRecommendedItems.isNotEmpty
+                                  ? getSectionHeading(
+                                      "Recommendations", context, ()=>onSectionHeaderTapped("Recommendation",controller.listOfRecommendedItems))
+                                  : Container(),
+                              controller.listOfRecommendedItems.isNotEmpty
+                                  ? ReportedItemsCarousel(
+                                      reportedItems:
+                                          controller.listOfRecommendedItems,
+                                      onTap: onItemTapped)
+                                  : Container(),
+                              // Add more sections as needed
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  FutureBuilder(
+                    future: controller.fetchAllItems(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return getShimmerContainer();
+                      } else if (snapshot.hasError) {
+                        return const Center(child: Text("Error fetching data"));
+                      } else {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              getSectionHeading("Nearby", context, ()=>onSectionHeaderTapped("Nearby",controller.listOfRecommendedItems)),
+                              ReportedItemsCarousel(
+                                  reportedItems: controller.listOfNearbyItems,
+                                  onTap: (item) {}),
+                              // Add more sections as needed
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  FutureBuilder(
+                    future: controller.fetchAllItems(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return getShimmerContainer();
+                      } else if (snapshot.hasError) {
+                        return const Center(child: Text("Error fetching data"));
+                      } else {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              getSectionHeading("Categories", context, () {}),
+                              ReportedItemsCarousel(
+                                  reportedItems:
+                                      controller.listOfRecommendedItems,
+                                  onTap: (item) => onItemTapped(item)),
+                              // Add more sections as needed
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  FutureBuilder(
+                    future: controller.myRecentUploads(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return getShimmerContainer();
+                      } else if (snapshot.hasError) {
+                        return const Center(child: Text("Error fetching data"));
+                      } else {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              getSectionHeading("Recent Uploads", context, ()=>onSectionHeaderTapped("Recent Uploads",controller.listOfRecentUploads)),
+                              ReportedItemsCarousel(
+                                  reportedItems:
+                                      controller.listOfRecentUploads,
+                                  onTap: (item) => onItemTapped(item)),
+                              // Add more sections as needed
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -346,5 +350,12 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  onSectionHeaderTapped(String title,List<ReportItemModel> reportedItems) {
+    Navigator.pushNamed(context, ViewAllItems.routeName, arguments: {
+      "title":title,
+      "reportedItemList": reportedItems
+    });
   }
 }

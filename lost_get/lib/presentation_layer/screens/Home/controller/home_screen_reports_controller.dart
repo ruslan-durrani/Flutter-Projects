@@ -30,6 +30,27 @@ class HomeScreenController {
       items = unflaggedItems;
       listOfNearbyItems = items;
       listOfCategories = items;
+    } catch (error) {
+      print("Error fetching items: $error");
+    }
+
+  }
+
+  Future<void> myRecentUploads() async {
+    try {
+      final QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('reportItems').get();
+      List<ReportItemModel> items = querySnapshot.docs.where((element) => element["userId"]==FirebaseAuth.instance.currentUser!.uid)
+          .map((doc) => ReportItemModel.fromSnapshot(doc))
+          .toList();
+
+      // Remove flagged items
+      List<ReportItemModel> unflaggedItems = items
+          .where(
+              (item) => !item.flagged! && !item.recovered! && item.published!)
+          .toList();
+
+      items = unflaggedItems;
       listOfRecentUploads = items;
     } catch (error) {
       print("Error fetching items: $error");

@@ -150,10 +150,12 @@ class _AuthenticationState extends State<Authentication> {
                                               ),
                                             ),
                                           ),
-                                          // SizedBox(
-                                          //     height: 230,
-                                          //     width: 250,
-                                          //     child: Lottie.network("https://lottie.host/86573f1e-f6dd-4282-af3f-cb34d65724ad/poFwVvYZsf.json"))
+                                          SizedBox(
+                                              height: 230,
+                                              width: 250,
+                                              child: Image.asset("./images/auth1.png")
+                                          )
+                                              // child: Lottie.network("https://lottie.host/86573f1e-f6dd-4282-af3f-cb34d65724ad/poFwVvYZsf.json"))
                                         ],
                                       ),
                                     ),
@@ -165,7 +167,7 @@ class _AuthenticationState extends State<Authentication> {
                                             padding: EdgeInsets.symmetric(vertical: appPadding),
                                             child: ListTile(
                                               title: Text(
-                                                "Welcome to LostGet!",
+                                                "Getting Started!",
                                                 textAlign:TextAlign.center,
                                                 style: TextStyle(
                                                     fontSize: 30,
@@ -175,15 +177,49 @@ class _AuthenticationState extends State<Authentication> {
                                               subtitle: Container(
                                                 padding: const EdgeInsets.all(8.0),
                                                 width: 50,
-                                                child: Text("Simplifying lost and found - LostGet, your AI-powered solution.",textAlign:TextAlign.center,),
+                                                child: Text("Begin your LostGet journey by creating a personalized account, enabling you to report lost items or assist in finding them.",textAlign:TextAlign.center,),
                                               ),
                                             ),
                                           ),
-                                          // SizedBox(
-                                          //     height: 230,
-                                          //     width: 250,
+                                          SizedBox(
+                                              height: 230,
+                                              width: 250,
+                                          child: Image.asset("./images/auth2.png")
+                                          ),
                                           //     child: Lottie.network("https://lottie.host/2ea0b8c3-5367-4347-ad7f-142e5f6b4a41/jgcNK5oXV4.json"))
                                               // child: Lottie.network("https://lottie.host/2ea0b8c3-5367-4347-ad7f-142e5f6b4a41/jgcNK5oXV4.json"))
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(vertical: appPadding),
+                                            child: ListTile(
+                                              title: Text(
+                                                "How to Use LostGet?",
+                                                textAlign:TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 30,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: textColor),
+                                              ),
+                                              subtitle: Container(
+                                                padding: const EdgeInsets.all(8.0),
+                                                width: 50,
+                                                child: Text("Easily navigate the process of reporting lost belongings with step-by-step guidance and AI assistance, ensuring accurate and efficient submissions.",textAlign:TextAlign.center,),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                              height: 230,
+                                              width: 250,
+                                              child: Image.asset("./images/auth3.png")
+                                          ),
+                                          //     child: Lottie.network("https://lottie.host/2ea0b8c3-5367-4347-ad7f-142e5f6b4a41/jgcNK5oXV4.json"))
+                                          // child: Lottie.network("https://lottie.host/2ea0b8c3-5367-4347-ad7f-142e5f6b4a41/jgcNK5oXV4.json"))
                                         ],
                                       ),
                                     ),

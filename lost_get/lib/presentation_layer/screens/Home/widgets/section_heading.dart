@@ -13,7 +13,7 @@ Widget getSectionHeading(title, context, onTap) {
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         GestureDetector(
-            onTap: BorderRadius.only,
+            onTap: onTap,
             child: Text(
               "View all",
               style: TextStyle(

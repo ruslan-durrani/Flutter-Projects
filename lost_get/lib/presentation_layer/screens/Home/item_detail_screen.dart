@@ -333,9 +333,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
+                            if(FirebaseAuth.instance.currentUser!.uid != widget.item.userId)
                             CreateButton(title: "Send message", handleButton: () async {
                               // This button now correctly navigates to the ChatScreen with the userProfile
-                              if(FirebaseAuth.instance.currentUser!.uid == widget.item.userId) return;
                               Navigator.pushNamed(
                                 context,
                                 ChatScreen.routeName,

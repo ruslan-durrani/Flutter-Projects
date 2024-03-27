@@ -218,6 +218,7 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                     createTitle(context, "Status"),
                     spacer(),
                     ToggleButtons(
+                      direction: Axis.horizontal,
                       borderColor: Colors.grey,
                       fillColor: Colors.transparent,
                       borderWidth: 1,
@@ -234,13 +235,15 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
 
                       children: <Widget>[
 
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width *.15),
+                        Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width * .445,
                           child: const Text('Lost',
                               style: TextStyle(fontSize: 16)),
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width *.15),
+                        Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width * .445,
                           child: const Text('Found',
                               style: TextStyle(fontSize: 16)),
                         ),

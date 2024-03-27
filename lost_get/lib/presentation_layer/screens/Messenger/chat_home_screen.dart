@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lost_get/presentation_layer/widgets/toast.dart';
 import 'package:provider/provider.dart';
 import '../../../common/constants/colors.dart';
 import '../../../models/user_profile.dart';
@@ -41,13 +42,20 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
   }
 
   Widget _buildSearchField() {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+  height: 50,
+  decoration: BoxDecoration(color: AppColors.lightPurpleColor,borderRadius: BorderRadius.circular(100)),
       child: TextField(
+        autofocus: false,
         controller: _searchController,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.search),
           hintText: "Search",
+          
+          hintStyle: TextStyle(
+          fontSize: 13
+          ),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
             icon: const Icon(Icons.clear),
@@ -57,14 +65,28 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
             },
           )
               : null,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(105.0)),
+              borderSide: BorderSide.none
+          ),
         ),
+
       ),
     );
   }
 
 
-
+deleteChatCalled(UserProfile profile) async {
+  await _chatService.deleteChatWithRecepient(profile.uid);
+  createToast(description: '${profile.fullName} chats are deleted');
+  // if(isDeleted){
+  //
+  // }
+  // else{
+  //   createToast(description: 'Failed to delete chat, please try again');
+  // }
+  // Then show a snackbar.
+}
 
   Widget _buildStreamHomeUser() {
     // Extract the current user's UID safely.
@@ -127,14 +149,49 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
                 }
 
                 // Build the list tile with user profile and chat metadata.
-                return ListTile(
-                  leading: userProfile.imgUrl!.isNotEmpty?CircleAvatar(backgroundImage: NetworkImage("${userProfile.imgUrl}"),):Icon(Icons.person),
-                  title: Text(userProfile.fullName ?? "Unknown"),
-                  subtitle: unreadCount > 0 ? Text("$unreadCount new messages") : Text(lastMsg),
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    ChatScreen.routeName,
-                    arguments: {'userProfile': userProfile, "reportedItemId": chatMetaSnapshot.data!["reportedItemId"]},
+                return Dismissible(
+                  key: Key(userProfile.uid!),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 20.0),
+                      child: Icon(Icons.delete, color: Colors.white),
+                    ),
+                  ),
+                  onDismissed: (direction)=>deleteChatCalled(userProfile),
+                  confirmDismiss: (direction) async {
+                    final bool res = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Confirm"),
+                          content:  Text("Are you sure you wish to delete this chat with ${userProfile.fullName}?"),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: const Text("Delete"),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text("Cancel"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    return res;
+                  },
+                  child: ListTile(
+                    leading: userProfile.imgUrl!.isNotEmpty?CircleAvatar(backgroundImage: NetworkImage("${userProfile.imgUrl}"),):Icon(Icons.person),
+                    title: Text(userProfile.fullName ?? "Unknown"),
+                    subtitle: unreadCount > 0 ? Text("$unreadCount new messages") : Text(lastMsg),
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      ChatScreen.routeName,
+                      arguments: {'userProfile': userProfile, "reportedItemId": chatMetaSnapshot.data!["reportedItemId"]},
+                    ),
                   ),
                 );
               },

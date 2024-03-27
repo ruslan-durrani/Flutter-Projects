@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:lost_get/presentation_layer/widgets/toast.dart';
 
 
 import '../../models/message.dart';
@@ -187,9 +188,10 @@ class ChatService{
       timeStamp: Timestamp.now(),
       isRead: false,
     );
-    List<String> ids = [_auth.currentUser!.uid, receiverId];
-    ids.sort();
-    String chatRoomKey = ids.join("_");
+    // List<String> ids = [_auth.currentUser!.uid, receiverId];
+    // ids.sort();
+    String chatRoomKey = getChatRoomKey(receiverId);
+    // String chatRoomKey = ids.join("_");
     await _firestore.collection("users_chat_room").doc(chatRoomKey).collection("messages").add(msg.toMap());
 
     _firestore.collection("chat_meta").doc(chatRoomKey).set({
@@ -205,6 +207,46 @@ class ChatService{
 
     await updateChatLists(receiverId);
   }
+
+  Future<void> deleteChatWithRecepient(receiverId) async {
+
+
+    String chatRoomKey = getChatRoomKey(receiverId);
+
+    DocumentReference usersChatRoomDoc = _firestore.collection('users_chat_room').doc(chatRoomKey);
+    print(usersChatRoomDoc.id);
+
+    DocumentReference chatsMetaDoc = _firestore.collection('chat_meta').doc(chatRoomKey);
+
+    DocumentReference myUserDoc = _firestore.collection('users').doc(_auth.currentUser!.uid); // Adjust 'your_collection_name' to your actual collection name
+    DocumentReference recepientUserDoc = _firestore.collection('users').doc(receiverId); // Adjust 'your_collection_name' to your actual collection name
+
+    // Firestore batch write to perform all operations atomically
+
+    try {
+      await usersChatRoomDoc.delete();
+      await chatsMetaDoc.delete();
+      WriteBatch batch = _firestore.batch();
+
+      // Schedule the removal of uid from userChatList array
+      batch.update(myUserDoc, {'userChatsList': FieldValue.arrayRemove([receiverId])});
+      batch.update(recepientUserDoc, {'userChatsList': FieldValue.arrayRemove([_auth.currentUser!.uid])});
+
+      // Commit the batch
+      await batch.commit();
+
+    } catch (e) {
+      createToast(description: "Error performing operation");
+    }
+
+    // try {
+    //   await usersChatRoomDoc.delete();
+    //   await chatsMetaDoc.delete();
+    // } catch (e) {
+    //   createToast(description: "An error has occured while deleting chat ");
+    // }
+  }
+
   getChatRoomKey(receiverId){
     List<String> ids = [_auth.currentUser!.uid,receiverId];
     ids.sort();

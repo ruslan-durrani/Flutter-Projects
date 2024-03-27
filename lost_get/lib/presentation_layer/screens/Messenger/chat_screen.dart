@@ -38,7 +38,6 @@ class _ChatScreenState extends State<ChatScreen> {
   late final StreamSubscription<QuerySnapshot> _messagesSubscription;
 
 
-
   @override
   void initState() {
     super.initState();
@@ -128,7 +127,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } else if (_messageController.text.isNotEmpty) {
       String tempMessage = _messageController.text;
       bool isProfane = await checkChatProfanity(tempMessage);
-      bool hasProfanity = profanityFilter.hasProfanity(tempMessage);
+      bool hasProfanity = profanityFilter.hasProfanity(tempMessage,);
       if (isProfane || hasProfanity) {
         showDialog(
           context: context,
@@ -210,9 +209,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessages() {
-    if (_messages.isEmpty) {
-      return Center(child: CircularProgressIndicator());
-    }
+
+    // if (_messages.isEmpty) {
+    //   return const Center(child: Text("No Messages yet"));
+    // }
 
     return ListView.builder(
       itemCount: _messages.length,

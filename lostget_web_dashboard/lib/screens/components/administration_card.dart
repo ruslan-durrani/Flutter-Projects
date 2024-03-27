@@ -57,9 +57,10 @@ class Administrations extends StatelessWidget {
               bloc: adminUser,
               builder: (BuildContext context, state) {
                 if(state is UserProfilesLoaded){
-                  final userProfiles = state.userProfiles.where((element) => element.isAdmin==true);
+                  final userProfiles = state.userProfiles;
+                  // final userProfiles = state.userProfiles.where((element) => element.isAdmin==true);
                   return ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    // physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: (userProfiles.length),
                     itemBuilder: (context, index) => InkWell(
