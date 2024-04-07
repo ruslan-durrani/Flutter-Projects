@@ -44,13 +44,17 @@ class _CustomToggleButtonState extends State<CustomToggleButton> {
       },
       isSelected: statusIsSelected,
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 28.h),
-          child: const Text('Lost', style: TextStyle(fontSize: 16)),
+        Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width * .445,
+          child: const Text('Lost',
+              style: TextStyle(fontSize: 16)),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 28.h),
-          child: const Text('Found', style: TextStyle(fontSize: 16)),
+        Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width * .445,
+          child: const Text('Found',
+              style: TextStyle(fontSize: 16)),
         ),
       ],
     );

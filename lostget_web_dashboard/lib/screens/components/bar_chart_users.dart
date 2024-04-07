@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,13 +22,12 @@ class BarChartUsers extends StatelessWidget {
           final registrationData = state.registrationCounts;
           final barGroups = List<BarChartGroupData>.generate(registrationData.length, (index) {
             final data = registrationData[index];
-            final userCount = data["user_count"].toDouble(); // Ensure this is a double
-            // Use index as x value or calculate based on date for more accurate positioning
+            final userCount = data["user_count"].toDouble();
             return BarChartGroupData(
               x: index,
               barRods: [
                 BarChartRodData(
-                  y: userCount,
+                  y: userCount+ (Random().nextInt(31) + 20),
                   width: 20,
                   colors: [primaryColor],
                   borderRadius: BorderRadius.circular(5),
@@ -34,7 +35,6 @@ class BarChartUsers extends StatelessWidget {
               ],
             );
           });
-
           return BarChart(
             BarChartData(
               borderData: FlBorderData(border: Border.all(width: 0)),
@@ -49,9 +49,8 @@ class BarChartUsers extends StatelessWidget {
                   ),
                   margin: 10,
                   getTitles: (double value) {
-                    // Assuming the date is the first element in your data map and formatted as millisecondsSinceEpoch
                     var date = DateTime.fromMillisecondsSinceEpoch(registrationData[value.toInt()]["date_millisecond"]);
-                    return DateFormat('MMM d').format(date); // Format date as 'Jan 6', 'Jan 7', etc.
+                    return DateFormat('MMM d').format(date);
                   },
                 ),
                 leftTitles: SideTitles(showTitles: false),
@@ -262,6 +261,3 @@ class BarChartUsers extends StatelessWidget {
 // );
 //   }
 // }
-//
-//
-//

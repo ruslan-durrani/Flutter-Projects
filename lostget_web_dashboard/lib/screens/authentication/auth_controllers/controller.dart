@@ -31,8 +31,12 @@ class AuthController {
       return toasterFlutter("Please enter your email or password");
     }
     try {
-      final credentialObject = await FirebaseService().userSignInWithEmailAndPassword( email,  password);
-      bool isAdmin = await FireStoreService().getIsAdmin();
+
+      bool isAdmin = false;
+      final credentialObject = await FirebaseService().userSignInWithEmailAndPassword( email,  password).then((value) async {
+        isAdmin =   await FireStoreService().getIsAdmin();
+      });
+
       if (credentialObject.user == null) {
         return toasterFlutter("No User found with this email");
       }

@@ -214,7 +214,7 @@ class _AuthenticationState extends State<Authentication> {
                                             ),
                                           ),
                                           SizedBox(
-                                              height: 230,
+                                              height: 210,
                                               width: 250,
                                               child: Image.asset("./images/auth3.png")
                                           ),

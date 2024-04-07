@@ -37,7 +37,7 @@ class _UsersByDeviceState extends State<UsersByDevice> {
     double percentageOfAdmins = (admins / (admins+users)) * 100;
     double percentageOfUsers = (users / (admins+users)) * 100;
     setState(() {
-      mobileUsersPercentage = percentageOfUsers;
+      mobileUsersPercentage = percentageOfUsers.abs();
     });
   }
   @override
@@ -76,7 +76,7 @@ class _UsersByDeviceState extends State<UsersByDevice> {
                 ),
                 child: Center(
                   child: Text(
-                    '${mobileUsersPercentage}',
+                    '${mobileUsersPercentage.ceil()}',
                     style: TextStyle(
                       color: textColor,
                       fontSize: 36,

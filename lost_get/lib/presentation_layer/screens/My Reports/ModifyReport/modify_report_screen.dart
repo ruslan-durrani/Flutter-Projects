@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -257,7 +255,7 @@ class _ModifyReportScreenState extends State<ModifyReportScreen> {
                                 var locationData = context
                                     .read<ModifyReportProvider>()
                                     .getLocationData;
-
+                                print("Modify");
                                 modifyReportBloc.add(UpdateReportEvent(
                                     reportId: widget.id,
                                     status: tempStatus,
@@ -295,7 +293,6 @@ class _ModifyReportScreenState extends State<ModifyReportScreen> {
   void initializeControllers(ReportItemModel reportItemModel) {
     _titleController.text = reportItemModel.title!;
     _descriptionController.text = reportItemModel.description!;
-
     statusIsSelected =
         reportItemModel.status == 'Lost' ? [true, false] : [false, true];
   }
