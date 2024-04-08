@@ -25,8 +25,9 @@ class HomeScreenController {
               (item) => !item.flagged! && !item.recovered! && item.published!)
           .toList();
 
-      listOfRecommendedItems =
-          await recommendReports(FirebaseAuth.instance.currentUser!.uid);
+      // Now Off
+      // listOfRecommendedItems =
+      //     await recommendReports(FirebaseAuth.instance.currentUser!.uid);
       items = unflaggedItems;
       listOfNearbyItems = items;
       listOfCategories = items;

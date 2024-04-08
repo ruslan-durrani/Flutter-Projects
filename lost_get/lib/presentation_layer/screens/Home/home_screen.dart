@@ -26,77 +26,122 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderStateMixin{
   String _currentFilter = "All"; // The index of the selected filter
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  late TabController _tabController;
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 3,initialIndex: 0,vsync: this);
   }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
 
   // Define a method to handle filter change
   void _handleFilterChange(String filter) {
     setState(() {
       _currentFilter = filter;
     });
-    // You can also fetch data based on the selected filter here
+
   }
 
   HomeScreenController controller = HomeScreenController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.white,
-        title: SvgPicture.asset('assets/icons/lostget_logo.svg', width: 120),
-        actions: <Widget>[
-          IconButton(
-            icon: SvgPicture.asset(
-                'assets/icons/search_icon.svg'), // Replace with your SVG file path
-            onPressed: () {
-              Navigator.pushNamed(context, SearchPage.routeName);
-            },
+    return SafeArea(
+      child: Scaffold(
+        appBar:PreferredSize(
+
+          preferredSize: (_currentFilter == "All")? Size.fromHeight(150.0):Size.fromHeight(100.0),
+          child: AppBar(
+            elevation: 0.0,
+            toolbarHeight: 100,
+            flexibleSpace: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SvgPicture.asset('assets/icons/lostget_logo.svg', width: 120),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: SvgPicture.asset(
+                                'assets/icons/search_icon.svg'), // Replace with your SVG file path
+                            onPressed: () {
+                              Navigator.pushNamed(context, SearchPage.routeName);
+                            },
+                          ),
+                          IconButton(
+                            icon: SvgPicture.asset(
+                                'assets/icons/notification_icon.svg'), // Replace with your SVG file path
+                            onPressed: () {
+                              // Action for notification icon
+                            },
+                          ),
+                          IconButton(
+                            icon: SvgPicture.asset(
+                                'assets/icons/scan_qr_icon.svg'), // Replace with your SVG file path
+                            onPressed: () {
+                              Navigator.pushNamed(context, QRCodeScannerScreen.routeName);
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                QuickFilterBar(
+                  onFilterSelected: _handleFilterChange,
+                  categories: const [
+                    'All',
+                    "Electronics",
+                    "Personal Items",
+                    'Travel Documents',
+                    'Animal',
+                    'Human'
+                  ],
+                ),
+              ],
+            ),
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+
+            bottom: (_currentFilter == "All")?TabBar(
+              controller: _tabController,
+              indicatorColor: AppColors.primaryColor,
+              tabs: [
+                Tab(text: 'Recommendations'),
+                Tab(text: 'Nearby'),
+                // Tab(text: 'Categories'),
+                Tab(text: 'Recent Uploads'),
+                // Add more tabs as needed
+              ],
+            ):null,
           ),
-          IconButton(
-            icon: SvgPicture.asset(
-                'assets/icons/notification_icon.svg'), // Replace with your SVG file path
-            onPressed: () {
-              // Action for notification icon
-            },
-          ),
-          IconButton(
-            icon: SvgPicture.asset(
-                'assets/icons/scan_qr_icon.svg'), // Replace with your SVG file path
-            onPressed: () {
-              Navigator.pushNamed(context, QRCodeScannerScreen.routeName);
-            },
-          ),
-        ],
+
+
+        ),
+        body: Column(
+          children: [
+            _buildBodyContent(),
+          ],
+        ),
+        // floatingActionButton: FloatingActionButton(
+        //   backgroundColor: Colors.white,
+        //   onPressed: () => Navigator.pushNamed(context, ChatBotScreen.routeName),
+        //   child: const Image(
+        //       height: 40, image: AssetImage("./assets/icons/bot.png")),
+        // ),
       ),
-      body: Column(
-        children: [
-          QuickFilterBar(
-            onFilterSelected: _handleFilterChange,
-            categories: const [
-              'All',
-              "Electronics",
-              "Personal Items",
-              'Travel Documents',
-              'Animal',
-              'Human'
-            ],
-          ),
-          _buildBodyContent()
-        ],
-      ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Colors.white,
-      //   onPressed: () => Navigator.pushNamed(context, ChatBotScreen.routeName),
-      //   child: const Image(
-      //       height: 40, image: AssetImage("./assets/icons/bot.png")),
-      // ),
     );
   }
 
@@ -108,112 +153,16 @@ class _HomeScreenState extends State<HomeScreen> {
     switch (_currentFilter) {
       case "All":
         return Expanded(
-          // height: MediaQuery.of(context).size.height * .7,
-          child: SingleChildScrollView(
-            child: Container(
-               padding: const EdgeInsets.all(10),
-              child: Column(
+          child: TabBarView(
+                controller: _tabController,
                 children: [
-                  FutureBuilder(
-                    future: controller.fetchAllItems(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: Container());
-                      } else if (snapshot.hasError) {
-                        return const Center(child: Text("Error fetching data"));
-                      } else {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              controller.listOfRecommendedItems.isNotEmpty
-                                  ? getSectionHeading(
-                                      "Recommendations", context, ()=>onSectionHeaderTapped("Recommendation",controller.listOfRecommendedItems))
-                                  : Container(),
-                              controller.listOfRecommendedItems.isNotEmpty
-                                  ? ReportedItemsCarousel(
-                                      reportedItems:
-                                          controller.listOfRecommendedItems,
-                                      onTap: onItemTapped)
-                                  : Container(),
-                              // Add more sections as needed
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  FutureBuilder(
-                    future: controller.fetchAllItems(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return getShimmerContainer();
-                      } else if (snapshot.hasError) {
-                        return const Center(child: Text("Error fetching data"));
-                      } else {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              getSectionHeading("Nearby", context, ()=>onSectionHeaderTapped("Nearby",controller.listOfRecommendedItems)),
-                              ReportedItemsCarousel(
-                                  reportedItems: controller.listOfNearbyItems,
-                                  onTap: (item) {}),
-                              // Add more sections as needed
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  FutureBuilder(
-                    future: controller.fetchAllItems(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return getShimmerContainer();
-                      } else if (snapshot.hasError) {
-                        return const Center(child: Text("Error fetching data"));
-                      } else {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              getSectionHeading("Categories", context, () {}),
-                              ReportedItemsCarousel(
-                                  reportedItems:
-                                      controller.listOfRecommendedItems,
-                                  onTap: (item) => onItemTapped(item)),
-                              // Add more sections as needed
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  FutureBuilder(
-                    future: controller.myRecentUploads(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return getShimmerContainer();
-                      } else if (snapshot.hasError) {
-                        return const Center(child: Text("Error fetching data"));
-                      } else {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              getSectionHeading("Recent Uploads", context, ()=>onSectionHeaderTapped("Recent Uploads",controller.listOfRecentUploads)),
-                              ReportedItemsCarousel(
-                                  reportedItems:
-                                      controller.listOfRecentUploads,
-                                  onTap: (item) => onItemTapped(item)),
-                              // Add more sections as needed
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
+                _buildTabContent('Recommendations'),
+                _buildTabContent('Nearby'),
+                // _buildTabContent('Categories'),
+                _buildTabContent('Recent Uploads'),
+                // Add more tab content as needed
                 ],
               ),
-            ),
-          ),
         );
 
       default:
@@ -221,6 +170,33 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Widget _buildTabContent(String category) {
+    // Dummy FutureBuilder implementation, replace with actual data fetching
+    return FutureBuilder(
+      future: controller.fetchAllItems(), // Implement this method based on your data fetching logic
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text("Error fetching data"));
+        } else {
+          // Assuming snapshot.data is a list of items for the category
+          List<ReportItemModel> items = controller.listOfRecommendedItems;
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                for (var item in items)
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ReportedItemCard(item: item, onTap: () => onItemTapped(item))),
+                // Replace with your widget for displaying each item
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
   Widget getShimmerContainer() {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
@@ -359,3 +335,166 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 }
+
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_svg/svg.dart';
+// import 'package:lost_get/common/constants/colors.dart';
+// import 'package:lost_get/presentation_layer/screens/Home/QRScanner/qr_code_scanner_screen.dart';
+// import 'package:lost_get/presentation_layer/screens/Home/SearchPage/search_page.dart';
+// import 'package:lost_get/presentation_layer/screens/Home/ViewAllItems/view_all_items.dart';
+// import 'package:lost_get/presentation_layer/screens/Home/controller/home_screen_reports_controller.dart';
+// import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart';
+// import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCard.dart';
+// import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCarousal.dart';
+// import 'package:lost_get/presentation_layer/screens/Home/widgets/section_heading.dart';
+// import 'package:lost_get/utils/api_services.dart';
+// import 'package:shimmer/shimmer.dart';
+// import '../../../models/report_item.dart';
+// import '../ChatBot/chatbot_screen.dart';
+// import 'components/quick_filter.dart';
+//
+// class HomeScreen extends StatefulWidget {
+//   const HomeScreen({Key? key}) : super(key: key);
+//   static String routeName = "/usersList";
+//
+//   @override
+//   _HomeScreenState createState() => _HomeScreenState();
+// }
+//
+// class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+//   late TabController _tabController;
+//   final HomeScreenController controller = HomeScreenController();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _tabController = TabController(length: 4, vsync: this); // Adjust length based on the number of tabs
+//   }
+//
+//   @override
+//   void dispose() {
+//     _tabController.dispose();
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SafeArea(
+//       child: Scaffold(
+//         appBar:PreferredSize(
+//           preferredSize: Size.fromHeight(150.0),
+//           child: AppBar(
+//             toolbarHeight: 100,
+//             flexibleSpace: Column(
+//               children: [
+//                 Container(
+//                   padding: EdgeInsets.symmetric(horizontal: 10),
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       SvgPicture.asset('assets/icons/lostget_logo.svg', width: 120),
+//                       Row(
+//                         children: [
+//                             IconButton(
+//                               icon: SvgPicture.asset(
+//                                   'assets/icons/search_icon.svg'), // Replace with your SVG file path
+//                               onPressed: () {
+//                                 Navigator.pushNamed(context, SearchPage.routeName);
+//                               },
+//                             ),
+//                             IconButton(
+//                               icon: SvgPicture.asset(
+//                                   'assets/icons/notification_icon.svg'), // Replace with your SVG file path
+//                               onPressed: () {
+//                                 // Action for notification icon
+//                               },
+//                             ),
+//                             IconButton(
+//                               icon: SvgPicture.asset(
+//                                   'assets/icons/scan_qr_icon.svg'), // Replace with your SVG file path
+//                               onPressed: () {
+//                                 Navigator.pushNamed(context, QRCodeScannerScreen.routeName);
+//                               },
+//                             ),
+//                         ],
+//                       )
+//                     ],
+//                   ),
+//                 ),
+//           QuickFilterBar(
+//             onFilterSelected: (s){},
+//             // onFilterSelected: _handleFilterChange,
+//             categories: const [
+//               'All',
+//               "Electronics",
+//               "Personal Items",
+//               'Travel Documents',
+//               'Animal',
+//               'Human'
+//             ],
+//           ),
+//               ],
+//             ),
+//             backgroundColor: Colors.white,
+//             foregroundColor: Colors.black,
+//
+//             bottom: TabBar(
+//               controller: _tabController,
+//               indicatorColor: AppColors.primaryColor,
+//               tabs: [
+//                 Tab(text: 'Recommendations'),
+//                 Tab(text: 'Nearby'),
+//                 Tab(text: 'Categories'),
+//                 Tab(text: 'Recent Uploads'),
+//                 // Add more tabs as needed
+//               ],
+//             ),
+//           ),
+//
+//
+//         ),
+//         body: TabBarView(
+//           controller: _tabController,
+//           children: [
+//             _buildTabContent('Recommendations'),
+//             _buildTabContent('Nearby'),
+//             _buildTabContent('Categories'),
+//             _buildTabContent('Recent Uploads'),
+//             // Add more tab content as needed
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildTabContent(String category) {
+//     // Dummy FutureBuilder implementation, replace with actual data fetching
+//     return FutureBuilder(
+//       future: controller.myRecentUploads(), // Implement this method based on your data fetching logic
+//       builder: (BuildContext context, AsyncSnapshot snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return Center(child: CircularProgressIndicator());
+//         } else if (snapshot.hasError) {
+//           return Center(child: Text("Error fetching data"));
+//         } else {
+//           // Assuming snapshot.data is a list of items for the category
+//           List<ReportItemModel> items = controller.listOfRecentUploads;
+//           return SingleChildScrollView(
+//             child: Column(
+//               children: [
+//                 for (var item in items)
+//                   ReportedItemCard(item: item, onTap: () => onItemTapped(item)),
+//                 // Replace with your widget for displaying each item
+//               ],
+//             ),
+//           );
+//         }
+//       },
+//     );
+//   }
+//
+//   void onItemTapped(ReportItemModel item) {
+//     Navigator.pushNamed(context, ItemDetailScreen.routeName, arguments: item);
+//   }
+// }

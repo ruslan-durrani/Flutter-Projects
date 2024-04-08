@@ -1,0 +1,108 @@
+ // return Expanded(
+        //   // height: MediaQuery.of(context).size.height * .7,
+        //   child: SingleChildScrollView(
+        //     child: Container(
+        //        padding: const EdgeInsets.all(10),
+        //       child: Column(
+        //         children: [
+        //           FutureBuilder(
+        //             future: controller.fetchAllItems(),
+        //             builder: (context, snapshot) {
+        //               if (snapshot.connectionState == ConnectionState.waiting) {
+        //                 return Center(child: Container());
+        //               } else if (snapshot.hasError) {
+        //                 return const Center(child: Text("Error fetching data"));
+        //               } else {
+        //                 return SingleChildScrollView(
+        //                   child: Column(
+        //                     children: [
+        //                       controller.listOfRecommendedItems.isNotEmpty
+        //                           ? getSectionHeading(
+        //                               "Recommendations", context, ()=>onSectionHeaderTapped("Recommendation",controller.listOfRecommendedItems))
+        //                           : Container(),
+        //                       controller.listOfRecommendedItems.isNotEmpty
+        //                           ? ReportedItemsCarousel(
+        //                               reportedItems:
+        //                                   controller.listOfRecommendedItems,
+        //                               onTap: onItemTapped)
+        //                           : Container(),
+        //                       // Add more sections as needed
+        //                     ],
+        //                   ),
+        //                 );
+        //               }
+        //             },
+        //           ),
+        //           FutureBuilder(
+        //             future: controller.fetchAllItems(),
+        //             builder: (context, snapshot) {
+        //               if (snapshot.connectionState == ConnectionState.waiting) {
+        //                 return getShimmerContainer();
+        //               } else if (snapshot.hasError) {
+        //                 return const Center(child: Text("Error fetching data"));
+        //               } else {
+        //                 return SingleChildScrollView(
+        //                   child: Column(
+        //                     children: [
+        //                       getSectionHeading("Nearby", context, ()=>onSectionHeaderTapped("Nearby",controller.listOfRecommendedItems)),
+        //                       ReportedItemsCarousel(
+        //                           reportedItems: controller.listOfNearbyItems,
+        //                           onTap: (item) {}),
+        //                       // Add more sections as needed
+        //                     ],
+        //                   ),
+        //                 );
+        //               }
+        //             },
+        //           ),
+        //           FutureBuilder(
+        //             future: controller.fetchAllItems(),
+        //             builder: (context, snapshot) {
+        //               if (snapshot.connectionState == ConnectionState.waiting) {
+        //                 return getShimmerContainer();
+        //               } else if (snapshot.hasError) {
+        //                 return const Center(child: Text("Error fetching data"));
+        //               } else {
+        //                 return SingleChildScrollView(
+        //                   child: Column(
+        //                     children: [
+        //                       getSectionHeading("Categories", context, () {}),
+        //                       ReportedItemsCarousel(
+        //                           reportedItems:
+        //                               controller.listOfRecommendedItems,
+        //                           onTap: (item) => onItemTapped(item)),
+        //                       // Add more sections as needed
+        //                     ],
+        //                   ),
+        //                 );
+        //               }
+        //             },
+        //           ),
+        //           FutureBuilder(
+        //             future: controller.myRecentUploads(),
+        //             builder: (context, snapshot) {
+        //               if (snapshot.connectionState == ConnectionState.waiting) {
+        //                 return getShimmerContainer();
+        //               } else if (snapshot.hasError) {
+        //                 return const Center(child: Text("Error fetching data"));
+        //               } else {
+        //                 return SingleChildScrollView(
+        //                   child: Column(
+        //                     children: [
+        //                       getSectionHeading("Recent Uploads", context, ()=>onSectionHeaderTapped("Recent Uploads",controller.listOfRecentUploads)),
+        //                       ReportedItemsCarousel(
+        //                           reportedItems:
+        //                               controller.listOfRecentUploads,
+        //                           onTap: (item) => onItemTapped(item)),
+        //                       // Add more sections as needed
+        //                     ],
+        //                   ),
+        //                 );
+        //               }
+        //             },
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // );

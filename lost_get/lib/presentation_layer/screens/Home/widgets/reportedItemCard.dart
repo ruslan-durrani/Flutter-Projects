@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lost_get/common/constants/colors.dart';
+import 'package:lost_get/presentation_layer/screens/Home/widgets/createChip.dart';
 
 import '../../../../models/report_item.dart'; // Add intl package to your pubspec.yaml
 
@@ -36,107 +37,86 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
-        width: MediaQuery.of(context).size.width * .8,
-        decoration: const BoxDecoration(
+        height: 160,
+        width: MediaQuery.of(context).size.width * .95,
+        decoration:  BoxDecoration(
           color: Colors.white,
-        ),
-        child: Container(
-          // clipBehavior: Clip.antiAlias,
-          // elevation: 0.0,
-          decoration: BoxDecoration(
-              border: Border.all(
-                width: 2,
-                color: AppColors.primaryColor.withOpacity(.2),
-              ),
-              borderRadius: BorderRadius.circular(25)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Stack(
-                alignment: Alignment.bottomLeft,
-                children: <Widget>[
-                  Container(
-                    width: double.maxFinite,
-                    height: 200,
+            border: Border.all(
+              width: 2,
+              color: AppColors.primaryColor.withOpacity(.2),
+            ),
+            borderRadius: BorderRadius.circular(15),),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.topLeft,
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    bottomLeft: Radius.circular(15),
+                  ),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * .45, // Specify the width
+                    height: 160, // Match the card height or adjust as needed
                     decoration: BoxDecoration(
-                      // color: Colors.grey,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(25),
-                          topRight: Radius.circular(25)),
                       image: DecorationImage(
-                        // image: AssetImage(widget.item.imageUrls?.first ?? ''),
                         image: NetworkImage(widget.item.imageUrls?.first ?? ''),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.cover, // Adjust to cover to fill the box, keeping aspect ratio
                       ),
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Chip(
-                          label: Text(widget.item.status ?? 'Unknown',
-                              style: const TextStyle(color: Colors.white)),
-                          backgroundColor: widget.item.status!.contains("Found")
-                              ? Colors.green
-                              : Colors.red,
-                        ),
-                        Chip(
-                          label: Text(
-                              _formatDateTime(widget.item.publishDateTime),
-                              style: TextStyle(color: Colors.white)),
-                          backgroundColor: Colors.black,
-                        ),
-                      ],
-                    ),
+                ),
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  right: 8,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      createLostFoundChip(widget.item, context),
+                      createPublishChip(_formatDateTime(widget.item.publishDateTime), context),
+                    ],
                   ),
-                ],
-              ),
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(16.0),
+                ),
+              ],
+            ),
+
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: widget.item.title ?? 'Unknown',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const TextSpan(
-                            text: '\n',
-                          ),
-                          TextSpan(
-                            text: widget.item.city ?? 'Unknown location',
-                            style: TextStyle(
-                                fontSize: 14, color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
                     Text(
+                      widget.item.title ?? 'Unknown',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 15,fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      softWrap: true,
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      widget.item.city ?? 'Unknown location',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11,fontWeight: FontWeight.bold,color: Colors.grey),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
                       widget.item.description ?? 'No description provided.',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 4, // Adjust the number of lines for description
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
+        ),
+
     );
   }
 }
