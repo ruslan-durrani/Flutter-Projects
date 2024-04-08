@@ -95,19 +95,19 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 2),
                     Text(
                       widget.item.city ?? 'Unknown location',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11,fontWeight: FontWeight.bold,color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 2 ),
                     Text(
                       widget.item.description ?? 'No description provided.',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11),
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 4, // Adjust the number of lines for description
+                      maxLines: 3, // Adjust the number of lines for description
                     ),
                   ],
                 ),

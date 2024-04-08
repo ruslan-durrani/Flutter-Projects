@@ -30,11 +30,31 @@ class HomeScreenController {
       //     await recommendReports(FirebaseAuth.instance.currentUser!.uid);
       items = unflaggedItems;
       listOfNearbyItems = items;
+      listOfRecommendedItems = items;
       listOfCategories = items;
     } catch (error) {
       print("Error fetching items: $error");
     }
 
+  }
+
+  Future<List<ReportItemModel>> fetchSearchSuggestions(String query) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('reportItems')
+      // You might want to limit the number of items fetched if your collection is large
+          .limit(50)
+          .get();
+
+      // Filter the results in Dart
+      return querySnapshot.docs
+          .map((doc) => ReportItemModel.fromSnapshot(doc))
+          .where((item) => item.description!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } catch (e) {
+      print("Error fetching search suggestions: $e");
+      return [];
+    }
   }
 
   Future<void> myRecentUploads() async {
