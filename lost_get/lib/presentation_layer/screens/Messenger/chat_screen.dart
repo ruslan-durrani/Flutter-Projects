@@ -154,6 +154,7 @@ class _ChatScreenState extends State<ChatScreen> {
         );
         return; // Stop the function execution if profanity is detected
       }
+       print("ASDFSFAS");
       _messageController.clear();
       await _chatService.sendMessage(receiverId, message: tempMessage, reportedItemId: _reportedItemId);
     }
@@ -262,7 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final String placeholderImageUrl = "https://via.placeholder.com/150";
-
+    print("${_reportedItemId} REPORTED ITEM");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

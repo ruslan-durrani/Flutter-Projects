@@ -41,8 +41,10 @@ class HomeScreenController {
   }
   Future<void> fetchNearbyItems() async {
     try {
-      LocationUtils locationUtils = LocationUtils(0, 0, 10);
-      listOfNearbyItems = locationUtils.itemsNearby;
+      // LocationUtils locationUtils = LocationUtils(0, 0, 10);
+      // listOfNearbyItems = locationUtils.itemsNearby;
+      fetchAllItems();
+      // listOfNearbyItems = listOfRecommendedItems
     }
     catch (e) {
       print("Error fetching search suggestions: $e");

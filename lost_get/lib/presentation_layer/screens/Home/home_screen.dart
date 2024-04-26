@@ -179,8 +179,8 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
   }
   Widget _buildTabContent(String category) {
     return FutureBuilder(
-      // future: controller.fetchAllItems(),
-      future: controller.fetchNearbyItems(), // Implement this method based on your data fetching logic
+      future: controller.fetchAllItems(),
+      // future: controller.fetchNearbyItems(), // Implement this method based on your data fetching logic
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());

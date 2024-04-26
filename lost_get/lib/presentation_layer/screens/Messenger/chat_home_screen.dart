@@ -79,14 +79,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
 deleteChatCalled(UserProfile profile) async {
   await _chatService.deleteChatWithRecepient(profile.uid);
   createToast(description: '${profile.fullName} chats are deleted');
-  // if(isDeleted){
-  //
-  // }
-  // else{
-  //   createToast(description: 'Failed to delete chat, please try again');
-  // }
-  // Then show a snackbar.
-}
+  }
 
   Widget _buildStreamHomeUser() {
     // Extract the current user's UID safely.
