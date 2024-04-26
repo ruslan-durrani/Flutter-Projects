@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:location/location.dart';
 import 'package:lost_get/utils/api_services.dart';
+import 'package:lost_get/utils/location_utils.dart';
 
 import '../../../../models/report_item.dart';
+import '../../../widgets/toast.dart';
 
 class HomeScreenController {
   List<ReportItemModel> listOfRecommendedItems = [];
@@ -35,7 +38,15 @@ class HomeScreenController {
     } catch (error) {
       print("Error fetching items: $error");
     }
-
+  }
+  Future<void> fetchNearbyItems() async {
+    try {
+      LocationUtils locationUtils = LocationUtils(0, 0, 10);
+      listOfNearbyItems = locationUtils.itemsNearby;
+    }
+    catch (e) {
+      print("Error fetching search suggestions: $e");
+    }
   }
 
   Future<List<ReportItemModel>> fetchSearchSuggestions(String query) async {
@@ -50,6 +61,24 @@ class HomeScreenController {
       return querySnapshot.docs
           .map((doc) => ReportItemModel.fromSnapshot(doc))
           .where((item) => item.description!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } catch (e) {
+      print("Error fetching search suggestions: $e");
+      return [];
+    }
+  }
+  Future<List<ReportItemModel>> fetchReportedItemBasedOnCity(String address,String city,String country) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('reportItems')
+      // You might want to limit the number of items fetched if your collection is large
+          .limit(50)
+          .get();
+
+      // Filter the results in Dart
+      return querySnapshot.docs
+          .map((doc) => ReportItemModel.fromSnapshot(doc))
+          .where((item) => (((item.city!.toLowerCase().contains(city.toLowerCase()))&&(item.country!.toLowerCase().contains(city.toLowerCase())))||(item.address!.toLowerCase().contains(address.toLowerCase()))))
           .toList();
     } catch (e) {
       print("Error fetching search suggestions: $e");

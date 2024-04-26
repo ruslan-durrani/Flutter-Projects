@@ -10,6 +10,7 @@ import 'package:lost_get/presentation_layer/screens/Authentication/SignUp/sign_u
 import 'package:lost_get/presentation_layer/screens/ChatBot/chatbot_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Dashboard/dashboard_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Home/QRScanner/qr_code_scanner_screen.dart';
+import 'package:lost_get/presentation_layer/screens/Home/SearchPage/search_detail_page.dart';
 import 'package:lost_get/presentation_layer/screens/Home/ViewAllItems/view_all_items.dart';
 import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Messenger/chat_screen.dart';
@@ -101,6 +102,7 @@ class AppRouter {
         return MaterialPageRoute(builder: ((context) => const MapScreen()));
       case ChatScreen.routeName:
         final args = routeSettings.arguments as Map<String, dynamic>;
+
         return MaterialPageRoute(builder: (context) => ChatScreen(args: args));
 
       case ChatBotScreen.routeName:
@@ -130,6 +132,11 @@ class AppRouter {
       case SearchPage.routeName:
         return MaterialPageRoute(
             builder: (context) => SearchPage());
+
+        case SearchDetailPage.routeName:
+          final args = routeSettings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (context) => SearchDetailPage(searchedText: args["searchedText"], reportedItems: args["reportedItems"]));
     }
     return null;
   }

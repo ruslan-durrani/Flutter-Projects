@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lost_get/common/constants/colors.dart';
+import 'package:lost_get/presentation_layer/screens/Add%20Report/map_screen.dart';
 
 class QuickFilterBar extends StatefulWidget {
   final Function(String) onFilterSelected;
   final List<String> categories;
-
-  const QuickFilterBar(
-      {super.key, required this.onFilterSelected, required this.categories});
+  final Function() setLocationData;
+  QuickFilterBar(
+      {super.key,required this.setLocationData, required this.onFilterSelected, required this.categories});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -16,6 +17,8 @@ class QuickFilterBar extends StatefulWidget {
 
 class _QuickFilterBarState extends State<QuickFilterBar> {
   int _selectedCategoryIndex = 0;
+
+
   void _selectCategory(int index) {
     setState(() {
       _selectedCategoryIndex = index;
@@ -94,9 +97,7 @@ class _QuickFilterBarState extends State<QuickFilterBar> {
               'assets/icons/location_icon.svg',
               width: 30,
             ),
-            onPressed: () {
-              // TODO: Navigate to location filter
-            },
+            onPressed: ()=>widget.setLocationData(),
           ),
           // IconButton(
           //   icon: SvgPicture.asset(
