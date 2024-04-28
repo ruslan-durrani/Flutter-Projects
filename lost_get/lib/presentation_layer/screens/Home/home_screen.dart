@@ -187,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
         } else if (snapshot.hasError) {
           return Center(child: Text("Error fetching data"));
         } else {
-          List<ReportItemModel> items = controller.listOfRecommendedItems;
+          List<ReportItemModel> items = controller.listOfNearbyItems;
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -195,7 +195,6 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
                   Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ReportedItemCard(item: item, onTap: () => onItemTapped(item))),
-                // Replace with your widget for displaying each item
               ],
             ),
           );

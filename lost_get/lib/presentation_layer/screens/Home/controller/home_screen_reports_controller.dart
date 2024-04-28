@@ -28,9 +28,6 @@ class HomeScreenController {
               (item) => !item.flagged! && !item.recovered! && item.published!)
           .toList();
 
-      // Now Off
-      // listOfRecommendedItems =
-      //     await recommendReports(FirebaseAuth.instance.currentUser!.uid);
       items = unflaggedItems;
       listOfNearbyItems = items;
       listOfRecommendedItems = items;
@@ -41,9 +38,12 @@ class HomeScreenController {
   }
   Future<void> fetchNearbyItems() async {
     try {
-      // LocationUtils locationUtils = LocationUtils(0, 0, 10);
+      LocationUtils locationUtils = LocationUtils(10);
+      locationUtils.getCurrentLocationAndUpdate();
+      listOfNearbyItems = locationUtils.itemsNearby;
+      print(listOfNearbyItems);
       // listOfNearbyItems = locationUtils.itemsNearby;
-      fetchAllItems();
+      // fetchAllItems();
       // listOfNearbyItems = listOfRecommendedItems
     }
     catch (e) {
@@ -81,6 +81,36 @@ class HomeScreenController {
       return querySnapshot.docs
           .map((doc) => ReportItemModel.fromSnapshot(doc))
           .where((item) => (((item.city!.toLowerCase().contains(city.toLowerCase()))&&(item.country!.toLowerCase().contains(city.toLowerCase())))||(item.address!.toLowerCase().contains(address.toLowerCase()))))
+          .toList();
+    } catch (e) {
+      print("Error fetching search suggestions: $e");
+      return [];
+    }
+  }
+  Future<List<ReportItemModel>> fetchReportedItemBasedOnSearchFilter(String address,String city,String country,String title) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('reportItems')
+          .limit(50)
+          .get();
+
+      // Filter the results in Dart
+      return querySnapshot.docs
+          .map((doc) => ReportItemModel.fromSnapshot(doc))
+          .where(
+              (item) => (
+                  (
+                item.city!.toLowerCase().contains(city.toLowerCase())
+                ||(item.country!.toLowerCase().contains(city.toLowerCase()))
+                ||item.address!.toLowerCase().contains(address.toLowerCase())
+                )
+                &&
+                  (
+                      item.title!.toLowerCase().contains(title.toLowerCase())
+                      ||item.description!.toLowerCase().contains(title.toLowerCase())
+                  )
+              )
+          )
           .toList();
     } catch (e) {
       print("Error fetching search suggestions: $e");

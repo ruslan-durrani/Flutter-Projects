@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:lost_get/common/constants/colors.dart';
 import 'package:lost_get/models/report_item.dart';
 import 'package:lost_get/presentation_layer/screens/Home/SearchPage/search_detail_page.dart';
+import 'package:lost_get/presentation_layer/widgets/toast.dart';
 
+import '../../Add Report/map_screen.dart';
 import '../controller/home_screen_reports_controller.dart';
 import '../item_detail_screen.dart';
 import '../widgets/reportedItemCard.dart';
@@ -16,6 +18,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
   final HomeScreenController _homeScreenController = HomeScreenController();
   List<ReportItemModel> _searchResults = [];
   bool _isSearching = false;
@@ -44,6 +47,21 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  TextEditingController city = TextEditingController();
+  TextEditingController country = TextEditingController();
+  TextEditingController address = TextEditingController();
+  TextEditingController keywords = TextEditingController();
+  setLocationData() async{
+    var locationData = await Navigator.pushNamed(
+        context, MapScreen.routeName)
+    as Map<String, dynamic>;
+    print(locationData);
+    city.text = locationData["city"];
+    country.text = locationData["country"];
+    address.text = locationData["address"];
+    _locationController.text = address.text;
+  }
+  
   @override
   void dispose() {
     _searchController.dispose();
@@ -68,6 +86,115 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
+        actions: [
+          IconButton(onPressed: (){
+            showDialog<void>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Apply Filter'),
+                  content: Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              TextField(
+                                controller: _locationController,
+                                autofocus: true,
+                                decoration: InputDecoration(
+                                  hintText: city.text.isEmpty?"Enter address":"${_locationController.text}",
+                                  hintStyle: TextStyle(fontSize: 13,),
+                                  prefixIcon: Icon(Icons.location_city,),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15.0),
+                                    ), borderSide: BorderSide.none,),
+                                ),
+                              ),
+                              Text("OR",style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11)),
+                              IconButton(
+                                onPressed: setLocationData,
+                                icon: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Choose location",style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11)),
+                                    Icon(Icons.location_on,color: AppColors.primaryColor,)
+                                  ],
+                                ),
+                              ),
+                              city.text.length!=0? Text("📍 ${city.text}, ${address.text}",style:Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11) ,):Container(),
+                              
+                            ],
+                          ),
+                          TextField(
+                            controller: keywords,
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: "Item Description keywords",
+                              hintStyle: TextStyle(fontSize: 13,),
+                              prefixIcon: Icon(Icons.description_outlined,),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15.0),
+                                ), borderSide: BorderSide.none,),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        textStyle: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      child:  Text('Cancel',style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14,color: Colors.red),),
+                      onPressed: () {
+                        city.text="";
+                        country.text="";
+                        address.text="";
+                        keywords.text="";
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        textStyle: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      child: const Text('Apply'),
+                      onPressed: ()  async {
+                        if((city.text.isEmpty||address.text.isEmpty||country.text.isEmpty)&&keywords.text.isEmpty) {
+                              createToast(
+                                  description:
+                                      "Filter need fields to be filled");
+                              return;
+                            }
+                        List<ReportItemModel> customeFilter = await HomeScreenController().fetchReportedItemBasedOnSearchFilter(_locationController.text.length>0?address.text:_locationController.text,city.text,country.text,keywords.text);
+                        print(customeFilter);
+                        Navigator.pushNamed(context, SearchDetailPage.routeName,arguments: {"searchedText":_locationController.text+" "+keywords.text,"reportedItems":customeFilter}).then((value){
+                            city.text="";
+                            country.text="";
+                            address.text="";
+                            keywords.text="";
+                            Navigator.of(context).pop();
+                        });
+
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+
+
+    }, icon: Icon(Icons.filter_alt_rounded,color: AppColors.primaryColor,))
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
