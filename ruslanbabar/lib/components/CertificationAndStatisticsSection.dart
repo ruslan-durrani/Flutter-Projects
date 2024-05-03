@@ -13,16 +13,10 @@ class CertificationAndStatisticsSection extends StatelessWidget {
 
   List<Widget> statisticsWidgetList = [
     CertificationAndStatisticsCard(title: 'Projects', subtitle: '23423', iconString: 'document', color: Colors.deepOrange,),
-    // Container(height:  30,width: 1,color: themeData.primaryColor.withOpacity(.1),margin: EdgeInsets.symmetric(horizontal: 15),),
     CertificationAndStatisticsCard(title: 'UXUI', subtitle: '234', iconString: 'pen', color: Colors.purpleAccent,),
-    //TODO Line in the middle
-    // Container(height: 30,width: 1,color: themeData.primaryColor.withOpacity(.1),margin: EdgeInsets.symmetric(horizontal: 15),),
     CertificationAndStatisticsCard(title: 'Flutter', subtitle: '234', iconString: 'flutter', color: Colors.blue,),
-    //TODO Line in the middle
-    // Container(height: 30,width: 1,color: themeData.primaryColor.withOpacity(.1),margin: EdgeInsets.symmetric(horizontal: 15),),
     CertificationAndStatisticsCard(title: 'Web', subtitle: '234', iconString: 'stack', color: Colors.redAccent,),
-    // Container(height: 30,width: 1,color: themeData.primaryColor.withOpacity(.1),margin: EdgeInsets.symmetric(horizontal: 15),),
-    CertificationAndStatisticsCard(title: 'Flutter', subtitle: '234', iconString: 'flutter', color: Colors.blue,),
+    // CertificationAndStatisticsCard(title: 'Flutter', subtitle: '234', iconString: 'flutter', color: Colors.blue,),
   ];
 
 
