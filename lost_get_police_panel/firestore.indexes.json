@@ -1,0 +1,37 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "matchedReports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "userReportId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "isUserMarked",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "reportItems",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "coordinates.Latitude",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "coordinates.Longitude",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
