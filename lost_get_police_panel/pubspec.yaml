@@ -68,7 +68,7 @@ dependencies:
   location: ^5.0.3
   http: ^1.2.0
   uuid: ^4.3.3
-  geocoding: ^2.1.1
+#  geocoding: ^2.1.1
   location_geocoder: ^1.0.5
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -85,7 +85,8 @@ dependencies:
   external_path: ^1.0.3
   qr_flutter: ^4.1.0
   qr_code_scanner: ^1.0.1
-#  google_maps_flutter_web: ^0.5.2
+  geocoding: ^3.0.0
+  google_maps_flutter_web: ^0.5.2
 
 dev_dependencies:
   flutter_test:

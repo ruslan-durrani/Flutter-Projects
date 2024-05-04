@@ -9,14 +9,13 @@ import 'global/theme_data_provider/theme_provider.dart';
 import 'screens/reportedItem_management/provider/reported_item_provider.dart';
 
 
-
 void main() async{
   await globalInitializers();
-  runApp(MultiProvider(providers: [
+  runApp(
+    MultiProvider(providers: [
       ChangeNotifierProvider(create: (context)=>ThemeProvider()),
       ChangeNotifierProvider(create: (context)=>PasswordProvider()),
       ChangeNotifierProvider(create: (context)=>ReportedItemsProvider()),
-
   ],child: MyApp(),),
   );
 }

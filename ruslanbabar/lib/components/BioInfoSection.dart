@@ -18,7 +18,6 @@ class _BioInfoSectionState extends State<BioInfoSection> {
     return Container(
       alignment: Alignment.center,
       padding:  EdgeInsets.all( pad),
-      // height: MediaQuery.of(context).size.height * .2,
       margin: EdgeInsets.only(top: pad),
       decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.inversePrimary,

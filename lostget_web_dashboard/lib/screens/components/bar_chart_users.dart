@@ -42,11 +42,13 @@ class BarChartUsers extends StatelessWidget {
               titlesData: FlTitlesData(
                 bottomTitles: SideTitles(
                   showTitles: true,
-                  getTextStyles: (context, ) => const TextStyle(
+                  getTextStyles: (context,value ) {
+                    return TextStyle(
                     color: lightTextColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 10,
-                  ),
+                  );
+                  },
                   margin: 10,
                   getTitles: (double value) {
                     var date = DateTime.fromMillisecondsSinceEpoch(registrationData[value.toInt()]["date_millisecond"]);
