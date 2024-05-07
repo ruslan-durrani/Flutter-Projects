@@ -37,31 +37,29 @@ class _ChatScreenState extends State<ChatScreen> {
 
   late final StreamSubscription<QuerySnapshot> _messagesSubscription;
 
-
   @override
   void initState() {
     super.initState();
     _userReceiver = widget.args['userProfile'];
     _reportedItemId = widget.args['reportedItemId'];
     _chatService.markMessagesAsRead(_userReceiver.uid!);
-    _messagesSubscription = _chatService.getUsersMessage(_userReceiver.uid).listen(
-            (QuerySnapshot snapshot) {
-          final List<Map<String, dynamic>> messages = snapshot.docs.map((doc) {
-            return {
-              "id": doc.id,
-              ...doc.data() as Map<String, dynamic>,
-            };
-          }).toList();
+    _messagesSubscription = _chatService
+        .getUsersMessage(_userReceiver.uid)
+        .listen((QuerySnapshot snapshot) {
+      final List<Map<String, dynamic>> messages = snapshot.docs.map((doc) {
+        return {
+          "id": doc.id,
+          ...doc.data() as Map<String, dynamic>,
+        };
+      }).toList();
 
-          setState(() {
-            _messages = messages;
-          });
-        },
-        onError: (error) {
-          // Handle any errors
-          print("Error fetching messages: $error");
-        });
-
+      setState(() {
+        _messages = messages;
+      });
+    }, onError: (error) {
+      // Handle any errors
+      print("Error fetching messages: $error");
+    });
 
     if (_reportedItemId != null) {
       fetchReportedItemByReportedItemId().then((item) {
@@ -73,14 +71,11 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-
   @override
   void dispose() {
     _messagesSubscription.cancel(); // Cancel the subscription
     super.dispose();
   }
-
-
 
   Future<ReportItemModel?> fetchReportedItemByReportedItemId() async {
     // Fetch all documents in the 'reportItem' collection
@@ -95,29 +90,33 @@ class _ChatScreenState extends State<ChatScreen> {
       if (data['id'] == _reportedItemId) {
         // If a match is found, create and return a ReportItemModel from the document
         return ReportItemModel(
-            id: doc.id,
-            title: data['title'],
-            description: data['description'],
-            status: data['status'],
-            imageUrls: List<String>.from(data['imageUrls']),
-            userId: data['userId'],
-            category: data['category'],
-            subCategory: data['subCategory'],
-            publishDateTime: (data['publishDateTime'] as Timestamp).toDate(),
-            address: data['address'],
-            city: data['city'],
-            country: data['country'],
-            coordinates: data['coordinates'],
-            flagged: data['flagged'],
-            published: data['published'],
-            recovered: data['recovered']);
+          id: doc.id,
+          title: data['title'],
+          description: data['description'],
+          status: data['status'],
+          imageUrls: List<String>.from(data['imageUrls']),
+          userId: data['userId'],
+          category: data['category'],
+          subCategory: data['subCategory'],
+          publishDateTime: (data['publishDateTime'] as Timestamp).toDate(),
+          address: data['address'],
+          city: data['city'],
+          country: data['country'],
+          coordinates: data['coordinates'],
+          flagged: data['flagged'],
+          published: data['published'],
+          recovered: data['recovered'],
+          hasAIStarted: data['hasAIStarted'],
+          hasReportToPoliceStationStarted:
+              data['hasReportToPoliceStationStarted'],
+          reportStatusByPolice: data['reportStatusByPolice'],
+        );
       }
     }
 
     // Return null if no matching document is found
     return null;
   }
-
 
   Future<void> _sendMessage({String? imagePath}) async {
     final String receiverId = _userReceiver.uid!;
@@ -127,26 +126,35 @@ class _ChatScreenState extends State<ChatScreen> {
     } else if (_messageController.text.isNotEmpty) {
       String tempMessage = _messageController.text;
       bool isProfane = await checkChatProfanity(tempMessage);
-      bool hasProfanity = profanityFilter.hasProfanity(tempMessage,);
+      bool hasProfanity = profanityFilter.hasProfanity(
+        tempMessage,
+      );
       if (isProfane || hasProfanity) {
+        // ignore: use_build_context_synchronously
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Row(
+              title: const Row(
                 children: [
-                  Icon(Icons.error_outline, color: Colors.red), // Icon for the dialog
+                  Icon(Icons.error_outline,
+                      color: Colors.red), // Icon for the dialog
                   SizedBox(width: 10), // Spacing between icon and text
                   Expanded(child: Text('Profanity Detected')),
                 ],
               ),
-              content: Text('Your message contains words that violate the rules of our community. Please revise your message to ensure it is appropriate.',style: Theme.of(context).textTheme.bodySmall,),
+              content: Text(
+                'Your message contains words that violate the rules of our community. Please revise your message to ensure it is appropriate.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the dialog
                   },
-                  child: Text('Understand', style: TextStyle(color: Colors.deepOrange)), // Engaging button label
+                  child: const Text('Understand',
+                      style: TextStyle(
+                          color: Colors.deepOrange)), // Engaging button label
                 ),
               ],
             );
@@ -154,14 +162,12 @@ class _ChatScreenState extends State<ChatScreen> {
         );
         return; // Stop the function execution if profanity is detected
       }
-       print("ASDFSFAS");
+
       _messageController.clear();
-      await _chatService.sendMessage(receiverId, message: tempMessage, reportedItemId: _reportedItemId);
+      await _chatService.sendMessage(receiverId,
+          message: tempMessage, reportedItemId: _reportedItemId);
     }
   }
-
-
-
 
   void _handleAttachmentPressed() {
     showModalBottomSheet<void>(
@@ -210,7 +216,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessages() {
-
     // if (_messages.isEmpty) {
     //   return const Center(child: Text("No Messages yet"));
     // }
@@ -229,7 +234,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-
   Widget _buildMessageInputField() {
     return Container(
       color: Colors.white,
@@ -245,13 +249,21 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.attach_file, color: AppColors.primaryColor,),
+            icon: const Icon(
+              Icons.attach_file,
+              color: AppColors.primaryColor,
+            ),
             onPressed: _handleAttachmentPressed,
           ),
           Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(50),color: AppColors.primaryColor),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: AppColors.primaryColor),
             child: IconButton(
-              icon: const Icon(Icons.send, color: Colors.white,),
+              icon: const Icon(
+                Icons.send,
+                color: Colors.white,
+              ),
               onPressed: () => _sendMessage(),
             ),
           ),
@@ -262,8 +274,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String placeholderImageUrl = "https://via.placeholder.com/150";
-    print("${_reportedItemId} REPORTED ITEM");
+    const String placeholderImageUrl = "https://via.placeholder.com/150";
+    // print("${_reportedItemId} REPORTED ITEM");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -294,7 +306,9 @@ class _ChatScreenState extends State<ChatScreen> {
             decoration: BoxDecoration(
                 image: DecorationImage(
               image: NetworkImage(
-                _reportItem != null && _reportItem!.imageUrls != null && _reportItem!.imageUrls!.isNotEmpty
+                _reportItem != null &&
+                        _reportItem!.imageUrls != null &&
+                        _reportItem!.imageUrls!.isNotEmpty
                     ? _reportItem!.imageUrls!.first
                     : placeholderImageUrl,
               ),
@@ -325,7 +339,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 Icons.arrow_forward_ios_sharp,
                 color: Colors.white,
               ),
-              onPressed: ()=> Navigator.pushNamed(context, ItemDetailScreen.routeName, arguments: _reportItem),
+              onPressed: () => Navigator.pushNamed(
+                  context, ItemDetailScreen.routeName,
+                  arguments: _reportItem),
               // onPressed: () {},
             ),
           ],

@@ -8,6 +8,7 @@ import 'package:lost_get/presentation_layer/screens/Home/home_screen.dart';
 import 'package:lost_get/presentation_layer/widgets/navbar.dart';
 
 import '../../../business_logic_layer/Dashboard/bloc/dashboard_bloc.dart';
+import '../AI Matched Report/ai_matched_reports_screen.dart';
 
 class Dashboard extends StatefulWidget {
   static const routeName = '/dashboard_screen';
@@ -24,6 +25,7 @@ class _DashboardState extends State<Dashboard> {
     ChatHomeScreen(),
     AddReportScreen(),
     MyReportsScreen(),
+    AIMatchedReportsScreen(),
     ProfileSettings()
   ];
 

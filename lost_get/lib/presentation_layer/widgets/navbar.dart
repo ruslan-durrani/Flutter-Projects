@@ -55,8 +55,8 @@ class NavBar extends StatelessWidget {
               }
             },
             currentIndex: dashboardBloc.state.index,
-            unselectedFontSize: 13,
-            selectedFontSize: 13,
+            unselectedFontSize: 10,
+            selectedFontSize: 10,
             items: [
               BottomNavigationBarItem(
                 icon: SvgPicture.asset('assets/icons/home_inactive.svg',
@@ -90,6 +90,16 @@ class NavBar extends StatelessWidget {
                       : 'assets/icons/my_reports_active.svg',
                 ),
                 label: 'My Reports',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset('assets/icons/my_reports_inactive.svg',
+                    colorFilter: colorFilter),
+                activeIcon: SvgPicture.asset(
+                  changeThemeMode.isDarkMode()
+                      ? 'assets/icons/dark_my_reports_active.svg'
+                      : 'assets/icons/my_reports_active.svg',
+                ),
+                label: 'AI Reports',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(

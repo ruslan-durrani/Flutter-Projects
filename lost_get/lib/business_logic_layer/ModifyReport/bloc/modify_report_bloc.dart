@@ -11,7 +11,7 @@ part 'modify_report_state.dart';
 
 class ModifyReportBloc extends Bloc<ModifyReportEvent, ModifyReportState> {
   final ReportItemRepository _report = ReportItemRepository();
-  ModifyReportBloc() : super(ModifyReportInitial()) {
+    ModifyReportBloc() : super(ModifyReportInitial()) {
     on<ModifyReportLoadingEvent>(loadingEvent);
     on<ItemReportStatusToggleEvent>(itemReportStatusToggleEvent);
     on<ChangesMadeEvent>(changesMadeEvent);

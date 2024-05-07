@@ -53,7 +53,26 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final categoryData = AddReportConstant().getCategoryList();
   String location = "Choose";
-  List<bool> statusIsSelected = [true, false];
+  // List<bool> statusIsSelected = [true, false];
+  String currentStatus = "Lost";
+  List<Map<String, dynamic>> statusList = [
+    {
+      "status":"Lost",
+      "isActive":true,
+    },
+    {
+      "status":"Found",
+      "isActive":false,
+    },
+    {
+      "status":"Stolen",
+      "isActive":false,
+    },
+    {
+      "status":"Robbed",
+      "isActive":false,
+    },
+  ];
 
   Future<void> pickImages() async {
     late PermissionStatus status;
@@ -217,38 +236,72 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                     spacer(),
                     createTitle(context, "Status"),
                     spacer(),
-                    ToggleButtons(
-                      direction: Axis.horizontal,
-                      borderColor: Colors.grey,
-                      fillColor: Colors.transparent,
-                      borderWidth: 1,
-                      selectedBorderColor: AppColors.primaryColor,
-                      selectedColor: AppColors.primaryColor,
-                      borderRadius: BorderRadius.circular(5),
-                      onPressed: (int index) {
-                        for (int i = 0; i < statusIsSelected.length; i++) {
-                          statusIsSelected[i] = i == index;
-                        }
-                        addReportDetailBloc.add(ItemReportStatusToggleEvent());
-                      },
-                      isSelected: statusIsSelected,
-
-                      children: <Widget>[
-
-                        Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width * .445,
-                          child: const Text('Lost',
-                              style: TextStyle(fontSize: 16)),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width * .445,
-                          child: const Text('Found',
-                              style: TextStyle(fontSize: 16)),
-                        ),
-                      ],
+                    Container(
+                      width: double.maxFinite,
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceEvenly,
+                        spacing: 8.0, // gap between adjacent chips
+                        runSpacing: 8.0, // gap between lines
+                        children: List.generate(statusList.length, (index) {
+                          // Creating 4 grid items
+                          return GestureDetector(
+                            onTap: (){
+                              statusList.forEach((element) { element["isActive"]=false;});
+                              statusList[index]["isActive"] = true;
+                              setState(() {
+                                statusList;
+                                currentStatus = statusList[index]["status"];
+                              });
+                            },
+                            child: Container(
+                              height: 40,
+                              width: MediaQuery.of(context).size.width *.4,
+                              decoration: BoxDecoration(
+                                color: statusList[index]["isActive"]?AppColors.primaryColor:AppColors.lightPurpleColor.withOpacity(.5),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "${statusList[index]["status"]}",
+                                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.normal,color: statusList[index]["isActive"]?Colors.white:Colors.black),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
                     ),
+                    // ToggleButtons(
+                    //   direction: Axis.horizontal,
+                    //   borderColor: Colors.grey,
+                    //   fillColor: Colors.transparent,
+                    //   borderWidth: 1,
+                    //   selectedBorderColor: AppColors.primaryColor,
+                    //   selectedColor: AppColors.primaryColor,
+                    //   borderRadius: BorderRadius.circular(5),
+                    //   onPressed: (int index) {
+                    //     for (int i = 0; i < statusIsSelected.length; i++) {
+                    //       statusIsSelected[i] = i == index;
+                    //     }
+                    //     addReportDetailBloc.add(ItemReportStatusToggleEvent());
+                    //   },
+                    //   isSelected: statusIsSelected,
+                    //   children: <Widget>[
+                    //     Container(
+                    //       alignment: Alignment.center,
+                    //       width: MediaQuery.of(context).size.width * .445,
+                    //       child: const Text('Lost',
+                    //           style: TextStyle(fontSize: 16)),
+                    //     ),
+                    //     Container(
+                    //       alignment: Alignment.center,
+                    //       width: MediaQuery.of(context).size.width * .445,
+                    //       child: const Text('Found',
+                    //           style: TextStyle(fontSize: 16)),
+                    //     ),
+                    //
+                    //   ],
+                    // ),
                     spacer(),
                     createTitle(context, "Category"),
                     spacer(),
@@ -377,25 +430,30 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                           } else if (formKey.currentState!.validate()) {
                             final id = const Uuid().v4();
                             ReportItemModel reportItemModel = ReportItemModel(
-                                id: id,
-                                recovered: false,
-                                title: _titleController.text,
-                                description: _descriptionController.text,
-                                status: statusIsSelected[0] == true
-                                    ? 'Lost'
-                                    : 'Found',
-                                userId: FirebaseAuth.instance.currentUser?.uid,
-                                category: categoryData[widget.categoryId - 1]
-                                    ["title"],
-                                subCategory: widget.subCategoryName,
-                                publishDateTime: DateTime.now(),
-                                address: locationData["address"],
-                                city: locationData["city"],
-                                country: locationData["country"],
-                                coordinates: GeoPoint(locationData["latitude"],
-                                    locationData["longitude"]),
-                                flagged: false,
-                                published: false);
+                              id: id,
+                              recovered: false,
+                              title: _titleController.text,
+                              description: _descriptionController.text,
+                              // status: statusIsSelected[0] == true
+                              //     ? 'Lost'
+                              //     : 'Found',
+                              status: currentStatus,
+                              userId: FirebaseAuth.instance.currentUser?.uid,
+                              category: categoryData[widget.categoryId - 1]
+                                  ["title"],
+                              subCategory: widget.subCategoryName,
+                              publishDateTime: DateTime.now(),
+                              address: locationData["address"],
+                              city: locationData["city"],
+                              country: locationData["country"],
+                              coordinates: GeoPoint(locationData["latitude"],
+                                  locationData["longitude"]),
+                              flagged: false,
+                              published: false,
+                              hasAIStarted: false,
+                              hasReportToPoliceStationStarted: false,
+                              reportStatusByPolice: null,
+                            );
                             addReportDetailBloc.add(PublishButtonClickedEvent(
                                 reportItemModel: reportItemModel,
                                 imageFiles: _images));

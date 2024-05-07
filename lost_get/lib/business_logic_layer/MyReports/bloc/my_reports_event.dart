@@ -20,3 +20,12 @@ class MarkAsRecoveredReportEvent extends MyReportsEvent {
 
   const MarkAsRecoveredReportEvent({required this.itemId});
 }
+
+class StartAIMatchMakingEvent extends MyReportsEvent {
+  final String id;
+  final String uid;
+
+  const StartAIMatchMakingEvent({required this.id, required this.uid});
+}
+
+class ButtonPressedEvent extends MyReportsEvent {}

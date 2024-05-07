@@ -2,18 +2,24 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:lost_get/data_store_layer/repository/ai_report_item_repository.dart';
 import 'package:lost_get/data_store_layer/repository/report_item_repository.dart';
 import 'package:lost_get/models/report_item.dart';
+import 'package:lost_get/utils/api_services.dart';
 
 part 'my_reports_event.dart';
 part 'my_reports_state.dart';
 
 class MyReportsBloc extends Bloc<MyReportsEvent, MyReportsState> {
   final ReportItemRepository _reportItemRepository = ReportItemRepository();
+  final AIReportItemRepository _aiReportItemRepository =
+      AIReportItemRepository();
   MyReportsBloc() : super(MyReportsInitial()) {
     on<MyReportsLoadEvent>(myReportsLoadEvent);
     on<DeactivateReportEvent>(deactivateReportEvent);
     on<MarkAsRecoveredReportEvent>(markAsRecoveredReportEvent);
+    on<StartAIMatchMakingEvent>(startAIMatchMakingEvent);
+    on<ButtonPressedEvent>(buttonPressedEvent);
   }
 
   Future<FutureOr<void>> myReportsLoadEvent(
@@ -51,5 +57,23 @@ class MyReportsBloc extends Bloc<MyReportsEvent, MyReportsState> {
     } else {
       emit(ReportMarkedAsRecoveredErrorState());
     }
+  }
+
+  Future<FutureOr<void>> startAIMatchMakingEvent(
+      StartAIMatchMakingEvent event, Emitter<MyReportsState> emit) async {
+    bool isUserAwaiting =
+        await _aiReportItemRepository.isUserReportAwaiting(event.id);
+    if (!isUserAwaiting) {
+      startAIMatchMaking(id: event.id, uid: event.uid);
+      await _reportItemRepository.updateAIStatus(event.id);
+      emit(StartAIMatchMakingState());
+    } else {
+      emit(UserReportsStillAwaitsState());
+    }
+  }
+
+  FutureOr<void> buttonPressedEvent(
+      ButtonPressedEvent event, Emitter<MyReportsState> emit) {
+    emit(ButtonPressedState());
   }
 }

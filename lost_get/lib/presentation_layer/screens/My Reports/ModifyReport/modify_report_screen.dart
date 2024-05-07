@@ -45,6 +45,25 @@ class _ModifyReportScreenState extends State<ModifyReportScreen> {
   String location = "Choose";
   List<bool> statusIsSelected = [true, false];
   bool _controllerInitialized = false;
+  String currentStatus = "Lost";
+  List<Map<String, dynamic>> statusList = [
+    {
+      "status":"Lost",
+      "isActive":true,
+    },
+    {
+      "status":"Found",
+      "isActive":false,
+    },
+    {
+      "status":"Stolen",
+      "isActive":false,
+    },
+    {
+      "status":"Robbed",
+      "isActive":false,
+    },
+  ];
 
   @override
   void initState() {
@@ -188,10 +207,41 @@ class _ModifyReportScreenState extends State<ModifyReportScreen> {
                         spacer(),
                         createTitle(context, "Status"),
                         spacer(),
-                        CustomToggleButton(
-                            initialSelect: state.report.status == 'Lost'
-                                ? 'Lost'
-                                : 'Found'),
+                        Container(
+                          width: double.maxFinite,
+                          child: Wrap(
+                            alignment: WrapAlignment.spaceEvenly,
+                            spacing: 8.0, // gap between adjacent chips
+                            runSpacing: 8.0, // gap between lines
+                            children: List.generate(statusList.length, (index) {
+                              // Creating 4 grid items
+                              return GestureDetector(
+                                onTap: (){
+                                  statusList.forEach((element) { element["isActive"]=false;});
+                                  statusList[index]["isActive"] = true;
+                                  setState(() {
+                                    statusList;
+                                    currentStatus = statusList[index]["status"];
+                                  });
+                                },
+                                child: Container(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width *.4,
+                                  decoration: BoxDecoration(
+                                    color: statusList[index]["isActive"]?AppColors.primaryColor:AppColors.lightPurpleColor.withOpacity(.5),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "${statusList[index]["status"]}",
+                                      style: TextStyle(fontSize: 18,fontWeight: FontWeight.normal,color: statusList[index]["isActive"]?Colors.white:Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
                         spacer(),
                         createTitle(context, "Category"),
                         spacer(),
@@ -246,19 +296,20 @@ class _ModifyReportScreenState extends State<ModifyReportScreen> {
                               if (location == "Choose") {
                                 createToast(description: "Please add location");
                               } else if (formKey.currentState!.validate()) {
-                                final String tempStatus = context
-                                            .read<ModifyReportProvider>()
-                                            .status[0] ==
-                                        true
-                                    ? "Lost"
-                                    : "Found";
+                                // final String tempStatus = context
+                                //             .read<ModifyReportProvider>()
+                                //             .status[0] ==
+                                //         true
+                                //     ? "Lost"
+                                //     : "Found";
                                 var locationData = context
                                     .read<ModifyReportProvider>()
                                     .getLocationData;
                                 print("Modify");
+                                print(currentStatus);
                                 modifyReportBloc.add(UpdateReportEvent(
                                     reportId: widget.id,
-                                    status: tempStatus,
+                                    status: currentStatus,
                                     address: locationData["address"],
                                     city: locationData["city"],
                                     coordinates: GeoPoint(

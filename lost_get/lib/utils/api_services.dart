@@ -76,3 +76,27 @@ Future<bool> checkChatProfanity(String message) async {
     return false;
   }
 }
+
+Future<void> startAIMatchMaking(
+    {required String id, required String uid}) async {
+  var baseUrl = Uri.parse("http://192.168.0.104:7000/auto-report-similarity/");
+  try {
+    final response = await http.post(
+      baseUrl,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode({
+        'id': id,
+        'uid': uid,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      createToast(description: "Failed to send api request");
+    }
+  } catch (e) {
+    createToast(description: "Error occurred while sending api request");
+    // Log the exception or do any other error handling here if needed.
+  }
+}

@@ -263,6 +263,12 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                 myReportsBloc.add(MyReportsLoadEvent());
               }
 
+              if (state is StartAIMatchMakingState) {
+                createToast(
+                    description: "AI Auto Match Maker started successfully");
+                myReportsBloc.add(MyReportsLoadEvent());
+              }
+
               if (state is ReportDeactivationError) {
                 hideCustomLoadingDialog(context);
                 createToast(description: "Report deactivated successfully");
@@ -281,16 +287,25 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                 hideCustomLoadingDialog(context);
                 createToast(
                     description: "Error: Report is not marked as recovered.");
+                myReportsBloc.add(ButtonPressedEvent());
+              }
+
+              if (state is UserReportsStillAwaitsState) {
+                hideCustomLoadingDialog(context);
+                createToast(
+                    description:
+                        "Please Accept/Decline Already Matched Reports First");
+                myReportsBloc.add(ButtonPressedEvent());
               }
             },
             builder: (context, state) {
               if (state is MyReportsLoadedState) {
+
                 return ListView.builder(
                   itemCount: state.reportItems.length,
                   itemBuilder: ((context, index) {
                     var currentReport = state.reportItems[index];
                     return Container(
-
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -511,8 +526,34 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                       Expanded(
                                         flex: 1,
                                         child: button(
-                                            "AI FINDER",
-                                            () {},
+                                            currentReport.hasAIStarted!
+                                                ? "AI Is Working"
+                                                : "AI FINDER",
+                                            currentReport.published! &&
+                                                    !currentReport.recovered! &&
+                                                    !currentReport.hasAIStarted!
+                                                ? () {
+                                                    alertDialog(
+                                                      context,
+                                                      "Are you sure that you want to start AI auto match maker?",
+                                                      "AI Auto Match-Making",
+                                                      "No",
+                                                      "Start",
+                                                      () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      () {
+                                                        myReportsBloc.add(
+                                                            StartAIMatchMakingEvent(
+                                                                id: currentReport
+                                                                    .id!,
+                                                                uid: currentReport
+                                                                    .userId!));
+                                                        Navigator.pop(context);
+                                                      },
+                                                    );
+                                                  }
+                                                : null,
                                             AppColors.darkPrimaryColor,
                                             Colors.white),
                                       ),
@@ -580,6 +621,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
         });
         break;
     }
+    _onRefresh();
   }
 }
 

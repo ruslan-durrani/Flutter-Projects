@@ -27,7 +27,8 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     namespace "com.praidux.lost_get"
-    compileSdkVersion flutter.compileSdkVersion
+//    flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {

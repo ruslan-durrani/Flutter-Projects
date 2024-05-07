@@ -22,14 +22,15 @@ class HomeScreenController {
           .map((doc) => ReportItemModel.fromSnapshot(doc))
           .toList();
 
-      // Remove flagged items
       List<ReportItemModel> unflaggedItems = items
           .where(
               (item) => !item.flagged! && !item.recovered! && item.published!)
           .toList();
 
       items = unflaggedItems;
-      listOfNearbyItems = items;
+       fetchNearbyItems();
+       myRecentUploads();
+      // listOfNearbyItems = items;
       listOfRecommendedItems = items;
       listOfCategories = items;
     } catch (error) {
@@ -39,9 +40,9 @@ class HomeScreenController {
   Future<void> fetchNearbyItems() async {
     try {
       LocationUtils locationUtils = LocationUtils(10);
-      locationUtils.getCurrentLocationAndUpdate();
+      await locationUtils.getCurrentLocationAndUpdate();
       listOfNearbyItems = locationUtils.itemsNearby;
-      print(listOfNearbyItems);
+      print("Controller call ${listOfNearbyItems}");
       // listOfNearbyItems = locationUtils.itemsNearby;
       // fetchAllItems();
       // listOfNearbyItems = listOfRecommendedItems
@@ -134,6 +135,7 @@ class HomeScreenController {
 
       items = unflaggedItems;
       listOfRecentUploads = items;
+      print("Recent uploads ${listOfRecentUploads}");
     } catch (error) {
       print("Error fetching items: $error");
     }

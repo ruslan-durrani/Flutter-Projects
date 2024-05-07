@@ -18,6 +18,10 @@ class ReportItemModel {
   final bool? flagged;
   final bool? published;
   final bool? recovered;
+  final bool? hasAIStarted;
+  final bool? hasReportToPoliceStationStarted;
+  final String? reportStatusByPolice;
+  int? matchPercentage;
 
   ReportItemModel(
       {required this.id,
@@ -35,7 +39,11 @@ class ReportItemModel {
       required this.coordinates,
       required this.flagged,
       required this.recovered,
-      required this.published});
+      required this.published,
+      required this.hasAIStarted,
+      required this.hasReportToPoliceStationStarted,
+      required this.reportStatusByPolice,
+      this.matchPercentage});
 
   Map<String, dynamic> toMap() {
     return {
@@ -54,7 +62,10 @@ class ReportItemModel {
       'flagged': flagged,
       'publishDateTime': publishDateTime,
       'published': published,
-      'recovered': recovered
+      'recovered': recovered,
+      'hasAIStarted': hasAIStarted,
+      'hasReportToPoliceStationStarted': hasReportToPoliceStationStarted,
+      'reportStatusByPolice': reportStatusByPolice,
     };
   }
 
@@ -71,24 +82,34 @@ class ReportItemModel {
         imageUrls = [data['imageUrls'] as String];
       }
     }
+
+    int? matchPercentage;
+    if (data['matchPercentage'] != null) {
+      matchPercentage = (data['matchPercentage'] as num)
+          .toInt(); // Ensure type casting is safe
+    }
+
     return ReportItemModel(
-      id: data['id'],
-      title: data['title'],
-      description: data['description'],
-      status: data['status'],
-      imageUrls: imageUrls,
-      userId: data['userId'],
-      category: data['category'],
-      subCategory: data['subCategory'],
-      address: data['address'],
-      city: data["city"],
-      country: data["country"],
-      coordinates: data["coordinates"],
-      flagged: data["flagged"],
-      published: data['published'],
-      publishDateTime: data['publishDateTime'].toDate(),
-      recovered: data['recovered'],
-    );
+        id: data['id'],
+        title: data['title'],
+        description: data['description'],
+        status: data['status'],
+        imageUrls: imageUrls,
+        userId: data['userId'],
+        category: data['category'],
+        subCategory: data['subCategory'],
+        address: data['address'],
+        city: data["city"],
+        country: data["country"],
+        coordinates: data["coordinates"],
+        flagged: data["flagged"],
+        published: data['published'],
+        publishDateTime: data['publishDateTime'].toDate(),
+        recovered: data['recovered'],
+        hasAIStarted: data['hasAIStarted'],
+        hasReportToPoliceStationStarted:
+            data['hasReportToPoliceStationStarted'],
+        reportStatusByPolice: data['reportStatusByPolice']);
   }
 
   factory ReportItemModel.fromJson(Map<String, dynamic> json) {
@@ -106,6 +127,12 @@ class ReportItemModel {
     DateTime? publishDateTime;
     if (json['publishDateTime'] != null) {
       publishDateTime = DateTime.tryParse(json['publishDateTime']);
+    }
+
+    int? matchPercentage;
+    if (json['matchPercentage'] != null) {
+      matchPercentage = (json['matchPercentage'] as num)
+          .toInt(); // Ensure type casting is safe
     }
 
     return ReportItemModel(
@@ -127,13 +154,11 @@ class ReportItemModel {
         recovered: json["recovered"],
         status: json["status"],
         userId: json["userId"],
-        imageUrls: imageUrls);
+        imageUrls: imageUrls,
+        hasAIStarted: json["hasAIStarted"],
+        hasReportToPoliceStationStarted:
+            json["hasReportToPoliceStationStarted"],
+        reportStatusByPolice: json['reportStatusByPolice'],
+        matchPercentage: matchPercentage);
   }
-
-  // factory GeoPoint.fromJson(Map<String, dynamic> json) {
-  //   return GeoPoint(
-  //     json['latitude'] as double,
-  //     json['longitude'] as double,
-  //   );
-  // }
 }

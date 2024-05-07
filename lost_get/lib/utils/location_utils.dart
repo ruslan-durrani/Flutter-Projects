@@ -1,10 +1,7 @@
   import 'dart:math';
   import 'package:location/location.dart' as loc;
-  import 'package:location/location.dart';
   import 'package:lost_get/presentation_layer/widgets/toast.dart';
   import 'package:cloud_firestore/cloud_firestore.dart';
-  import 'package:geocoding/geocoding.dart';
-  import 'package:geolocator/geolocator.dart';
   import 'package:lost_get/models/report_item.dart';
 
   class LocationUtils {
@@ -20,7 +17,7 @@
     Future<void> getCurrentLocationAndUpdate() async {
       loc.Location location = loc.Location();
       bool serviceEnabled;
-      PermissionStatus permissionGranted;
+      loc.PermissionStatus permissionGranted;
 
       serviceEnabled = await location.serviceEnabled();
       if (!serviceEnabled) {
@@ -30,26 +27,27 @@
           return;
         }
       }
-
       permissionGranted = await location.hasPermission();
-      if (permissionGranted == PermissionStatus.denied) {
+      if (permissionGranted == loc.PermissionStatus.denied) {
         permissionGranted = await location.requestPermission();
-        if (permissionGranted != PermissionStatus.granted) {
+        if (permissionGranted != loc.PermissionStatus.granted) {
           return;
         }
       }
 
-
-
       // Obtain the current location
-      LocationData locationData = await location.getLocation();
+      loc.LocationData locationData = await location.getLocation();
       lastLatitude = locationData.latitude!;
       lastLongitude = locationData.longitude!;
       print('Updated Location: Latitude $lastLatitude, Longitude $lastLongitude');
 
       // Optionally, trigger nearby reports query or any other action
-      itemsNearby = await queryNearbyReports(33.66659162846188, 73.07104904204607, radiusKm);
-      // queryNearbyReports(lastLatitude, lastLongitude, radiusKm);
+      // karachi alahabad
+      // itemsNearby = await queryNearbyReports(25.281181, 67.015103, radiusKm);
+      // danish
+      // itemsNearby = await queryNearbyReports(33.659408488443624, 73.06783206760883, radiusKm);
+      itemsNearby = await queryNearbyReports(lastLatitude, lastLongitude, radiusKm);
+      return ;
       //latitude: 33.66659162846188, longitude: 73.07104904204607
     }
 
@@ -70,22 +68,43 @@
     }
 
     Future<List<ReportItemModel>> queryNearbyReports(double currentLatitude, double currentLongitude, double radius) async {
-
       var bounds = calculateBounds(currentLatitude, currentLongitude, radius);
+
+      print("Searching within bounds: ${bounds}");
+
+      // Query Firestore for documents within the latitude bounds
       final querySnapshot = await FirebaseFirestore.instance
           .collection('reportItems')
-          .where('coordinates.Latitude', isGreaterThanOrEqualTo: bounds['minLat'])
-          .where('coordinates.Latitude', isLessThanOrEqualTo: bounds['maxLat'])
-          .where('coordinates.Longitude', isGreaterThanOrEqualTo: bounds['minLon'])
-          .where('coordinates.Longitude', isLessThanOrEqualTo: bounds['maxLon'])
+          .where('coordinates', isGreaterThan: GeoPoint(bounds['minLat']!, bounds['minLon']!))
+          .where('coordinates', isLessThan: GeoPoint(bounds['maxLat']!, bounds['maxLon']!))
           .limit(50)
           .get();
 
-      // Filter the results in Dart
-      print(querySnapshot.size);
-      return querySnapshot.docs
-          .map((doc) => ReportItemModel.fromSnapshot(doc))
-          .toList();
+      print("Documents fetched by latitude filter: ${querySnapshot.docs.length}");
 
+      var items = querySnapshot.docs.map((doc) => ReportItemModel.fromSnapshot(doc)).toList();
+      return items;
     }
+
+
+
+
+  // Future<List<ReportItemModel>> queryNearbyReports(double currentLatitude, double currentLongitude, double radius) async {
+  //     var bounds = calculateBounds(currentLatitude, currentLongitude, radius);
+  //     final querySnapshot = await FirebaseFirestore.instance
+  //         .collection('reportItems')
+  //         .where('coordinates.Latitude', isGreaterThanOrEqualTo: bounds['minLat'])
+  //         .where('coordinates.Latitude', isLessThanOrEqualTo: bounds['maxLat'])
+  //         .where('coordinates.Longitude', isGreaterThanOrEqualTo: bounds['minLon'])
+  //         .where('coordinates.Longitude', isLessThanOrEqualTo: bounds['maxLon'])
+  //         .limit(50)
+  //         .get();
+  //
+  //     // Filter the results in Dart
+  //     print(querySnapshot.size);
+  //     return querySnapshot.docs
+  //         .map((doc) => ReportItemModel.fromSnapshot(doc))
+  //         .toList();
+  //
+  //   }
   }

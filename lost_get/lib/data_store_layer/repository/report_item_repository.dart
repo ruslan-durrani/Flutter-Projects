@@ -176,4 +176,31 @@ class ReportItemRepository extends BaseUsersRepository {
       return false;
     }
   }
+
+  Future<bool> updateAIStatus(String reportId) async {
+    try {
+      final snapshot = await _firebaseFirestore
+          .collection("reportItems")
+          .where("id", isEqualTo: reportId)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return false;
+      }
+
+      final document = snapshot.docs.first;
+
+      // Prepare the fields to update
+      Map<String, dynamic> updateData = {};
+      updateData['hasAIStarted'] = true;
+
+      if (updateData.isNotEmpty) {
+        await document.reference.update(updateData);
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

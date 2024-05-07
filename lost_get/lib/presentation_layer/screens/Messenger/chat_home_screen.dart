@@ -29,11 +29,11 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Ensure the context is available here.
       _searchController.addListener(() {
-        Provider.of<ChatProvider>(context, listen: false).searchQuery = _searchController.text.trim();
+        Provider.of<ChatProvider>(context, listen: false).searchQuery =
+            _searchController.text.trim();
       });
     });
   }
-
 
   @override
   void dispose() {
@@ -44,41 +44,38 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
   Widget _buildSearchField() {
     return Container(
       margin: const EdgeInsets.all(10.0),
-  height: 50,
-  decoration: BoxDecoration(color: AppColors.lightPurpleColor,borderRadius: BorderRadius.circular(100)),
+      height: 50,
+      decoration: BoxDecoration(
+          color: AppColors.lightPurpleColor,
+          borderRadius: BorderRadius.circular(100)),
       child: TextField(
         autofocus: false,
         controller: _searchController,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.search),
           hintText: "Search",
-          
-          hintStyle: TextStyle(
-          fontSize: 13
-          ),
+          hintStyle: TextStyle(fontSize: 13),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              _searchController.clear();
-              Provider.of<ChatProvider>(context, listen: false).searchQuery = '';
-            },
-          )
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    Provider.of<ChatProvider>(context, listen: false)
+                        .searchQuery = '';
+                  },
+                )
               : null,
           border: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(105.0)),
-              borderSide: BorderSide.none
-          ),
+              borderSide: BorderSide.none),
         ),
-
       ),
     );
   }
 
-
-deleteChatCalled(UserProfile profile) async {
-  await _chatService.deleteChatWithRecepient(profile.uid);
-  createToast(description: '${profile.fullName} chats are deleted');
+  deleteChatCalled(UserProfile profile) async {
+    await _chatService.deleteChatWithRecepient(profile.uid);
+    createToast(description: '${profile.fullName} chats are deleted');
   }
 
   Widget _buildStreamHomeUser() {
@@ -121,23 +118,34 @@ deleteChatCalled(UserProfile profile) async {
 
             // FutureBuilder to fetch and display chat metadata like unread messages.
             return FutureBuilder<DocumentSnapshot>(
-              future: _firestore.collection("chat_meta").doc(_chatService.getChatRoomKey(userProfile.uid ?? '')).get(),
+              future: _firestore
+                  .collection("chat_meta")
+                  .doc(_chatService.getChatRoomKey(userProfile.uid ?? ''))
+                  .get(),
               builder: (context, chatMetaSnapshot) {
-                if (chatMetaSnapshot.connectionState == ConnectionState.waiting) {
-                  return ListTile(title: Text(userProfile.fullName ?? "Loading..."));
+                if (chatMetaSnapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return ListTile(
+                      title: Text(userProfile.fullName ?? "Loading..."));
                 }
 
                 String lastMsg = "No message yet";
                 var unreadCount = 0;
                 if (chatMetaSnapshot.hasData && chatMetaSnapshot.data!.exists) {
-                  final chatMeta = chatMetaSnapshot.data!.data() as Map<String, dynamic>? ?? {};
-                  final lastMessageMap = chatMeta['lastMsg'] as Map<String, dynamic>? ?? {};
+                  final chatMeta =
+                      chatMetaSnapshot.data!.data() as Map<String, dynamic>? ??
+                          {};
+                  final lastMessageMap =
+                      chatMeta['lastMsg'] as Map<String, dynamic>? ?? {};
                   final String sender = lastMessageMap['sender'] ?? '';
                   lastMsg = lastMessageMap['message'] ?? '';
-                  lastMsg = sender == currentUserUid ? "You: $lastMsg" : "${userProfile.fullName}: $lastMsg";
+                  lastMsg = sender == currentUserUid
+                      ? "You: $lastMsg"
+                      : "${userProfile.fullName}: $lastMsg";
 
                   // Extract unread message count.
-                  final userMetaData = chatMeta[currentUserUid] as Map<String, dynamic>? ?? {};
+                  final userMetaData =
+                      chatMeta[currentUserUid] as Map<String, dynamic>? ?? {};
                   unreadCount = userMetaData['unreadCount'] ?? 0;
                 }
 
@@ -153,14 +161,15 @@ deleteChatCalled(UserProfile profile) async {
                       child: Icon(Icons.delete, color: Colors.white),
                     ),
                   ),
-                  onDismissed: (direction)=>deleteChatCalled(userProfile),
+                  onDismissed: (direction) => deleteChatCalled(userProfile),
                   confirmDismiss: (direction) async {
                     final bool res = await showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text("Confirm"),
-                          content:  Text("Are you sure you wish to delete this chat with ${userProfile.fullName}?"),
+                          content: Text(
+                              "Are you sure you wish to delete this chat with ${userProfile.fullName}?"),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(true),
@@ -177,13 +186,24 @@ deleteChatCalled(UserProfile profile) async {
                     return res;
                   },
                   child: ListTile(
-                    leading: userProfile.imgUrl!.isNotEmpty?CircleAvatar(backgroundImage: NetworkImage("${userProfile.imgUrl}"),):Icon(Icons.person),
+                    leading: userProfile.imgUrl!.isNotEmpty
+                        ? CircleAvatar(
+                            backgroundImage:
+                                NetworkImage("${userProfile.imgUrl}"),
+                          )
+                        : Icon(Icons.person),
                     title: Text(userProfile.fullName ?? "Unknown"),
-                    subtitle: unreadCount > 0 ? Text("$unreadCount new messages") : Text(lastMsg),
+                    subtitle: unreadCount > 0
+                        ? Text("$unreadCount new messages")
+                        : Text(lastMsg),
                     onTap: () => Navigator.pushNamed(
                       context,
                       ChatScreen.routeName,
-                      arguments: {'userProfile': userProfile, "reportedItemId": chatMetaSnapshot.data!["reportedItemId"]},
+                      arguments: {
+                        'userProfile': userProfile,
+                        "reportedItemId":
+                            chatMetaSnapshot.data!["reportedItemId"]
+                      },
                     ),
                   ),
                 );
@@ -200,7 +220,11 @@ deleteChatCalled(UserProfile profile) async {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("Messages", style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black)),
+        title: Text("Messages",
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(color: Colors.black)),
         elevation: 1,
       ),
       body: Column(

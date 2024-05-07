@@ -30,3 +30,11 @@ class LoadingState extends MyReportsActionState {}
 class ReportMarkedAsRecoveredSuccessfullyState extends MyReportsActionState {}
 
 class ReportMarkedAsRecoveredErrorState extends MyReportsActionState {}
+
+class StartAIMatchMakingState extends MyReportsActionState {}
+
+class AIMatchMakingErrorState extends MyReportsActionState {}
+
+class UserReportsStillAwaitsState extends MyReportsActionState {}
+
+class ButtonPressedState extends MyReportsActionState {}

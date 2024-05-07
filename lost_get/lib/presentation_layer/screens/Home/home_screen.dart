@@ -29,7 +29,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderStateMixin{
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   String _currentFilter = "All"; // The index of the selected filter
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -37,21 +38,20 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3,initialIndex: 0,vsync: this);
+    _tabController = TabController(length: 3, initialIndex: 0, vsync: this);
   }
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
 
-
   // Define a method to handle filter change
   void _handleFilterChange(String filter) {
     setState(() {
       _currentFilter = filter;
     });
-
   }
 
   HomeScreenController controller = HomeScreenController();
@@ -60,27 +60,30 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar:PreferredSize(
-
-          preferredSize: (_currentFilter == "All")? Size.fromHeight(150.0):Size.fromHeight(100.0),
+        appBar: PreferredSize(
+          preferredSize: (_currentFilter == "All")
+              ? const Size.fromHeight(150.0)
+              : const Size.fromHeight(100.0),
           child: AppBar(
             elevation: 0.0,
             toolbarHeight: 100,
             flexibleSpace: Column(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SvgPicture.asset('assets/icons/lostget_logo.svg', width: 120),
+                      SvgPicture.asset('assets/icons/lostget_logo.svg',
+                          width: 120),
                       Row(
                         children: [
                           IconButton(
                             icon: SvgPicture.asset(
                                 'assets/icons/search_icon.svg'), // Replace with your SVG file path
                             onPressed: () {
-                              Navigator.pushNamed(context, SearchPage.routeName);
+                              Navigator.pushNamed(
+                                  context, SearchPage.routeName);
                             },
                           ),
                           IconButton(
@@ -94,7 +97,8 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
                             icon: SvgPicture.asset(
                                 'assets/icons/scan_qr_icon.svg'), // Replace with your SVG file path
                             onPressed: () {
-                              Navigator.pushNamed(context, QRCodeScannerScreen.routeName);
+                              Navigator.pushNamed(
+                                  context, QRCodeScannerScreen.routeName);
                             },
                           ),
                         ],
@@ -118,16 +122,17 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
             ),
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
-
-            bottom: (_currentFilter == "All")?TabBar(
-              controller: _tabController,
-              indicatorColor: AppColors.primaryColor,
-              tabs: [
-                Tab(text: 'Recommendations'),
-                Tab(text: 'Nearby'),
-                Tab(text: 'Recent Uploads'),
-              ],
-            ):null,
+            bottom: (_currentFilter == "All")
+                ? TabBar(
+                    controller: _tabController,
+                    indicatorColor: AppColors.primaryColor,
+                    tabs: const [
+                      Tab(text: 'Recommendations',),
+                      Tab(text: 'Nearby'),
+                      Tab(text: 'Recent Uploads'),
+                    ],
+                  )
+                : null,
           ),
         ),
         body: Column(
@@ -135,23 +140,30 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
             _buildBodyContent(),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: ()=>Navigator.pushNamed(context, ChatBotScreen.routeName),
+          child:Image(image: AssetImage("./assets/icons/bot.png")),
+        ),
       ),
     );
   }
 
-  setLocationData() async{
-    var locationData = await Navigator.pushNamed(
-        context, MapScreen.routeName)
-    as Map<String, dynamic>;
+  setLocationData() async {
+    var locationData = await Navigator.pushNamed(context, MapScreen.routeName)
+        as Map<String, dynamic>;
     print(locationData);
     String city = locationData["city"];
     String country = locationData["country"];
     String address = locationData["address"];
-    List<ReportItemModel> reportedItemsInACity = await controller.fetchReportedItemBasedOnCity(address,city,country);
-    if(reportedItemsInACity.length>0){
-      Navigator.pushNamed(context, SearchDetailPage.routeName,arguments: {"searchedText":address+" "+city,"reportedItems":reportedItemsInACity});
-    }
-    else{
+    List<ReportItemModel> reportedItemsInACity =
+        await controller.fetchReportedItemBasedOnCity(address, city, country);
+    if (reportedItemsInACity.isNotEmpty) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, SearchDetailPage.routeName, arguments: {
+        "searchedText": "$address $city",
+        "reportedItems": reportedItemsInACity
+      });
+    } else {
       createToast(description: "No reported items at this place ✅📍");
     }
   }
@@ -165,36 +177,59 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
       case "All":
         return Expanded(
           child: TabBarView(
-                controller: _tabController,
-                children: [
-                _buildTabContent('Recommendations'),
-                _buildTabContent('Nearby'),
-                _buildTabContent('Recent Uploads'),
-                ],
-              ),
+            controller: _tabController,
+            children: [
+              _buildTabContent('Recommendations'),
+              _buildTabContent('Nearby'),
+              _buildTabContent('Recent Uploads'),
+            ],
+          ),
         );
       default:
         return getListOfReport("specific-category");
     }
   }
+
   Widget _buildTabContent(String category) {
     return FutureBuilder(
       future: controller.fetchAllItems(),
       // future: controller.fetchNearbyItems(), // Implement this method based on your data fetching logic
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text("Error fetching data"));
+          return const Center(child: Text("Error fetching data"));
         } else {
-          List<ReportItemModel> items = controller.listOfNearbyItems;
+          List<ReportItemModel> items ;
+          String itemIfEmpty = "";
+          switch (category) {
+            case "Recommendations":
+              items = controller.listOfRecommendedItems;
+              itemIfEmpty = items.isEmpty?"No Recommendations Right Now":"";
+              break;
+            case "Nearby":
+              items = controller.listOfNearbyItems;
+              itemIfEmpty = items.isEmpty?"No Nearby item Right Now":"";
+              break;
+            case "Recent Uploads":
+              items = controller.listOfRecentUploads;
+              itemIfEmpty = items.isEmpty?"No Recent Uploads":"";
+              break;
+            default:
+              items = controller.listOfNearbyItems;
+              break;
+
+          };
           return SingleChildScrollView(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+            if(itemIfEmpty!="")Container(height: 200,alignment:Alignment.center,child: Text(itemIfEmpty),),
                 for (var item in items)
                   Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ReportedItemCard(item: item, onTap: () => onItemTapped(item))),
+                      child: ReportedItemCard(
+                          item: item, onTap: () => onItemTapped(item))),
               ],
             ),
           );
@@ -202,6 +237,7 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
       },
     );
   }
+
   Widget getShimmerContainer() {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
@@ -301,6 +337,7 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
       ),
     );
   }
+
   Widget getListOfReport(String type) {
     return Expanded(
       child: FutureBuilder<List<ReportItemModel>>(
@@ -329,10 +366,9 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
       ),
     );
   }
-  onSectionHeaderTapped(String title,List<ReportItemModel> reportedItems) {
-    Navigator.pushNamed(context, ViewAllItems.routeName, arguments: {
-      "title":title,
-      "reportedItemList": reportedItems
-    });
+
+  onSectionHeaderTapped(String title, List<ReportItemModel> reportedItems) {
+    Navigator.pushNamed(context, ViewAllItems.routeName,
+        arguments: {"title": title, "reportedItemList": reportedItems});
   }
 }
