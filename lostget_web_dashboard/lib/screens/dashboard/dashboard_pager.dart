@@ -15,10 +15,6 @@ class DashBoardPages extends StatelessWidget {
     return Scaffold(
       backgroundColor: bgColor,
       drawer: DrawerMenu(),
-      // key: BlocProvider
-      //     .of<ControllerBloc>(context)
-      //     .state
-      //     .scaffoldKey,
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,6 +36,8 @@ class DashBoardPages extends StatelessWidget {
                       ),
                       BlocBuilder<NavigationBloc, NavigationState>(
                         builder: (context, state) {
+                          print(state.currentNavigationItem);
+
                           return state.screen;
                         },
                       )

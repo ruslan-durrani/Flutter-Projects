@@ -13,6 +13,7 @@ import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart
 import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCard.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCarousal.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/section_heading.dart';
+import 'package:lost_get/presentation_layer/screens/My%20Reports/my_reports_screen.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
 import 'package:lost_get/utils/api_services.dart';
 import 'package:shimmer/shimmer.dart';
@@ -224,7 +225,12 @@ class _HomeScreenState extends State<HomeScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-            if(itemIfEmpty!="")Container(height: 200,alignment:Alignment.center,child: Text(itemIfEmpty),),
+            if(itemIfEmpty!="")Column(
+              children: [
+                Container(height: 200,alignment:Alignment.center,child: Text(itemIfEmpty),),
+                button("Search for reported items", ()=>Navigator.pushNamed(context, SearchPage.routeName), AppColors.primaryColor, Colors.white)
+              ],
+            ),
                 for (var item in items)
                   Padding(
                       padding: const EdgeInsets.all(8.0),

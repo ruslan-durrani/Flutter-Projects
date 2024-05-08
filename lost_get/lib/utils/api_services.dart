@@ -4,9 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:lost_get/models/report_item.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
 
+const String recommendationUri = "http://52.90.74.233:5001/recommend-reports/";
+const String profaneImagesUri = "http://3.80.176.47:5000/check-images/";
+const String profanityChatsUri = "http://3.91.0.210:8000/profanity-check/";
+const String reportAiMatchMakerUri = "http://3.85.173.134:7000/auto-report-similarity/";
+
 Future<void> checkProfaneImages(
     {required String id, required String uid}) async {
-  var baseUrl = Uri.parse("http://54.205.162.42:5000/check-images/");
+  var baseUrl = Uri.parse(profaneImagesUri);
   // var baseUrl = Uri.parse("http://3.89.7.44:5000/check-images/");
   final response = await http.post(
     baseUrl,
@@ -28,7 +33,7 @@ Future<void> checkProfaneImages(
 
 Future<List<ReportItemModel>> recommendReports(String uid) async {
   print("working");
-  var baseUrl = Uri.parse("http://54.242.224.177:5001/recommend-reports/");
+  var baseUrl = Uri.parse(recommendationUri);
   // var baseUrl = Uri.parse("http://54.175.58.241:5001/recommend-reports/");
   final response = await http.post(
     baseUrl,
@@ -54,7 +59,7 @@ Future<List<ReportItemModel>> recommendReports(String uid) async {
 }
 
 Future<bool> checkChatProfanity(String message) async {
-  var baseUrl = Uri.parse("http://3.88.202.13:8000/profanity-check/");
+  var baseUrl = Uri.parse(profanityChatsUri);
   final response = await http.post(
     baseUrl,
     headers: <String, String>{
@@ -79,7 +84,7 @@ Future<bool> checkChatProfanity(String message) async {
 
 Future<void> startAIMatchMaking(
     {required String id, required String uid}) async {
-  var baseUrl = Uri.parse("http://192.168.0.104:7000/auto-report-similarity/");
+  var baseUrl = Uri.parse(reportAiMatchMakerUri);
   try {
     final response = await http.post(
       baseUrl,

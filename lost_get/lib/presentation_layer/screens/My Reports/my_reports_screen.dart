@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:external_path/external_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +16,7 @@ import 'package:lost_get/business_logic_layer/Provider/change_theme_mode.dart';
 import 'package:lost_get/common/constants/colors.dart';
 import 'package:lost_get/presentation_layer/screens/Add%20Report/add_report_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/My%20Reports/ModifyReport/modify_report_screen.dart';
+import 'package:lost_get/presentation_layer/screens/My%20Reports/ReportsToPoliceStation/ReportsPoliceStations.dart';
 import 'package:lost_get/presentation_layer/widgets/alert_dialog.dart';
 import 'package:lost_get/presentation_layer/widgets/custom_dialog.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
@@ -305,6 +307,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                   itemCount: state.reportItems.length,
                   itemBuilder: ((context, index) {
                     var currentReport = state.reportItems[index];
+                    bool currentReportItem = currentReport.hasReportToPoliceStationStarted!;
                     return Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -321,7 +324,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                       ),
                       margin: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 5),
-                      height: 110.h,
+                      height: 135.h,
                       width: double.infinity,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -419,6 +422,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                           SizedBox(
                                             width: 200.w,
                                             child: Text(currentReport.title!,
+                                                  maxLines: 2,
                                                 softWrap: true,
                                                 style: GoogleFonts.roboto(
                                                   fontWeight: FontWeight.w500,
@@ -505,57 +509,92 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                     right: 5,
                                     top: 5,
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  child: Column(
                                     children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child: button(
-                                            "QR Flyer",
-                                            currentReport.published! &&
-                                                    !currentReport.recovered!
-                                                ? () => createFlyerPDF(
-                                                    currentReport.id!)
-                                                : null,
-                                            AppColors.primaryColor,
-                                            Colors.white),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: button(
+                                                "QR Flyer",
+                                                currentReport.published! &&
+                                                        !currentReport.recovered!
+                                                    ? () => createFlyerPDF(
+                                                        currentReport.id!)
+                                                    : null,
+                                                AppColors.primaryColor,
+                                                Colors.white),
+                                          ),
+                                          SizedBox(
+                                            width: 5.w,
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: button(
+                                                currentReport.hasAIStarted!
+                                                    ? "AI Is Working"
+                                                    : "AI FINDER",
+                                                currentReport.published! &&
+                                                        !currentReport.recovered! &&
+                                                        !currentReport.hasAIStarted!
+                                                    ? () {
+                                                        alertDialog(
+                                                          context,
+                                                          "Are you sure that you want to start AI auto match maker?",
+                                                          "AI Auto Match-Making",
+                                                          "No",
+                                                          "Start",
+                                                          () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          () {
+                                                            myReportsBloc.add(
+                                                                StartAIMatchMakingEvent(
+                                                                    id: currentReport
+                                                                        .id!,
+                                                                    uid: currentReport
+                                                                        .userId!));
+                                                            Navigator.pop(context);
+                                                          },
+                                                        );
+                                                      }
+                                                    : null,
+                                                AppColors.darkPrimaryColor,
+                                                Colors.white),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(
-                                        width: 5.w,
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: button(
-                                            currentReport.hasAIStarted!
-                                                ? "AI Is Working"
-                                                : "AI FINDER",
-                                            currentReport.published! &&
-                                                    !currentReport.recovered! &&
-                                                    !currentReport.hasAIStarted!
-                                                ? () {
-                                                    alertDialog(
-                                                      context,
-                                                      "Are you sure that you want to start AI auto match maker?",
-                                                      "AI Auto Match-Making",
-                                                      "No",
-                                                      "Start",
-                                                      () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      () {
-                                                        myReportsBloc.add(
-                                                            StartAIMatchMakingEvent(
-                                                                id: currentReport
-                                                                    .id!,
-                                                                uid: currentReport
-                                                                    .userId!));
-                                                        Navigator.pop(context);
-                                                      },
-                                                    );
-                                                  }
-                                                : null,
-                                            AppColors.darkPrimaryColor,
-                                            Colors.white),
+                                      Row(
+                                        children: [
+                                          Expanded(child: Consumer(
+                                            builder: (context, ChangeThemeMode value, child) => ElevatedButton(
+                                              onPressed: (){
+                                                if(currentReportItem){
+                                                  createToast(description: "Already reported");
+                                                  return;
+                                                }
+                                                Navigator.pushNamed(context, ReportsPoliceStations.routeName,arguments: currentReport);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: currentReportItem?Colors.black.withOpacity(.5):Colors.teal,
+                                                  disabledBackgroundColor: AppColors.primaryColor.withOpacity(.5),
+                                                  foregroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(2),
+                                                  ),
+                                                  padding: const EdgeInsets.all(10)),
+                                              child: Text(
+                                                currentReportItem?"Already Reported":"Report To Nearby Police Station",
+                                                style: GoogleFonts.roboto(
+                                                  color: Colors.white,
+                                                  fontSize: 13.sp,
+                                                  fontWeight: value.isDyslexia ? FontWeight.bold : FontWeight.normal,
+                                                ),
+                                              ),
+                                            ),
+                                          )),
+                                        ],
                                       ),
                                     ],
                                   ),

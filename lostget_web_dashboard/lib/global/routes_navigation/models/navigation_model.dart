@@ -28,6 +28,7 @@ import '../bloc/navigation_bloc.dart';
 class Navigation {
   static const String DASHBOARD = "Dash Board";
   static const String USER_MANAGEMENT = "User Management";
+  static const String POLICE_STATION_MANAGEMENT = "Police Station Management";
   static const String ITEM_MANAGEMENT = "Item Management";
   static const String PROFILE = "Profile";
   static const String ADD_ADMIN = "Add Admin";
@@ -65,6 +66,17 @@ final List<NavigationBlocRouteBinder> binderList = [
       ),
       UserManagement()
   ),
+  // NavigationBlocRouteBinder(
+  //     {
+  //       "navigationItem": Navigation.POLICE_STATION_MANAGEMENT,
+  //       "navigationIcon": "assets/icons/BlogPost.svg",
+  //     },
+  //     BlocProvider<MyProfileBloc>(
+  //       create: (BuildContext context) => MyProfileBloc(),
+  //       lazy: false,
+  //     ),
+  //     PoliceStationRegistrations()
+  // ),
   NavigationBlocRouteBinder(
     {
       "navigationItem": Navigation.ITEM_MANAGEMENT,
@@ -76,9 +88,6 @@ final List<NavigationBlocRouteBinder> binderList = [
     ),
     Container(
       child: ReportedItemManagement()
-      // child: Center(
-      //   child: Text("Item Management"),
-      // ),
     ),
   ),
   NavigationBlocRouteBinder(
@@ -172,7 +181,6 @@ class Generator {
       var routeName = settings.name;
       if (routeName != null) {
         String? token = CookieStorage().getTokenFromCookie();
-        // print("Fetched Refresh: "+token!);
         if(token != ""){
           return MaterialPageRoute(
               builder: (_) => DashBoardPages(), settings: settings);

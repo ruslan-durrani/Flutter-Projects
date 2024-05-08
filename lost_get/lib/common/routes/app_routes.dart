@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lost_get/models/report_item.dart';
 import 'package:lost_get/presentation_layer/screens/Add%20Report/add_report_detail_screen.dart';
@@ -22,6 +23,7 @@ import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/ChangePhoneNumberVerification/change_phone_number_verification.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/manage_account.dart';
 import '../../presentation_layer/screens/Home/SearchPage/search_page.dart';
+import '../../presentation_layer/screens/My Reports/ReportsToPoliceStation/ReportsPoliceStations.dart';
 import '../../presentation_layer/screens/Profile Settings/Settings/ManageAccount/ChangePassword/ChangePasswordVerified/change_password_verified.dart';
 import '../../presentation_layer/screens/Profile Settings/Settings/UserPreference/user_preference_screen.dart';
 import '../../presentation_layer/screens/Profile Settings/EditProfile/edit_profile.dart';
@@ -132,7 +134,10 @@ class AppRouter {
       case SearchPage.routeName:
         return MaterialPageRoute(
             builder: (context) => SearchPage());
-
+      case ReportsPoliceStations.routeName:
+        final args = routeSettings.arguments as ReportItemModel;
+        return MaterialPageRoute(
+            builder: (context) => ReportsPoliceStations(reportedItem: args,));
         case SearchDetailPage.routeName:
           final args = routeSettings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(

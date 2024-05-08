@@ -271,37 +271,6 @@ class _AddReportDetailScreenState extends State<AddReportDetailScreen> {
                         }),
                       ),
                     ),
-                    // ToggleButtons(
-                    //   direction: Axis.horizontal,
-                    //   borderColor: Colors.grey,
-                    //   fillColor: Colors.transparent,
-                    //   borderWidth: 1,
-                    //   selectedBorderColor: AppColors.primaryColor,
-                    //   selectedColor: AppColors.primaryColor,
-                    //   borderRadius: BorderRadius.circular(5),
-                    //   onPressed: (int index) {
-                    //     for (int i = 0; i < statusIsSelected.length; i++) {
-                    //       statusIsSelected[i] = i == index;
-                    //     }
-                    //     addReportDetailBloc.add(ItemReportStatusToggleEvent());
-                    //   },
-                    //   isSelected: statusIsSelected,
-                    //   children: <Widget>[
-                    //     Container(
-                    //       alignment: Alignment.center,
-                    //       width: MediaQuery.of(context).size.width * .445,
-                    //       child: const Text('Lost',
-                    //           style: TextStyle(fontSize: 16)),
-                    //     ),
-                    //     Container(
-                    //       alignment: Alignment.center,
-                    //       width: MediaQuery.of(context).size.width * .445,
-                    //       child: const Text('Found',
-                    //           style: TextStyle(fontSize: 16)),
-                    //     ),
-                    //
-                    //   ],
-                    // ),
                     spacer(),
                     createTitle(context, "Category"),
                     spacer(),

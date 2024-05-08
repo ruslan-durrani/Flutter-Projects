@@ -19,6 +19,7 @@ class AiMatchedReportsBloc
     on<AIMatchReportDeclineEvent>(aiMatchReportDeclineEvent);
   }
 
+
   Future<void> aiMatchedReportsLoadEvent(
       AiMatchedReportsEvent event, Emitter<AiMatchedReportsState> emit) async {
     emit(AIMatchReportsLoadingState());

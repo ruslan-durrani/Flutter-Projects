@@ -1,5 +1,6 @@
   import 'dart:math';
-  import 'package:location/location.dart' as loc;
+  import 'package:firebase_auth/firebase_auth.dart';
+import 'package:location/location.dart' as loc;
   import 'package:lost_get/presentation_layer/widgets/toast.dart';
   import 'package:cloud_firestore/cloud_firestore.dart';
   import 'package:lost_get/models/report_item.dart';
@@ -39,8 +40,6 @@
       loc.LocationData locationData = await location.getLocation();
       lastLatitude = locationData.latitude!;
       lastLongitude = locationData.longitude!;
-      print('Updated Location: Latitude $lastLatitude, Longitude $lastLongitude');
-
       // Optionally, trigger nearby reports query or any other action
       // karachi alahabad
       // itemsNearby = await queryNearbyReports(25.281181, 67.015103, radiusKm);
@@ -69,10 +68,6 @@
 
     Future<List<ReportItemModel>> queryNearbyReports(double currentLatitude, double currentLongitude, double radius) async {
       var bounds = calculateBounds(currentLatitude, currentLongitude, radius);
-
-      print("Searching within bounds: ${bounds}");
-
-      // Query Firestore for documents within the latitude bounds
       final querySnapshot = await FirebaseFirestore.instance
           .collection('reportItems')
           .where('coordinates', isGreaterThan: GeoPoint(bounds['minLat']!, bounds['minLon']!))
@@ -84,6 +79,16 @@
 
       var items = querySnapshot.docs.map((doc) => ReportItemModel.fromSnapshot(doc)).toList();
       return items;
+    }
+    Stream<QuerySnapshot> queryNearbyPoliceStations(GeoPoint geoPoint, double radius)  {
+      print(geoPoint.longitude);
+      var bounds = calculateBounds(geoPoint.latitude, geoPoint.longitude, radius);
+      return  FirebaseFirestore.instance
+          .collection('registeredPoliceStation')
+          .where('coordinates', isGreaterThan: GeoPoint(bounds['minLat']!, bounds['minLon']!))
+          .where('coordinates', isLessThan: GeoPoint(bounds['maxLat']!, bounds['maxLon']!))
+          .limit(50)
+          .snapshots();
     }
 
 

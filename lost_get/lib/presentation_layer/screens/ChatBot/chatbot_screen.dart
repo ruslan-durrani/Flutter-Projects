@@ -92,8 +92,9 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             "\n9- Press OK and your phone number is change. You can verify from the profile information\n";
       },
     },
+    //  TODO
     "How to report to nearby police stations?": {
-      "text":"Please enter the product ID to check warranty status.",
+      "text":"Report To Nearby Police Station",
       "func":(){
         return ""
             "1- Select Profile From Navbar. You will see a page that shows up your profile and several options\n"
@@ -102,10 +103,25 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             "\n4- Click on save button.\n";
       },
     },
+    //  TODO
     "How to enable ai report match making?": {
-      "text":"Please enter the product ID to check warranty status.",
+      "text":"Enable AI Report Match Making",
       "func":(){
-        return "Hi";
+        return ""
+            "1- Select Profile From Navbar. You will see a page that shows up your profile and several options\n"
+            "\n2- Select the View and edit option just below your name\n"
+            "\n3- Add updated information to your profile\n"
+            "\n4- Click on save button.\n";
+      },
+    },
+    "How to generate flyers?": {
+      "text":"Generate Flyers",
+      "func":(){
+        return ""
+            "1- Select My Reports from bottom navigation\n"
+            "\n2- A list of your reported items will shows up\n"
+            "\n3- Click on QR Flyer of the reported item you want.\n"
+            "\n4- QR Flyer will be generate and you can view the flyer. You can also share that later on.\n";
       },
     },
 
@@ -127,6 +143,15 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     var box = await Hive.openBox('chatBox');
     setState(() {
       chatBox = box;
+    });
+    if (box.isEmpty) {
+      box.add({"message": "Hi, how can I help you today?", "isUser": false});
+    }
+  }
+  Future<void> clearChatBox() async {
+    var box = await Hive.openBox('chatBox');
+    setState(() {
+      box.clear();
     });
     if (box.isEmpty) {
       box.add({"message": "Hi, how can I help you today?", "isUser": false});
@@ -212,10 +237,6 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
           },
         )).toList(),
       ),
-      // child: ActionChip(
-      //     backgroundColor: Theme.of(context).colorScheme.primary,
-      //     label: Text("Options", style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white)),
-      //     onPressed: () => _showOptionsDialog())
       );
   }
 

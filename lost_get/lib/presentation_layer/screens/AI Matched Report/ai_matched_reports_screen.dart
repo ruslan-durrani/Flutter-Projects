@@ -67,6 +67,7 @@ class _AIMatchedReportsScreenState extends State<AIMatchedReportsScreen> {
               //   createToast(description: "Report deactivated successfully");
               // }
 
+
               if (state is LoadingState) {
                 showCustomLoadingDialog(context, "Please Wait..");
               }
@@ -81,6 +82,7 @@ class _AIMatchedReportsScreenState extends State<AIMatchedReportsScreen> {
                 aiReportBloc.add(AIMatchedReportLoadEvent());
               }
 
+
               // if (state is ReportMarkedAsRecoveredSuccessfullyState) {
               //   hideCustomLoadingDialog(context);
               //   createToast(description: "Report marked as Recovered");
@@ -93,6 +95,9 @@ class _AIMatchedReportsScreenState extends State<AIMatchedReportsScreen> {
               // }
             },
             builder: (context, state) {
+              if (state is AIMatchReportsEmptyState){
+                return Center(child: Text("You havnt reported yet"),);
+              }
               if (state is AIMatchedReportsLoadedState) {
                 return ListView.builder(
                   itemCount: state.reportItems.length,

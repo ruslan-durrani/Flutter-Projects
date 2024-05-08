@@ -6,7 +6,7 @@ import 'package:lost_get/utils/location_utils.dart';
 
 import '../../../../models/report_item.dart';
 import '../../../widgets/toast.dart';
-
+import 'package:lost_get/utils/api_services.dart';
 class HomeScreenController {
   List<ReportItemModel> listOfRecommendedItems = [];
   List<ReportItemModel> listOfNearbyItems = [];
@@ -31,8 +31,9 @@ class HomeScreenController {
        fetchNearbyItems();
        myRecentUploads();
       // listOfNearbyItems = items;
-      listOfRecommendedItems = items;
       listOfCategories = items;
+      listOfRecommendedItems = await recommendReports(FirebaseAuth.instance.currentUser!.uid);
+      print("recommender ${listOfRecentUploads}");
     } catch (error) {
       print("Error fetching items: $error");
     }
@@ -43,9 +44,6 @@ class HomeScreenController {
       await locationUtils.getCurrentLocationAndUpdate();
       listOfNearbyItems = locationUtils.itemsNearby;
       print("Controller call ${listOfNearbyItems}");
-      // listOfNearbyItems = locationUtils.itemsNearby;
-      // fetchAllItems();
-      // listOfNearbyItems = listOfRecommendedItems
     }
     catch (e) {
       print("Error fetching search suggestions: $e");
