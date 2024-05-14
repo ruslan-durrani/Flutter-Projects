@@ -12,6 +12,7 @@ part 'my_reports_state.dart';
 
 class MyReportsBloc extends Bloc<MyReportsEvent, MyReportsState> {
   final ReportItemRepository _reportItemRepository = ReportItemRepository();
+
   final AIReportItemRepository _aiReportItemRepository =
       AIReportItemRepository();
   MyReportsBloc() : super(MyReportsInitial()) {

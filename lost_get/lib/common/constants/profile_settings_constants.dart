@@ -15,18 +15,20 @@ class ProfileSettingsConstants {
         'imgUrl': isDark != null && isDark == true
             ? 'assets/icons/dark_view_my_reports.svg'
             : 'assets/icons/view_my_report.svg',
-        'title': 'View my reports',
-        'subtitle': 'View your lost, found and recovered items',
-        'handleFunction': () {},
+        'title': 'View Police Station Status',
+        'subtitle': 'View your reported to police station items status',
+        'handleFunction': () {
+          profileSettingsBloc!.add(ViewPoliceStatusButtonClickedEvent());
+        },
       },
-      {
-        'imgUrl': isDark != null && isDark == true
-            ? 'assets/icons/dark_support.svg'
-            : 'assets/icons/support.svg',
-        'title': 'Support and Help',
-        'subtitle': 'Help centre and Legal Provisions',
-        'handleFunction': () {},
-      },
+      // {
+      //   'imgUrl': isDark != null && isDark == true
+      //       ? 'assets/icons/dark_support.svg'
+      //       : 'assets/icons/support.svg',
+      //   'title': 'Support and Help',
+      //   'subtitle': 'Help centre and Legal Provisions',
+      //   'handleFunction': () {},
+      // },
       {
         'imgUrl': isDark != null && isDark == true
             ? 'assets/icons/dark_setting.svg'
@@ -37,14 +39,14 @@ class ProfileSettingsConstants {
           profileSettingsBloc!.add(SettingsButtonClickedEvent());
         },
       },
-      {
-        'imgUrl': isDark != null && isDark == true
-            ? 'assets/icons/dark_share_feedback.svg'
-            : 'assets/icons/share_feedback.svg',
-        'title': 'Share Feedback',
-        'subtitle': 'Share your valuable feedback with us',
-        'handleFunction': () {},
-      },
+      // {
+      //   'imgUrl': isDark != null && isDark == true
+      //       ? 'assets/icons/dark_share_feedback.svg'
+      //       : 'assets/icons/share_feedback.svg',
+      //   'title': 'Share Feedback',
+      //   'subtitle': 'Share your valuable feedback with us',
+      //   'handleFunction': () {},
+      // },
       {
         'imgUrl': isDark != null && isDark == true
             ? 'assets/icons/dark_logout.svg'

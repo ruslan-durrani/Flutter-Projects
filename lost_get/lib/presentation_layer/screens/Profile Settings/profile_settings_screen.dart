@@ -7,6 +7,7 @@ import 'package:lost_get/business_logic_layer/Provider/change_theme_mode.dart';
 import 'package:lost_get/presentation_layer/screens/Authentication/Signin/sign_in_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/EditProfile/edit_profile.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/settings_screen.dart';
+import 'package:lost_get/presentation_layer/screens/Profile%20Settings/ViewPoliceStatus/police_status_screen.dart';
 import 'package:lost_get/presentation_layer/widgets/alert_dialog.dart';
 import 'package:lost_get/presentation_layer/widgets/profile_settings_widget.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
@@ -57,6 +58,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             () => Navigator.pop(context),
             () => profileSettingsBloc.add(SignOutEvent()),
           );
+        }
+
+        if (state is ViewPoliceStatusButtonClickedState) {
+          Navigator.pushNamed(context, ViewPoliceStatusScreen.routeName);
         }
 
         if (state is SignOutLoadingSuccessState) {

@@ -1,18 +1,11 @@
 import 'dart:async';
 import 'dart:core';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:location/location.dart';
 import 'package:lost_get/models/matched_reports.dart';
 import 'package:lost_get/models/report_item.dart';
 // ignore: depend_on_referenced_packages
-import 'package:path/path.dart' as p;
 import 'package:lost_get/data_store_layer/repository/users_base_repository.dart';
-import 'package:rxdart/rxdart.dart';
 
 class AIReportItemRepository extends BaseUsersRepository {
   final FirebaseFirestore _firebaseFirestore;
@@ -62,19 +55,24 @@ class AIReportItemRepository extends BaseUsersRepository {
 
   Future<List<ReportItemModel>> getUserMatchedReports() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      return []; // Handle the case where there is no user logged in.
+
+    try {
+      if (uid == null) {
+        return []; // Handle the case where there is no user logged in.
+      }
+
+      var userReports = await fetchReports('userId', uid, 'isUserMarked');
+      print("user Reports are ${userReports.length}");
+
+      // print("All reports are ${allReports.length}");
+      var ids = userReports.map((report) => report.matchedReportId).toSet();
+      print("ids are ${ids}");
+
+      // Fetch corresponding reportItems
+      return await fetchReportItems(ids.toList(), userReports);
+    } catch (e) {
+      return [];
     }
-
-    var userReports = await fetchReports('userId', uid, 'isUserMarked');
-    print("user Reports are ${userReports.length}");
-
-    // print("All reports are ${allReports.length}");
-    var ids = userReports.map((report) => report.matchedReportId).toSet();
-    print("ids are ${ids}");
-
-    // Fetch corresponding reportItems
-    return await fetchReportItems(ids.toList(), userReports);
   }
 
   Future<List<AIMatchedReportModel>> fetchReports(
@@ -143,11 +141,10 @@ class AIReportItemRepository extends BaseUsersRepository {
         .where("userId", isEqualTo: uid)
         .get();
     if (snapshot.docs.isNotEmpty) {
-      print("inside one part");
       var docId = snapshot.docs.first.id;
       var userReportId = snapshot.docs.first.data()['userReportId'];
       // Do something with userReportId, like printing it
-      print(userReportId);
+
       await FirebaseFirestore.instance
           .collection('matchedReports')
           .doc(docId)
@@ -160,7 +157,18 @@ class AIReportItemRepository extends BaseUsersRepository {
           .where("isUserMarked", isNotEqualTo: 'accepted')
           .get();
 
-      // Check if the snapshot has data and is not empty
+      var snapshotTwo = await _firebaseFirestore
+          .collection('reportItems')
+          .where("id", isEqualTo: userReportId)
+          .where("userId", isEqualTo: uid)
+          .get();
+
+      if (snapshotTwo.docs.isNotEmpty) {
+        for (var doc in snapshotTwo.docs) {
+          await doc.reference.update({'recovered': true, 'published': false});
+        }
+      }
+
       if (updateAllSnapshot.docs.isNotEmpty) {
         // Iterate through all the documents in the snapshot
         for (var doc in updateAllSnapshot.docs) {
@@ -232,5 +240,28 @@ class AIReportItemRepository extends BaseUsersRepository {
         .get();
 
     return snapshot.docs.isEmpty ? false : true;
+  }
+
+  Future<bool> isReportMarkedAccepted(String reportId) async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) {
+        return false;
+      }
+
+      var snapshot = await _firebaseFirestore
+          .collection('matchedReports')
+          .where("matchedReportId", isEqualTo: reportId)
+          .where("userId", isEqualTo: uid)
+          .get();
+      if (snapshot.docs.isNotEmpty) {
+        var doc = snapshot.docs.first;
+        var isUserMarked = doc.data()['isUserMarked'];
+        return isUserMarked == 'accepted';
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
   }
 }

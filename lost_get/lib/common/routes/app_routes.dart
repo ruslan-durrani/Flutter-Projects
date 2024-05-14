@@ -22,6 +22,7 @@ import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/change_phone_number.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/ChangePhoneNumber/ChangePhoneNumberVerification/change_phone_number_verification.dart';
 import 'package:lost_get/presentation_layer/screens/Profile%20Settings/Settings/ManageAccount/manage_account.dart';
+import 'package:lost_get/presentation_layer/screens/Profile%20Settings/ViewPoliceStatus/police_status_screen.dart';
 import '../../presentation_layer/screens/Home/SearchPage/search_page.dart';
 import '../../presentation_layer/screens/My Reports/ReportsToPoliceStation/ReportsPoliceStations.dart';
 import '../../presentation_layer/screens/Profile Settings/Settings/ManageAccount/ChangePassword/ChangePasswordVerified/change_password_verified.dart';
@@ -125,23 +126,30 @@ class AppRouter {
         return MaterialPageRoute(
             builder: ((context) => ModifyReportScreen(id: args['id'])));
 
-        case ViewAllItems.routeName:
-          final args = routeSettings.arguments as Map<String, dynamic>;
-          return MaterialPageRoute(
-              builder: (context) => ViewAllItems(
-                  titleName: args['title'],
-                  reportedItemList: args["reportedItemList"]));
-      case SearchPage.routeName:
+      case ViewAllItems.routeName:
+        final args = routeSettings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (context) => SearchPage());
+            builder: (context) => ViewAllItems(
+                titleName: args['title'],
+                reportedItemList: args["reportedItemList"]));
+      case SearchPage.routeName:
+        return MaterialPageRoute(builder: (context) => SearchPage());
+
+      case ViewPoliceStatusScreen.routeName:
+        return MaterialPageRoute(
+            builder: (context) => const ViewPoliceStatusScreen());
       case ReportsPoliceStations.routeName:
         final args = routeSettings.arguments as ReportItemModel;
         return MaterialPageRoute(
-            builder: (context) => ReportsPoliceStations(reportedItem: args,));
-        case SearchDetailPage.routeName:
-          final args = routeSettings.arguments as Map<String, dynamic>;
+            builder: (context) => ReportsPoliceStations(
+                  reportedItem: args,
+                ));
+      case SearchDetailPage.routeName:
+        final args = routeSettings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (context) => SearchDetailPage(searchedText: args["searchedText"], reportedItems: args["reportedItems"]));
+            builder: (context) => SearchDetailPage(
+                searchedText: args["searchedText"],
+                reportedItems: args["reportedItems"]));
     }
     return null;
   }

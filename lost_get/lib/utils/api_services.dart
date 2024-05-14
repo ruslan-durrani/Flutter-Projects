@@ -4,15 +4,15 @@ import 'package:http/http.dart' as http;
 import 'package:lost_get/models/report_item.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
 
-const String recommendationUri = "http://52.90.74.233:5001/recommend-reports/";
-const String profaneImagesUri = "http://3.80.176.47:5000/check-images/";
-const String profanityChatsUri = "http://3.91.0.210:8000/profanity-check/";
-const String reportAiMatchMakerUri = "http://3.85.173.134:7000/auto-report-similarity/";
+const String recommendationUri = "http://54.89.149.245:5001/recommend-reports/";
+const String profaneImagesUri = "http://54.242.56.162:5000/check-images/";
+const String profanityChatsUri = "http://52.87.218.91:8000/profanity-check/";
+const String reportAiMatchMakerUri =
+    "http://54.91.227.25:7000/auto-report-similarity/";
 
 Future<void> checkProfaneImages(
     {required String id, required String uid}) async {
   var baseUrl = Uri.parse(profaneImagesUri);
-  // var baseUrl = Uri.parse("http://3.89.7.44:5000/check-images/");
   final response = await http.post(
     baseUrl,
     headers: <String, String>{
@@ -23,12 +23,10 @@ Future<void> checkProfaneImages(
       'uid': uid,
     }),
   );
-
   if (response.statusCode != 200) {
     createToast(description: "Failed to send api request");
     throw Exception('Failed to post data');
   }
-  // Optionally handle the response or response body if needed.
 }
 
 Future<List<ReportItemModel>> recommendReports(String uid) async {

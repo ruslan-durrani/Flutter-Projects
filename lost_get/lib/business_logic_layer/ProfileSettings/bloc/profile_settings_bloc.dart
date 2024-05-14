@@ -18,6 +18,7 @@ class ProfileSettingsBloc
     on<SignOutAlertDialogEvent>(signOutAlertDialogEvent);
     on<SettingsButtonClickedEvent>(settingsButtonClickedEvent);
     on<UserProfileLoadingEvent>(userProfileLoadingEvent);
+    on<ViewPoliceStatusButtonClickedEvent>(viewPoliceStatusButtonClickedEvent);
   }
 
   FutureOr<void> editProfileButtonClickedEvent(
@@ -63,5 +64,11 @@ class ProfileSettingsBloc
     } catch (e) {
       emit(UserProfileErrorState("Edit Profile page can't load."));
     }
+  }
+
+  FutureOr<void> viewPoliceStatusButtonClickedEvent(
+      ViewPoliceStatusButtonClickedEvent event,
+      Emitter<ProfileSettingsState> emit) {
+    emit(ViewPoliceStatusButtonClickedState());
   }
 }

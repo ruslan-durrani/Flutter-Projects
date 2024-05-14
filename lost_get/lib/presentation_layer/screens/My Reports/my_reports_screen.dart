@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:external_path/external_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:lost_get/business_logic_layer/MyReports/bloc/my_reports_bloc.dart';
 import 'package:lost_get/business_logic_layer/Provider/change_theme_mode.dart';
 import 'package:lost_get/common/constants/colors.dart';
+import 'package:lost_get/data_store_layer/repository/ai_report_item_repository.dart';
 import 'package:lost_get/presentation_layer/screens/Add%20Report/add_report_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/My%20Reports/ModifyReport/modify_report_screen.dart';
 import 'package:lost_get/presentation_layer/screens/My%20Reports/ReportsToPoliceStation/ReportsPoliceStations.dart';
@@ -112,6 +112,11 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
       var formattedDate = DateFormat("MMM d").format(publishedDate.toDate());
       var address = "${data["address"]}, ${data["city"]}, ${data["country"]}";
 
+      if (description.toString().length >= 45) {
+        description =
+            "${description.toString().toUpperCase().substring(0, 45)}...";
+      }
+
       // Step 4: Create the flyer layout
       final pdf = pw.Document();
       pdf.addPage(
@@ -158,7 +163,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                 children: [
                                   pw.Text(title.toString().toUpperCase(),
                                       style: pw.TextStyle(
-                                          fontSize: 32,
+                                          fontSize: 28,
                                           fontWeight: pw.FontWeight.bold,
                                           color: PdfColors.purple900)),
                                   pw.SizedBox(height: 10),
@@ -180,7 +185,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                   ),
                                   pw.SizedBox(height: 10),
                                   pw.Text(
-                                    "DESCRIPTION: ${description.toString().toUpperCase()}",
+                                    "DESCRIPTION: $description",
                                     style: const pw.TextStyle(
                                       fontSize: 24,
                                     ),
@@ -302,12 +307,13 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
             },
             builder: (context, state) {
               if (state is MyReportsLoadedState) {
-
                 return ListView.builder(
                   itemCount: state.reportItems.length,
                   itemBuilder: ((context, index) {
                     var currentReport = state.reportItems[index];
-                    bool currentReportItem = currentReport.hasReportToPoliceStationStarted!;
+                    bool currentReportItem =
+                        currentReport.hasReportToPoliceStationStarted!;
+
                     return Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -324,7 +330,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                       ),
                       margin: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 5),
-                      height: 135.h,
+                      height: 125.h,
                       width: double.infinity,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -422,7 +428,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                           SizedBox(
                                             width: 200.w,
                                             child: Text(currentReport.title!,
-                                                  maxLines: 2,
+                                                maxLines: 2,
                                                 softWrap: true,
                                                 style: GoogleFonts.roboto(
                                                   fontWeight: FontWeight.w500,
@@ -512,14 +518,16 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Expanded(
                                             flex: 1,
                                             child: button(
                                                 "QR Flyer",
                                                 currentReport.published! &&
-                                                        !currentReport.recovered!
+                                                        !currentReport
+                                                            .recovered!
                                                     ? () => createFlyerPDF(
                                                         currentReport.id!)
                                                     : null,
@@ -536,8 +544,10 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                                     ? "AI Is Working"
                                                     : "AI FINDER",
                                                 currentReport.published! &&
-                                                        !currentReport.recovered! &&
-                                                        !currentReport.hasAIStarted!
+                                                        !currentReport
+                                                            .recovered! &&
+                                                        !currentReport
+                                                            .hasAIStarted!
                                                     ? () {
                                                         alertDialog(
                                                           context,
@@ -546,7 +556,8 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                                           "No",
                                                           "Start",
                                                           () {
-                                                            Navigator.pop(context);
+                                                            Navigator.pop(
+                                                                context);
                                                           },
                                                           () {
                                                             myReportsBloc.add(
@@ -555,7 +566,8 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                                                         .id!,
                                                                     uid: currentReport
                                                                         .userId!));
-                                                            Navigator.pop(context);
+                                                            Navigator.pop(
+                                                                context);
                                                           },
                                                         );
                                                       }
@@ -565,37 +577,86 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                                           ),
                                         ],
                                       ),
-                                      Row(
-                                        children: [
-                                          Expanded(child: Consumer(
-                                            builder: (context, ChangeThemeMode value, child) => ElevatedButton(
-                                              onPressed: (){
-                                                if(currentReportItem){
-                                                  createToast(description: "Already reported");
-                                                  return;
-                                                }
-                                                Navigator.pushNamed(context, ReportsPoliceStations.routeName,arguments: currentReport);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                  backgroundColor: currentReportItem?Colors.black.withOpacity(.5):Colors.teal,
-                                                  disabledBackgroundColor: AppColors.primaryColor.withOpacity(.5),
-                                                  foregroundColor: Colors.white,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(2),
-                                                  ),
-                                                  padding: const EdgeInsets.all(10)),
-                                              child: Text(
-                                                currentReportItem?"Already Reported":"Report To Nearby Police Station",
-                                                style: GoogleFonts.roboto(
-                                                  color: Colors.white,
-                                                  fontSize: 13.sp,
-                                                  fontWeight: value.isDyslexia ? FontWeight.bold : FontWeight.normal,
-                                                ),
-                                              ),
-                                            ),
-                                          )),
-                                        ],
-                                      ),
+
+                                      Row(children: [
+                                        Expanded(
+                                          child: button(
+                                              currentReport
+                                                      .hasReportToPoliceStationStarted!
+                                                  ? "Reported To Police Station"
+                                                  : "Report To Nearby Police Station",
+                                              currentReport.published! &&
+                                                      !currentReport
+                                                          .recovered! &&
+                                                      !currentReport
+                                                          .hasReportToPoliceStationStarted!
+                                                  ? () {
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          ReportsPoliceStations
+                                                              .routeName,
+                                                          arguments:
+                                                              currentReport);
+                                                    }
+                                                  : null,
+                                              Colors.blue,
+                                              Colors.white),
+                                        ),
+                                      ]),
+                                      // Row(
+                                      //   children: [
+                                      //     Expanded(
+                                      //         child: Consumer(
+                                      //       builder: (context,
+                                      //               ChangeThemeMode value,
+                                      //               child) =>
+                                      //           ElevatedButton(
+                                      //         onPressed: () {
+                                      //           if (currentReportItem) {
+                                      //             createToast(
+                                      //                 description:
+                                      //                     "Already reported");
+                                      //             return;
+                                      //           }
+                                      //           Navigator.pushNamed(
+                                      //               context,
+                                      //               ReportsPoliceStations
+                                      //                   .routeName,
+                                      //               arguments: currentReport);
+                                      //         },
+                                      //         style: ElevatedButton.styleFrom(
+                                      //             backgroundColor:
+                                      //                 currentReportItem
+                                      //                     ? Colors.black
+                                      //                         .withOpacity(.5)
+                                      //                     : Colors.teal,
+                                      //             disabledBackgroundColor:
+                                      //                 AppColors.primaryColor
+                                      //                     .withOpacity(.5),
+                                      //             foregroundColor: Colors.white,
+                                      //             shape: RoundedRectangleBorder(
+                                      //               borderRadius:
+                                      //                   BorderRadius.circular(
+                                      //                       2),
+                                      //             ),
+                                      //             padding:
+                                      //                 const EdgeInsets.all(10)),
+                                      //         child: Text(
+                                      //           currentReportItem
+                                      //               ? "Already Reported"
+                                      //               : "Report To Nearby Police Station",
+                                      //           style: GoogleFonts.roboto(
+                                      //             color: Colors.white,
+                                      //             fontSize: 13.sp,
+                                      //             fontWeight: value.isDyslexia
+                                      //                 ? FontWeight.bold
+                                      //                 : FontWeight.normal,
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     )),
+                                      //   ],
+                                      // ),
                                     ],
                                   ),
                                 )

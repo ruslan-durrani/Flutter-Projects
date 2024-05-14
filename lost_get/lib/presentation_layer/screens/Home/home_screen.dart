@@ -1,6 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lost_get/common/constants/colors.dart';
@@ -11,11 +9,9 @@ import 'package:lost_get/presentation_layer/screens/Home/ViewAllItems/view_all_i
 import 'package:lost_get/presentation_layer/screens/Home/controller/home_screen_reports_controller.dart';
 import 'package:lost_get/presentation_layer/screens/Home/item_detail_screen.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCard.dart';
-import 'package:lost_get/presentation_layer/screens/Home/widgets/reportedItemCarousal.dart';
 import 'package:lost_get/presentation_layer/screens/Home/widgets/section_heading.dart';
 import 'package:lost_get/presentation_layer/screens/My%20Reports/my_reports_screen.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
-import 'package:lost_get/utils/api_services.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../models/report_item.dart';
 import '../Add Report/map_screen.dart';
@@ -33,7 +29,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   String _currentFilter = "All"; // The index of the selected filter
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late TabController _tabController;
   @override
@@ -89,13 +84,6 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                           IconButton(
                             icon: SvgPicture.asset(
-                                'assets/icons/notification_icon.svg'), // Replace with your SVG file path
-                            onPressed: () {
-                              // Action for notification icon
-                            },
-                          ),
-                          IconButton(
-                            icon: SvgPicture.asset(
                                 'assets/icons/scan_qr_icon.svg'), // Replace with your SVG file path
                             onPressed: () {
                               Navigator.pushNamed(
@@ -128,7 +116,9 @@ class _HomeScreenState extends State<HomeScreen>
                     controller: _tabController,
                     indicatorColor: AppColors.primaryColor,
                     tabs: const [
-                      Tab(text: 'Recommendations',),
+                      Tab(
+                        text: 'Recommendations',
+                      ),
                       Tab(text: 'Nearby'),
                       Tab(text: 'Recent Uploads'),
                     ],
@@ -142,8 +132,9 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: ()=>Navigator.pushNamed(context, ChatBotScreen.routeName),
-          child:Image(image: AssetImage("./assets/icons/bot.png")),
+          onPressed: () =>
+              Navigator.pushNamed(context, ChatBotScreen.routeName),
+          child: const Image(image: AssetImage("./assets/icons/bot.png")),
         ),
       ),
     );
@@ -191,56 +182,101 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
+
+  Future<List<ReportItemModel>> _fetchContent(String category) {
+    switch (category) {
+      case "Recommendations":
+        return controller.fetchRecommendation();
+      case "Nearby":
+        return controller.fetchNearbyItems();
+      case "Recent Uploads":
+        return controller.myRecentUploads();
+      default:
+        return controller.specificCategory(category);
+    }
+  }
+
+  Widget _buildItemList(List<ReportItemModel> items) {
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return ReportedItemCard(item: item, onTap: () => onItemTapped(item));
+      },
+    );
+  }
+
   Widget _buildTabContent(String category) {
     return FutureBuilder(
-      future: controller.fetchAllItems(),
-      // future: controller.fetchNearbyItems(), // Implement this method based on your data fetching logic
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+      future: _fetchContent(category),
+      builder: (BuildContext context, AsyncSnapshot<List<ReportItemModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return const Center(child: Text("Error fetching data"));
+          return Center(child: Text("Error fetching data: ${snapshot.error}"));
+        } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+          return Center(child: Text("No $category items right now"));
         } else {
-          List<ReportItemModel> items ;
-          String itemIfEmpty = "";
-          switch (category) {
-            case "Recommendations":
-              items = controller.listOfRecommendedItems;
-              itemIfEmpty = items.isEmpty?"No Recommendations Right Now":"";
-              break;
-            case "Nearby":
-              items = controller.listOfNearbyItems;
-              itemIfEmpty = items.isEmpty?"No Nearby item Right Now":"";
-              break;
-            case "Recent Uploads":
-              items = controller.listOfRecentUploads;
-              itemIfEmpty = items.isEmpty?"No Recent Uploads":"";
-              break;
-            default:
-              items = controller.listOfNearbyItems;
-              break;
-
-          };
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-            if(itemIfEmpty!="")Column(
-              children: [
-                Container(height: 200,alignment:Alignment.center,child: Text(itemIfEmpty),),
-                button("Search for reported items", ()=>Navigator.pushNamed(context, SearchPage.routeName), AppColors.primaryColor, Colors.white)
-              ],
-            ),
-                for (var item in items)
-                  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ReportedItemCard(
-                          item: item, onTap: () => onItemTapped(item))),
-              ],
-            ),
-          );
+          return _buildItemList(snapshot.data!);
         }
       },
+      // future: controller.fetchNearbyItems(), // Implement this method based on your data fetching logic
+      // builder: (BuildContext context, AsyncSnapshot snapshot) {
+      //   if (snapshot.connectionState == ConnectionState.waiting) {
+      //     return const Center(child: CircularProgressIndicator());
+      //   } else if (snapshot.hasError) {
+      //     return const Center(child: Text("Error fetching data"));
+      //   } else {
+      //     List<ReportItemModel> items;
+      //     String itemIfEmpty = "";
+      //     switch (category) {
+      //       case "Recommendations":
+      //         items = controller.listOfRecommendedItems;
+      //         itemIfEmpty = items.isEmpty ? "No Recommendations Right Now" : "";
+      //         break;
+      //       case "Nearby":
+      //         items = controller.listOfNearbyItems;
+      //         itemIfEmpty = items.isEmpty ? "No Nearby item Right Now" : "";
+      //         break;
+      //       case "Recent Uploads":
+      //         items = controller.listOfRecentUploads;
+      //         itemIfEmpty = items.isEmpty ? "No Recent Uploads" : "";
+      //         break;
+      //       default:
+      //         items = controller.listOfNearbyItems;
+      //         break;
+      //     }
+      //     ;
+      //     return SingleChildScrollView(
+      //       child: Column(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: [
+      //           if (itemIfEmpty != "")
+      //             Column(
+      //               children: [
+      //                 Container(
+      //                   height: 200,
+      //                   alignment: Alignment.center,
+      //                   child: Text(itemIfEmpty),
+      //                 ),
+      //                 button(
+      //                     "Search for reported items",
+      //                     () => Navigator.pushNamed(
+      //                         context, SearchPage.routeName),
+      //                     AppColors.primaryColor,
+      //                     Colors.white)
+      //               ],
+      //             ),
+      //           for (var item in items)
+      //             Padding(
+      //                 padding: const EdgeInsets.all(8.0),
+      //                 child: ReportedItemCard(
+      //                     item: item, onTap: () => onItemTapped(item))),
+      //         ],
+      //       ),
+      //     );
+      //   }
+      // },
     );
   }
 

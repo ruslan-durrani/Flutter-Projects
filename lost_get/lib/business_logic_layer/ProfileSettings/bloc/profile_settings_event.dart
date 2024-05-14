@@ -12,3 +12,5 @@ class SignOutAlertDialogEvent extends ProfileSettingsEvent {}
 class SettingsButtonClickedEvent extends ProfileSettingsEvent {}
 
 final class UserProfileLoadingEvent extends ProfileSettingsEvent {}
+
+class ViewPoliceStatusButtonClickedEvent extends ProfileSettingsEvent {}

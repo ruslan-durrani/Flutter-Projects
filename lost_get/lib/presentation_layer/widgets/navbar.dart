@@ -80,7 +80,7 @@ class NavBar extends StatelessWidget {
                         ? 'assets/icons/dark_add_report_active.svg'
                         : 'assets/icons/add_report_active.svg',
                   ),
-                  label: "Report"),
+                  label: "Add"),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset('assets/icons/my_reports_inactive.svg',
                     colorFilter: colorFilter),
@@ -89,17 +89,17 @@ class NavBar extends StatelessWidget {
                       ? 'assets/icons/dark_my_reports_active.svg'
                       : 'assets/icons/my_reports_active.svg',
                 ),
-                label: 'My Reports',
+                label: 'My Report',
               ),
               BottomNavigationBarItem(
-                icon: SvgPicture.asset('assets/icons/my_reports_inactive.svg',
-                    colorFilter: colorFilter),
+                icon: SvgPicture.asset('assets/icons/cpu-charge_light.svg',
+                    width: 28, height: 28, colorFilter: colorFilter),
                 activeIcon: SvgPicture.asset(
-                  changeThemeMode.isDarkMode()
-                      ? 'assets/icons/dark_my_reports_active.svg'
-                      : 'assets/icons/my_reports_active.svg',
+                  'assets/icons/cpu-charge_bold.svg',
+                  width: 28,
+                  height: 28,
                 ),
-                label: 'AI Reports',
+                label: 'AI Report',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(

@@ -7,6 +7,7 @@ import 'package:lost_get/utils/location_utils.dart';
 import '../../../../models/report_item.dart';
 import '../../../widgets/toast.dart';
 import 'package:lost_get/utils/api_services.dart';
+
 class HomeScreenController {
   List<ReportItemModel> listOfRecommendedItems = [];
   List<ReportItemModel> listOfNearbyItems = [];
@@ -28,65 +29,86 @@ class HomeScreenController {
           .toList();
 
       items = unflaggedItems;
-       fetchNearbyItems();
-       myRecentUploads();
-      // listOfNearbyItems = items;
-      listOfCategories = items;
-      listOfRecommendedItems = await recommendReports(FirebaseAuth.instance.currentUser!.uid);
-      print("recommender ${listOfRecentUploads}");
+      // await fetchNearbyItems();
+      // await myRecentUploads();
+      // // listOfNearbyItems = items;
+      // listOfCategories = items;
+      // listOfRecommendedItems =
+      // await recommendReports(FirebaseAuth.instance.currentUser!.uid);
+      // print("recommender ${listOfRecommendedItems}");
     } catch (error) {
       print("Error fetching items: $error");
     }
   }
-  Future<void> fetchNearbyItems() async {
+
+  Future<List<ReportItemModel>> fetchNearbyItems() async {
     try {
       LocationUtils locationUtils = LocationUtils(10);
       await locationUtils.getCurrentLocationAndUpdate();
-      listOfNearbyItems = locationUtils.itemsNearby;
+      return locationUtils.itemsNearby;
+      // listOfNearbyItems = locationUtils.itemsNearby;
       print("Controller call ${listOfNearbyItems}");
-    }
-    catch (e) {
+    } catch (e) {
       print("Error fetching search suggestions: $e");
+      return [];
+    }
+
+  }
+  Future<List<ReportItemModel>> fetchRecommendation() async{
+    try{
+      return await recommendReports(FirebaseAuth.instance.currentUser!.uid);
+    }
+    catch(e){
+      print("Recommendation error");
+      return [];
     }
   }
-
   Future<List<ReportItemModel>> fetchSearchSuggestions(String query) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('reportItems')
-      // You might want to limit the number of items fetched if your collection is large
+          // You might want to limit the number of items fetched if your collection is large
           .limit(50)
           .get();
 
       // Filter the results in Dart
       return querySnapshot.docs
           .map((doc) => ReportItemModel.fromSnapshot(doc))
-          .where((item) => item.description!.toLowerCase().contains(query.toLowerCase()))
+          .where((item) =>
+              item.description!.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } catch (e) {
       print("Error fetching search suggestions: $e");
       return [];
     }
   }
-  Future<List<ReportItemModel>> fetchReportedItemBasedOnCity(String address,String city,String country) async {
+
+  Future<List<ReportItemModel>> fetchReportedItemBasedOnCity(
+      String address, String city, String country) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('reportItems')
-      // You might want to limit the number of items fetched if your collection is large
+          // You might want to limit the number of items fetched if your collection is large
           .limit(50)
           .get();
 
       // Filter the results in Dart
       return querySnapshot.docs
           .map((doc) => ReportItemModel.fromSnapshot(doc))
-          .where((item) => (((item.city!.toLowerCase().contains(city.toLowerCase()))&&(item.country!.toLowerCase().contains(city.toLowerCase())))||(item.address!.toLowerCase().contains(address.toLowerCase()))))
+          .where((item) => (((item.city!
+                      .toLowerCase()
+                      .contains(city.toLowerCase())) &&
+                  (item.country!.toLowerCase().contains(city.toLowerCase()))) ||
+              (item.address!.toLowerCase().contains(address.toLowerCase()))))
           .toList();
     } catch (e) {
       print("Error fetching search suggestions: $e");
       return [];
     }
   }
-  Future<List<ReportItemModel>> fetchReportedItemBasedOnSearchFilter(String address,String city,String country,String title) async {
+
+  Future<List<ReportItemModel>> fetchReportedItemBasedOnSearchFilter(
+      String address, String city, String country, String title) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('reportItems')
@@ -96,20 +118,17 @@ class HomeScreenController {
       // Filter the results in Dart
       return querySnapshot.docs
           .map((doc) => ReportItemModel.fromSnapshot(doc))
-          .where(
-              (item) => (
-                  (
-                item.city!.toLowerCase().contains(city.toLowerCase())
-                ||(item.country!.toLowerCase().contains(city.toLowerCase()))
-                ||item.address!.toLowerCase().contains(address.toLowerCase())
-                )
-                &&
-                  (
-                      item.title!.toLowerCase().contains(title.toLowerCase())
-                      ||item.description!.toLowerCase().contains(title.toLowerCase())
-                  )
-              )
-          )
+          .where((item) => ((item.city!
+                      .toLowerCase()
+                      .contains(city.toLowerCase()) ||
+                  (item.country!.toLowerCase().contains(city.toLowerCase())) ||
+                  item.address!
+                      .toLowerCase()
+                      .contains(address.toLowerCase())) &&
+              (item.title!.toLowerCase().contains(title.toLowerCase()) ||
+                  item.description!
+                      .toLowerCase()
+                      .contains(title.toLowerCase()))))
           .toList();
     } catch (e) {
       print("Error fetching search suggestions: $e");
@@ -117,11 +136,13 @@ class HomeScreenController {
     }
   }
 
-  Future<void> myRecentUploads() async {
+  Future<List<ReportItemModel>> myRecentUploads() async {
     try {
       final QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('reportItems').get();
-      List<ReportItemModel> items = querySnapshot.docs.where((element) => element["userId"]==FirebaseAuth.instance.currentUser!.uid)
+          await FirebaseFirestore.instance.collection('reportItems').get();
+      List<ReportItemModel> items = querySnapshot.docs
+          .where((element) =>
+              element["userId"] == FirebaseAuth.instance.currentUser!.uid)
           .map((doc) => ReportItemModel.fromSnapshot(doc))
           .toList();
 
@@ -132,10 +153,11 @@ class HomeScreenController {
           .toList();
 
       items = unflaggedItems;
-      listOfRecentUploads = items;
+      return items;
       print("Recent uploads ${listOfRecentUploads}");
     } catch (error) {
       print("Error fetching items: $error");
+      return [];
     }
   }
 

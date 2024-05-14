@@ -21,6 +21,8 @@ class SignOutAlertDialogState extends ProfileSettingsActionState {}
 
 class SettingsButtonClickedState extends ProfileSettingsActionState {}
 
+class ViewPoliceStatusButtonClickedState extends ProfileSettingsActionState {}
+
 final class UserProfileLoadingState extends ProfileSettingsState {}
 
 final class UserProfileLoadedState extends ProfileSettingsState {

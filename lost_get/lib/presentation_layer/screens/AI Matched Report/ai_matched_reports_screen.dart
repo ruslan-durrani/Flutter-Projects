@@ -50,24 +50,6 @@ class _AIMatchedReportsScreenState extends State<AIMatchedReportsScreen> {
             buildWhen: (previous, current) =>
                 current is! AiMatchedReportsActionState,
             listener: (context, state) {
-              // if (state is ReportDeactivatedSuccessfully) {
-              //   hideCustomLoadingDialog(context);
-              //   createToast(description: "Report deactivated successfully");
-              //   aiReportBloc.add(MyReportsLoadEvent());
-              // }
-
-              // if (state is StartAIMatchMakingState) {
-              //   createToast(
-              //       description: "AI Auto Match Maker started successfully");
-              //   aiReportBloc.add(MyReportsLoadEvent());
-              // }
-
-              // if (state is ReportDeactivationError) {
-              //   hideCustomLoadingDialog(context);
-              //   createToast(description: "Report deactivated successfully");
-              // }
-
-
               if (state is LoadingState) {
                 showCustomLoadingDialog(context, "Please Wait..");
               }
@@ -81,23 +63,8 @@ class _AIMatchedReportsScreenState extends State<AIMatchedReportsScreen> {
                 hideCustomLoadingDialog(context);
                 aiReportBloc.add(AIMatchedReportLoadEvent());
               }
-
-
-              // if (state is ReportMarkedAsRecoveredSuccessfullyState) {
-              //   hideCustomLoadingDialog(context);
-              //   createToast(description: "Report marked as Recovered");
-              //   aiReportBloc.add(MyReportsLoadEvent());
-              // }
-              // if (state is ReportMarkedAsRecoveredErrorState) {
-              //   hideCustomLoadingDialog(context);
-              //   createToast(
-              //       description: "Error: Report is not marked as recovered.");
-              // }
             },
             builder: (context, state) {
-              if (state is AIMatchReportsEmptyState){
-                return Center(child: Text("You havnt reported yet"),);
-              }
               if (state is AIMatchedReportsLoadedState) {
                 return ListView.builder(
                   itemCount: state.reportItems.length,

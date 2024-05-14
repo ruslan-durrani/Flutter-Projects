@@ -543,7 +543,7 @@ Widget createBioFields(context, EditProfileBloc editProfileBloc,
         height: 3.h,
       ),
       SizedBox(
-        width: 200.w,
+        width: 195.w,
         child: TextFormField(
           validator: (value) =>
               ControllerValidator.validateFullNameField(value!),

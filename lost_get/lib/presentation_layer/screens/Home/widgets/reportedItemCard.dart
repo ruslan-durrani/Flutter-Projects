@@ -39,13 +39,14 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
       child: Container(
         height: 160,
         width: MediaQuery.of(context).size.width * .95,
-        decoration:  BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white,
-            border: Border.all(
-              width: 2,
-              color: AppColors.primaryColor.withOpacity(.2),
-            ),
-            borderRadius: BorderRadius.circular(15),),
+          border: Border.all(
+            width: 2,
+            color: AppColors.primaryColor.withOpacity(.2),
+          ),
+          borderRadius: BorderRadius.circular(15),
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -58,12 +59,14 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                     bottomLeft: Radius.circular(15),
                   ),
                   child: Container(
-                    width: MediaQuery.of(context).size.width * .45, // Specify the width
+                    width: MediaQuery.of(context).size.width *
+                        .45, // Specify the width
                     height: 160, // Match the card height or adjust as needed
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: NetworkImage(widget.item.imageUrls?.first ?? ''),
-                        fit: BoxFit.cover, // Adjust to cover to fill the box, keeping aspect ratio
+                        fit: BoxFit
+                            .cover, // Adjust to cover to fill the box, keeping aspect ratio
                       ),
                     ),
                   ),
@@ -76,13 +79,14 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       createLostFoundChip(widget.item, context),
-                      createPublishChip(_formatDateTime(widget.item.publishDateTime), context),
+                      createPublishChip(
+                          _formatDateTime(widget.item.publishDateTime),
+                          context),
                     ],
                   ),
                 ),
               ],
             ),
-
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -91,21 +95,30 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
                   children: [
                     Text(
                       widget.item.title ?? 'Unknown',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 15,fontWeight: FontWeight.bold),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontSize: 15, fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
                     SizedBox(height: 2),
                     Text(
                       widget.item.city ?? 'Unknown location',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11,fontWeight: FontWeight.bold,color: Colors.grey),
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
-                    SizedBox(height: 2 ),
+                    SizedBox(height: 2),
                     Text(
                       widget.item.description ?? 'No description provided.',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 11),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontSize: 11),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3, // Adjust the number of lines for description
                     ),
@@ -115,8 +128,7 @@ class _ReportedItemCardState extends State<ReportedItemCard> {
             ),
           ],
         ),
-        ),
-
+      ),
     );
   }
 }

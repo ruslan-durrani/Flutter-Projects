@@ -19,17 +19,15 @@ class AiMatchedReportsBloc
     on<AIMatchReportDeclineEvent>(aiMatchReportDeclineEvent);
   }
 
-
   Future<void> aiMatchedReportsLoadEvent(
       AiMatchedReportsEvent event, Emitter<AiMatchedReportsState> emit) async {
     emit(AIMatchReportsLoadingState());
 
     List<ReportItemModel> userReports =
         await _aiReportItemRepository.getUserMatchedReports();
-    print("user reports are ${userReports}");
     if (userReports.isNotEmpty) {
       emit(AIMatchedReportsLoadedState(userReports));
-    } else {
+    } else if (userReports.isEmpty) {
       emit(AIMatchReportsEmptyState());
     }
   }
@@ -43,11 +41,12 @@ class AiMatchedReportsBloc
 
     bool userReports =
         await _aiReportItemRepository.acceptAIMatchedReport(event.reportId);
+    
+    
+
     if (userReports) {
-      print("i got back");
       emit(AIMatchReportAcceptedState());
     } else {
-      print("i got back with error");
       emit(AIMatchMakingErrorState("Report Not Accepted"));
     }
   }
@@ -60,10 +59,8 @@ class AiMatchedReportsBloc
     bool userReports =
         await _aiReportItemRepository.declineUserReport(event.reportId);
     if (userReports) {
-      print("i got back");
       emit(AIMatchReportDeclineState());
     } else {
-      print("i got back with error");
       emit(AIMatchMakingErrorState("Report Not Declined"));
     }
   }
