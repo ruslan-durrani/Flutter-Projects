@@ -7,8 +7,6 @@ import 'package:responsive_admin_dashboard/global/services/global_initializers.d
 import 'package:responsive_admin_dashboard/screens/add_admin/controller/passwordProvider.dart';
 import 'global/theme_data_provider/theme_provider.dart';
 import 'screens/reportedItem_management/provider/reported_item_provider.dart';
-
-
 void main() async{
   await globalInitializers();
   runApp(
