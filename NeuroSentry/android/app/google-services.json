@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "4513938450",
+    "project_id": "neuro-sentry",
+    "storage_bucket": "neuro-sentry.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4513938450:android:81f0581443c80ef7b06ccb",
+        "android_client_info": {
+          "package_name": "com.example.mental_healthapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "4513938450-372jbelbbn3e13fqlbe4q6pcbb7emskd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mental_healthapp",
+            "certificate_hash": "97cc864214107a0da7757b6af70ac62963ff80c4"
+          }
+        },
+        {
+          "client_id": "4513938450-dpqq8bd5m6o809e84q8488gh3l2sa8an.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9JU1d36CDHlnf-9YSoEahNO5AD9dPiqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "4513938450-dpqq8bd5m6o809e84q8488gh3l2sa8an.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "4513938450-5aog11gjup9e7qfllabago34j9qmtgn9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mentalHealthapp.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
