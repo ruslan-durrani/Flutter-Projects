@@ -68,6 +68,27 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
+
+  Future<bool> _showExitConfirmation(BuildContext context) async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Exit'),
+        content: Text('Do you really want to exit the app?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    )) ?? false; // Returning false if dialog is dismissed
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

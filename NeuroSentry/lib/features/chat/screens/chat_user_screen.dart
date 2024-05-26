@@ -216,7 +216,7 @@ class RecievedMsgTile extends StatelessWidget {
                   userName != null
                       ? Text(
                           userName!,
-                          style: TextStyle(fontWeight: FontWeight.normal,color: EColors.textPrimary.withOpacity(.5)),
+                          style: TextStyle(fontWeight: FontWeight.normal,color: EColors.primaryColor),
                         )
                       : const SizedBox.shrink(),
                   Text(

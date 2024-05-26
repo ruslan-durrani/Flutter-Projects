@@ -254,35 +254,51 @@ class _ConsultantViewState extends ConsumerState<ConsultantView> {
                         Row(
                           children: [
                             Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(top: 10),
-                                padding: EdgeInsets.symmetric(horizontal: 15),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(200),
-                                    border: Border.all(width: 2,color: Colors.white),
-                                    shape: BoxShape.rectangle),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("Message",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
-                                    IconButton(
-                                      onPressed: () async {
-                                        final chatModel = await ref
-                                            .read(chatControllerProvider)
-                                            .createOrGetOneToOneChatRoom(widget.name, true);
-                                        if (context.mounted) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ChatConsultantScreen(chatRoom: chatModel),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      icon: const Icon(Icons.chat,color: Colors.white,),
-                                    ),
-                                  ],
+                              child: InkWell(
+                                onTap: () async {
+                                  final chatModel = await ref
+                                      .read(chatControllerProvider)
+                                      .createOrGetOneToOneChatRoom(widget.name, true);
+                                  if (context.mounted) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ChatConsultantScreen(chatRoom: chatModel),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(200),
+                                      border: Border.all(width: 2,color: Colors.white),
+                                      shape: BoxShape.rectangle),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Message",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                                      IconButton(
+                                        onPressed: () async {
+                                          final chatModel = await ref
+                                              .read(chatControllerProvider)
+                                              .createOrGetOneToOneChatRoom(widget.name, true);
+                                          if (context.mounted) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChatConsultantScreen(chatRoom: chatModel),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        icon: const Icon(Icons.chat,color: Colors.white,),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

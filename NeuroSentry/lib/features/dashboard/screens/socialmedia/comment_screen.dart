@@ -142,17 +142,22 @@ class _CommentTileState extends ConsumerState<CommentTile> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
-      padding: const EdgeInsets.only(
-        bottom: 20,
-        top: 10,
-      ),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(width: 1),
-        ),
+      padding: const EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.white),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),  // Adjust opacity for softer shadow
+              blurRadius: 10,  // Blur effect radius
+              offset: Offset(5, 5),  // X, Y offset of shadow
+            ),
+          ]
       ),
       width: size.width,
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -183,7 +188,7 @@ class _CommentTileState extends ConsumerState<CommentTile> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 60.0),
+                padding:  EdgeInsets.symmetric(vertical:  20.0),
                 child: SizedBox(
                   width: size.width * 0.6,
                   child: Text(
@@ -193,16 +198,11 @@ class _CommentTileState extends ConsumerState<CommentTile> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 20,
-            ),
-            child: LikeButtonAndCount(
-              likeCount: widget.comment.likes,
-              likePost: likeComment,
-              likeUidList:
-                  widget.comment.likesProfileUid.whereType<String>().toList(),
-            ),
+          LikeButtonAndCount(
+            likeCount: widget.comment.likes,
+            likePost: likeComment,
+            likeUidList:
+                widget.comment.likesProfileUid.whereType<String>().toList(),
           ),
         ],
       ),

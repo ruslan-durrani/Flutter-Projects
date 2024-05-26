@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mental_healthapp/features/dashboard/mood_detector/camera_page.dart';
 import 'package:mental_healthapp/shared/constants/colors.dart';
 import 'package:mental_healthapp/shared/constants/utils/helper_button.dart';
 
@@ -79,16 +80,16 @@ class _MoodTrackerState extends State<MoodTracker> {
                 ),
               ),
 
-          SingleChildScrollView(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.8,
-              padding: EdgeInsets.all(15),
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                  color: EColors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20))),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            padding: EdgeInsets.all(15),
+            width: double.infinity,
+            decoration: const BoxDecoration(
+                color: EColors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,7 +109,7 @@ class _MoodTrackerState extends State<MoodTracker> {
                     height: 20,
                   ),
                   Text(
-
+                        
                     'Please select Your Current Mood',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: EColors.textPrimary),
                   ),
@@ -211,12 +212,34 @@ class _MoodTrackerState extends State<MoodTracker> {
                       ),
                     ],
                   ),
-                  const Divider(),
+                  // const Divider(),
+                  InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                        const CameraPage(),
+                      ),
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      padding: EdgeInsets.symmetric(vertical: 20,),
+                      decoration: BoxDecoration(color: EColors.white,borderRadius: BorderRadius.circular(10),border: Border.all(width: 2,color: EColors.primaryColor)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.camera_alt_sharp,color: EColors.primaryColor,),
+                          SizedBox(width: 10,),
+                          Text("Live Mood Detector",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,color: EColors.primaryColor),)
+                        ],
+                      ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
                   Text(
-
+                        
                     'Select words that describe your Mood',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: EColors.textPrimary),
                   ),
