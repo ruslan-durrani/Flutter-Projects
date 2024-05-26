@@ -216,6 +216,7 @@ class SentMsgTile extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               decoration: BoxDecoration(
                 color: EColors.softGrey,

@@ -19,6 +19,9 @@ import 'package:mental_healthapp/shared/enums/question_type.dart';
 import 'package:mental_healthapp/shared/notification_helper.dart';
 
 import '../../../shared/utils/get_drawer.dart';
+import 'package:provider/provider.dart' as provider;
+
+import '../../../shared/utils/goals_database.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -40,6 +43,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
+    final db2 = provider.Provider.of<AppointmentsDB>(context, listen: false);
+    db2.loadAppointmentsFromFirebase();
     getWorstScoreType();
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {

@@ -7,32 +7,89 @@ void showSnackBar({
   bool isError = false,
   Color backgroundColor = EColors.primarybg,
   Duration duration = const Duration(seconds: 3),
-  SnackBarAction? action,
-  SnackBarAnimation? animation = SnackBarAnimation.slide,
 }) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          isError?Icon(Icons.error,color: Colors.red,):Icon(Icons.celebration,color: Colors.green,),
-          Text(
-            content,
-            style: TextStyle(color: EColors.textPrimary),
+  OverlayEntry overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: Offset(0, -1),
+          end: Offset(0, 0),
+        ).animate(
+          CurvedAnimation(
+            parent: AnimationController(
+              duration: Duration(milliseconds: 300),
+              vsync: Navigator.of(context),
+            )..forward(),
+            curve: Curves.easeOut,
           ),
-        ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black45.withOpacity(.7),
+                  blurRadius: 8.0,
+                  spreadRadius: 1.0,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Row(
+                children: [
+                  Icon(
+                    isError ? Icons.error_outline : Icons.check_circle_outline,
+                    color: isError ? Colors.red : Colors.green,
+                    size: 30,
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      content,
+                      style: TextStyle(
+                        color: EColors.textPrimary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
-      backgroundColor:backgroundColor,
-      duration: duration,
-      action: action,
-
-      behavior: animation == SnackBarAnimation.slide ? SnackBarBehavior.floating : SnackBarBehavior.fixed,
-      margin: animation == SnackBarAnimation.slide ? EdgeInsets.all(10) : null,
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
     ),
   );
+
+  // Add the overlay to the widget tree
+  Overlay.of(context)?.insert(overlayEntry);
+
+  // Automatically remove the overlay after the duration
+  Future.delayed(duration, () {
+    overlayEntry.remove();
+  });
 }
 
-// Enum to specify the animation type
-enum SnackBarAnimation { slide, fixed }
+// Usage example
+void someFunction(BuildContext context) {
+  showSnackBar(
+    context: context,
+    content: "Your action was successful!",
+    isError: false,
+  );
+}

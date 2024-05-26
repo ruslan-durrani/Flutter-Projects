@@ -122,7 +122,7 @@ class Appointment {
     return Appointment(
       name: map['name'],
       time: map['time'],
-      age: map['time'],
+      age: map['age'],
       date: map['date'],
     );
   }
@@ -173,7 +173,9 @@ class AppointmentsDB extends ChangeNotifier {
     if (data == null) {
       return;
     }
-    for (var appointment in data['appointments']) {
+    var appointmentsList = data["appointments"];
+    print(appointmentsList);
+    for (var appointment in appointmentsList) {
       appointmentLists.add(Appointment.fromMap(appointment));
     }
   }
@@ -196,12 +198,12 @@ class AppointmentsDB extends ChangeNotifier {
     var appointment = Appointment(name: name, time: time, age: age, date: date);
     appointmentLists.add(appointment);
 
-    await firestore.collection('appointments').doc(auth.currentUser!.uid).set(
-      {
-        'appointments': [appointment.toMap()],
-      },
-      SetOptions(merge: true),
-    );
+    // await firestore.collection('appointments').doc(auth.currentUser!.uid).set(
+    //   {
+    //     'appointments': [appointment.toMap()],
+    //   },
+    //   SetOptions(merge: true),
+    // );
     await firestore
         .collection('appointments')
         .doc(auth.currentUser!.uid)

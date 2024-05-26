@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mental_healthapp/features/auth/controller/profile_controller.dart';
 import 'package:mental_healthapp/features/dashboard/controller/dashboard_controller.dart';
@@ -181,8 +182,11 @@ class _ConsultScreenState extends ConsumerState<ConsultScreen> {
                           ),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
+                              return const Center(
+                                  child: CircularProgressIndicator()
+                              );
                             } else if (snapshot.hasError) {
+                              print(snapshot.stackTrace);
                               return Text('Error: ${snapshot.error}');
                             } else {
                               List<ConsultantModel> consultants = snapshot.data ?? [];

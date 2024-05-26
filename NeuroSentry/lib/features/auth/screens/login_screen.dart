@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:mental_healthapp/features/auth/controller/auth_controller.dart';
@@ -67,6 +68,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future loginWithGoogle() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        final User? user = userCredential.user;
+
+        if (user != null) {
+          // Checking if email and name is not null
+          // assert(user.email != null);
+          // assert(user.displayName != null);
+          //
+          final User currentUser = _auth.currentUser!;
+          // assert(user.uid == currentUser.uid);
+          print('signInWithGoogle succeeded: $user');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NavScreen(),
+            ),
+          );
+
+          return user;
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    return null;
+  }
+  Future loginWithGoogle1() async {
     try {
       await ref.read(authControllerProvider).signInWithGoogle();
 

@@ -86,31 +86,56 @@ class DashboardRepository {
     }
   }
 
-Stream<List<ConsultantModel>> searchConsultants(String query, String? filter,) {
+  Stream<List<ConsultantModel>> searchConsultants(String query, String? filter) {
     final CollectionReference consultantsCollection =
     FirebaseFirestore.instance.collection('consultants');
 
-    Query queryRef = consultantsCollection;
+    // Retrieve snapshots of all consultants
+    Stream<QuerySnapshot> querySnapshotStream = consultantsCollection.snapshots();
 
-    // Apply the name search filter
-    if (query.isNotEmpty) {
-      queryRef = queryRef
-          .where('name', isGreaterThanOrEqualTo: query)
-          .where('name', isLessThan: query + 'z') // Ensures names start with the query
-          .orderBy('name');
-    }
+    return querySnapshotStream.map((snapshot) {
+      var consultants = snapshot.docs.map((doc) =>
+          ConsultantModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
 
-    // Apply the type filter if provided
-    if (filter != null && filter.isNotEmpty) {
-      queryRef = queryRef.where('type', isEqualTo: filter);
-    }
+      // Filter consultants by name if a query is provided
+      if (query.isNotEmpty) {
+        consultants = consultants.where((consultant) =>
+            consultant.name.toLowerCase().contains(query.toLowerCase())).toList();
+      }
 
-    // Retrieve snapshots based on the query reference
-    Stream<QuerySnapshot> querySnapshotStream = queryRef.snapshots();
+      // Apply the type filter if provided
+      if (filter != null && filter.isNotEmpty) {
+        consultants = consultants.where((consultant) =>
+        consultant.type == filter).toList();
+      }
 
-    return querySnapshotStream.map((snapshot) =>
-        snapshot.docs.map((doc) =>
-            ConsultantModel.fromMap(doc.data() as Map<String, dynamic>)).toList());
+      return consultants;
+    });
   }
+    
+// Stream<List<ConsultantModel>> searchConsultants(String query, String? filter,) {
+//     final CollectionReference consultantsCollection =
+//     FirebaseFirestore.instance.collection('consultants');
+//
+//     Query queryRef = consultantsCollection;
+//
+//     // Apply the name search filter
+//     if (query.isNotEmpty) {
+//       queryRef = queryRef
+//           .where('name', isGreaterThanOrEqualTo: query)
+//           .where('name', isLessThan: query + 'z') // Ensures names start with the query
+//           .orderBy('name');
+//
+//     }
+//     // Apply the type filter if provided
+//     if (filter != null && filter.isNotEmpty) {
+//       queryRef = queryRef.where('type', isEqualTo: filter);
+//     }
+//     // Retrieve snapshots based on the query reference
+//     Stream<QuerySnapshot> querySnapshotStream = queryRef.snapshots();
+//     return querySnapshotStream.map((snapshot) =>
+//         snapshot.docs.map((doc) =>
+//             ConsultantModel.fromMap(doc.data() as Map<String, dynamic>)).toList());
+//   }
 
 }

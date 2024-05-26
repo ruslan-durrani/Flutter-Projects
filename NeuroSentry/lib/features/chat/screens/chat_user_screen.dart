@@ -59,6 +59,7 @@ class _ChatScreenState extends ConsumerState<ChatUserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.chatRoom.otherMemberName);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: EColors.primaryColor,
@@ -210,12 +211,12 @@ class RecievedMsgTile extends StatelessWidget {
                   color: EColors.lightGrey,
                   borderRadius: BorderRadius.circular(25)),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   userName != null
                       ? Text(
                           userName!,
-                          style: const TextStyle(fontWeight: FontWeight.normal,color: Colors.white),
+                          style: TextStyle(fontWeight: FontWeight.normal,color: EColors.textPrimary.withOpacity(.5)),
                         )
                       : const SizedBox.shrink(),
                   Text(
@@ -244,6 +245,7 @@ class SentMsgTile extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             decoration: BoxDecoration(
               color: EColors.primaryColor,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,7 @@ class ProfileView extends ConsumerStatefulWidget {
 
 class _ProfileViewState extends ConsumerState<ProfileView> {
   Future logout() async {
-    ref.read(authControllerProvider).signOutUser();
+    await ref.read(authControllerProvider).signOutUser();
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
@@ -217,7 +218,8 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
               ProfileTile(
                 name: 'Logout',
                 iconData: Icons.logout,
-                onTap: () {
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
                   Hive.box('mybox').clear();
                   logout();
                 },

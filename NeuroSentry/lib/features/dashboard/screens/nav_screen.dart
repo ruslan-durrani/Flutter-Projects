@@ -43,9 +43,6 @@ class _NavScreenState extends ConsumerState<NavScreen> {
 
     final db = provider.Provider.of<GoalDataBase>(context, listen: false);
     db.getGoalsFromFirebase();
-    final db2 = provider.Provider.of<AppointmentsDB>(context, listen: false);
-    db2.loadAppointmentsFromFirebase();
-
     super.initState();
   }
 
