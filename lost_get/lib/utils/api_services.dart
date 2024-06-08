@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 import 'package:lost_get/models/report_item.dart';
 import 'package:lost_get/presentation_layer/widgets/toast.dart';
 
-const String recommendationUri = "http://54.89.149.245:5001/recommend-reports/";
-const String profaneImagesUri = "http://54.242.56.162:5000/check-images/";
-const String profanityChatsUri = "http://52.87.218.91:8000/profanity-check/";
+const String recommendationUri = "http://52.23.221.119:5001/recommend-reports/";
+const String profaneImagesUri = "http://3.81.47.111:5000/check-images/";
+const String profanityChatsUri = "http://34.230.92.255:8000/profanity-check/";
 const String reportAiMatchMakerUri =
-    "http://54.91.227.25:7000/auto-report-similarity/";
+    "http://3.90.225.116:7000/auto-report-similarity/";
 
 Future<void> checkProfaneImages(
     {required String id, required String uid}) async {
@@ -32,7 +32,6 @@ Future<void> checkProfaneImages(
 Future<List<ReportItemModel>> recommendReports(String uid) async {
   print("working");
   var baseUrl = Uri.parse(recommendationUri);
-  // var baseUrl = Uri.parse("http://54.175.58.241:5001/recommend-reports/");
   final response = await http.post(
     baseUrl,
     headers: <String, String>{

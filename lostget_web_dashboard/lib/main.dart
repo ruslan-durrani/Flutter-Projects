@@ -10,11 +10,14 @@ import 'screens/reportedItem_management/provider/reported_item_provider.dart';
 void main() async{
   await globalInitializers();
   runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(create: (context)=>ThemeProvider()),
-      ChangeNotifierProvider(create: (context)=>PasswordProvider()),
-      ChangeNotifierProvider(create: (context)=>ReportedItemsProvider()),
-  ],child: MyApp(),),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context)=>ThemeProvider()),
+        ChangeNotifierProvider(create: (context)=>PasswordProvider()),
+        ChangeNotifierProvider(create: (context)=>ReportedItemsProvider()),
+      ],
+      child: MyApp(),
+    ),
   );
 }
 class MyApp extends StatelessWidget {

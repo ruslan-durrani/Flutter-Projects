@@ -35,26 +35,21 @@ import 'package:location/location.dart' as loc;
           return;
         }
       }
-
-      // Obtain the current location
       loc.LocationData locationData = await location.getLocation();
       lastLatitude = locationData.latitude!;
       lastLongitude = locationData.longitude!;
       // Optionally, trigger nearby reports query or any other action
-      // karachi alahabad
+      // TODO KARACHI ALAHABAD
       // itemsNearby = await queryNearbyReports(25.281181, 67.015103, radiusKm);
-      // danish
+      // TODO DANISH HOME
       // itemsNearby = await queryNearbyReports(33.659408488443624, 73.06783206760883, radiusKm);
       itemsNearby = await queryNearbyReports(lastLatitude, lastLongitude, radiusKm);
       return ;
       //latitude: 33.66659162846188, longitude: 73.07104904204607
     }
-
     static double degreesToRadians(double degrees) {
       return degrees * pi / 180;
     }
-
-
     static Map<String, double> calculateBounds(double latitude, double longitude, double distance) {
       double latChange = distance / 111; // Roughly 111km per latitude degree
       double lonChange = distance / (111 * cos(degreesToRadians(latitude))); // Adjust longitude by cos(latitude)
@@ -65,7 +60,6 @@ import 'package:location/location.dart' as loc;
         'maxLon': longitude + lonChange
       };
     }
-
     Future<List<ReportItemModel>> queryNearbyReports(double currentLatitude, double currentLongitude, double radius) async {
       var bounds = calculateBounds(currentLatitude, currentLongitude, radius);
       final querySnapshot = await FirebaseFirestore.instance
@@ -74,9 +68,7 @@ import 'package:location/location.dart' as loc;
           .where('coordinates', isLessThan: GeoPoint(bounds['maxLat']!, bounds['maxLon']!))
           .limit(50)
           .get();
-
       print("Documents fetched by latitude filter: ${querySnapshot.docs.length}");
-
       var items = querySnapshot.docs.map((doc) => ReportItemModel.fromSnapshot(doc)).toList();
       return items;
     }
@@ -90,26 +82,4 @@ import 'package:location/location.dart' as loc;
           .limit(50)
           .snapshots();
     }
-
-
-
-
-  // Future<List<ReportItemModel>> queryNearbyReports(double currentLatitude, double currentLongitude, double radius) async {
-  //     var bounds = calculateBounds(currentLatitude, currentLongitude, radius);
-  //     final querySnapshot = await FirebaseFirestore.instance
-  //         .collection('reportItems')
-  //         .where('coordinates.Latitude', isGreaterThanOrEqualTo: bounds['minLat'])
-  //         .where('coordinates.Latitude', isLessThanOrEqualTo: bounds['maxLat'])
-  //         .where('coordinates.Longitude', isGreaterThanOrEqualTo: bounds['minLon'])
-  //         .where('coordinates.Longitude', isLessThanOrEqualTo: bounds['maxLon'])
-  //         .limit(50)
-  //         .get();
-  //
-  //     // Filter the results in Dart
-  //     print(querySnapshot.size);
-  //     return querySnapshot.docs
-  //         .map((doc) => ReportItemModel.fromSnapshot(doc))
-  //         .toList();
-  //
-  //   }
   }
