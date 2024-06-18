@@ -47,8 +47,8 @@ class StartApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'RuslanB',
       theme: themeData,
-      darkTheme: darkThemeData,
-      themeMode: ThemeMode.system,
+      // darkTheme: darkThemeData,
+      // themeMode: ThemeMode.system,
       routerConfig: _router,
       // home: HomeView(),
     );

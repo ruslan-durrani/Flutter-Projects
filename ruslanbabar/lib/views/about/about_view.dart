@@ -33,10 +33,7 @@ class AboutView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
-                padding:  EdgeInsets.only(left: pad,right: pad,top: pad),
-                child: TopSectionHeader(title: 'About', subtitle: 'Information about your current plan and usages',),
-              )
+              TopSectionHeader(title: 'About', subtitle: 'Information about your current plan and usages',)
             ],
           ),
           Responsive.isDesktop(context)?

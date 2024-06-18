@@ -21,10 +21,7 @@ class ProjectsView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
-                padding:  EdgeInsets.only(top: pad,left: pad,right: pad),
-                child: TopSectionHeader(title: 'Projects', subtitle: 'Information about your current plan and usages',),
-              )
+              TopSectionHeader(title: 'Projects', subtitle: 'Information about your current plan and usages',)
             ],
           ),
           Responsive.isDesktop(context)? Row(

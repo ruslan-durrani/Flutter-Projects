@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "default": "uxruslan",
+    "site": "ruslanbabar-4b6fb"
+  },
+  "targets": {
+    "target": "uxruslan",
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "etags": {}
+}

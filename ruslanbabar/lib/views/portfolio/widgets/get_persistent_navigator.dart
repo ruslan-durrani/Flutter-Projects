@@ -15,7 +15,7 @@ extension GoRouterExtension on GoRouter {
 }
 
 class GetPersistentNavigator extends StatefulWidget {
-  const GetPersistentNavigator({super.key});
+  const GetPersistentNavigator( {super.key});
 
   @override
   State<GetPersistentNavigator> createState() => _GetPersistentNavigatorState();
