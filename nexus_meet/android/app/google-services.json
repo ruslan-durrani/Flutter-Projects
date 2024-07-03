@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "909464891678",
+    "project_id": "nexus-meet",
+    "storage_bucket": "nexus-meet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909464891678:android:3edeee2268672c2cab590f",
+        "android_client_info": {
+          "package_name": "com.example.nexus_meet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "909464891678-30cnrtm7h51s114v668soisvaj1ltla7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8JZx_SGkaZWqPjl31H9-aLrSKWwpu1j0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "909464891678-30cnrtm7h51s114v668soisvaj1ltla7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
