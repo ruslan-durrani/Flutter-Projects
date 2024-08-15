@@ -41,7 +41,7 @@ class StartApp extends StatelessWidget {
             ),
           ],
         ),
-      ],
+      ],//s
     );
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,

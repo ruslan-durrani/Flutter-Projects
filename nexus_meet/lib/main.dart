@@ -1,11 +1,8 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus_meet/screens/auth/auth_screen.dart';
-import 'package:nexus_meet/screens/home/home_screen.dart';
-import 'package:nexus_meet/screens/navigator/app_navigator.dart';
-import 'package:nexus_meet/theme/colours.dart';
 import 'firebase_options.dart';
+import 'map_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,16 +19,10 @@ class NexusMeet extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Nexus Meet",
-      theme: ThemeData.dark()!.copyWith(
-        scaffoldBackgroundColor: backgroundColor
-      ),
+
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
-      routes: {
-        '/': (context)=>AuthScreen(),
-        AppNavigator.routeName: (context)=>AppNavigator(),
-        // HomeScreen.routeName: (context)=>HomeScreen(),
-      },
+      home: MapScreen(),
     );
   }
 }
